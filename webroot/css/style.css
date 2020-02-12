@@ -522,3 +522,8 @@ table td {
     vertical-align: top;
     word-break: break-all;
 }
+
+.image_icone {
+  width:90px;
+  height:90px;
+}

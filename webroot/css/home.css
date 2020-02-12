@@ -48,6 +48,11 @@ header {
     line-height: 1em;
     padding: 0;
     box-shadow: none;
+    background-color: #b7d4fa;
+}
+
+.titre_header {
+  color: black;
 }
 
 header.row {
