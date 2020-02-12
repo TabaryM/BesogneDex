@@ -48,6 +48,7 @@ $cakeDescription = 'CakePHP: the rapid development PHP framework';
 
       <?= $this->element('header', ['titre' => 'BesogneDex']) ?>
 
+      <!-- TODO Il faudra mettre tout les styles dans le css -->
       <div style="height: 80vh;margin-top: 20px;">
         <div class="container" style="height: 80vh;">
             <div class="row d-flex align-items-center" style="height: 100%;">
