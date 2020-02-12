@@ -523,6 +523,10 @@ table td {
     word-break: break-all;
 }
 
+.titre_header {
+  margin-left: 20px;
+}
+
 .image_icone {
   width:90px;
   height:90px;
