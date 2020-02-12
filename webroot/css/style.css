@@ -141,6 +141,10 @@ ul.pagination .disabled:hover a {
     color: #C3232D;
 }
 
+.default {
+    background-color: #9fc5f8;
+}
+
 select[multiple] {
     min-height:150px;
     background: none;

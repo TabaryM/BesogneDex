@@ -47,8 +47,7 @@ $cakeDescription = 'CakePHP: the rapid development PHP framework';
 </head>
 <body class="home">
 
-    <?= $this->element('header', ['titre' => 'BesogneDex']) ?>
-
+      <?= $this->element('header', ['titre' => 'BesogneDex']) ?>
 
 <script
   src="https://code.jquery.com/jquery-3.4.1.min.js"
