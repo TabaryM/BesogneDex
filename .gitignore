@@ -1,5 +1,6 @@
 # CakePHP specific files #
 ##########################
+.lock
 /config/app.php
 /config/.env
 /logs/*
