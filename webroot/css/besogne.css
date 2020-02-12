@@ -34,3 +34,8 @@ header {
   margin-left: 20px;
   margin-right: 20px;
 }
+
+.col-md-6.colonne_description_accueil {
+  border-right: 1px;
+  border-right: solid;
+}
