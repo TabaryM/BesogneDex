@@ -1,5 +1,6 @@
 # CakePHP specific files #
 ##########################
+.lock
 /config/app.php
 /config/.env
 /logs/*
@@ -39,3 +40,4 @@ nbproject/*
 .vscode
 # Sass preprocessor
 .sass-cache/
+/composer.lock
