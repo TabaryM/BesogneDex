@@ -25,7 +25,7 @@
                   </div>
                   <a href="#">Mot de passe oublié ?</a>
               </div>
-              <button class="btn btn-primary" type="button">Se connecter</button>
+              <?= $this->Html->link("Se connecter", array('controller' => 'Projet', 'action'=> 'index'), array( 'class' => 'btn btn-primary')) ?>
           </div>
         <?php
       endif;
