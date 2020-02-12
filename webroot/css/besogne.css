@@ -1,0 +1,36 @@
+header {
+    background-color: #b7d4fa;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.home {
+  background-color: #9fc5f8;
+}
+
+.titre_header {
+  margin-left: 20px;
+}
+
+.image_icone {
+  width:90px;
+  height:90px;
+}
+
+.div_mail_mdp_header {
+  margin-right: 10px;
+  width:100%;
+}
+
+.label_mdp_header {
+  margin-right: 10px;
+}
+
+.mail_label_header {
+  margin-right: 10px;
+}
+
+.d-flex.flex-column.mdp_div_header {
+  margin-left: 20px;
+  margin-right: 20px;
+}

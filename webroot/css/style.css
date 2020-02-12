@@ -20,7 +20,6 @@ a {
 }
 
 header {
-    background-color: #D33C44;
     color: #ffffff;
     font-size: 30px;
     height: 84px;
@@ -525,13 +524,4 @@ div.message.hidden {
 table td {
     vertical-align: top;
     word-break: break-all;
-}
-
-.titre_header {
-  margin-left: 20px;
-}
-
-.image_icone {
-  width:90px;
-  height:90px;
 }
