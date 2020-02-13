@@ -8,7 +8,23 @@ header {
   background-color: #9fc5f8;
 }
 
-.titre_header {
+.default {
+  background-color: #9fc5f8;
+}
+
+.table td{
+  border-color: black;
+}
+
+.table tr{
+  border-color: black;
+}
+
+.thead_light{
+  border-color: black!important;
+}
+
+.titre_header{
   margin-left: 20px;
 }
 

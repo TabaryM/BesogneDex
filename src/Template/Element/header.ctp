@@ -4,7 +4,7 @@
       <h1 class="titre_header"><?= $titre ?></h1>
     </div>
     <?php
-      //Booléen qui gère si l'utilisateur est connecté ou non
+      //TODO Booléen qui gère si l'utilisateur est connecté ou non
       if(true):
         ?>
           <div class="d-flex justify-content-end align-items-center div_mail_mdp_header">
