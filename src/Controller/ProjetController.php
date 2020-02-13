@@ -13,6 +13,7 @@ class ProjetController extends AppController
     public function add(){
       if ($this->request->is('post')){
         $projet = $this->Projet->newEntity($this->request->getData());
+        $projet->idProprietaire = 1;
 
         if ($this->Projet->save($projet)) {
           $this->Flash->success(__('Votre projet a été sauvegardé.'));
