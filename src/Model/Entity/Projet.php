@@ -10,3 +10,5 @@ class Projet extends Entity
         '*' => true,
     ];
 }
+
+?>

@@ -1,6 +1,4 @@
 <?php
-// src/Controller/ArticlesController.php
-
 namespace App\Controller;
 
 class ProjetController extends AppController
@@ -25,3 +23,4 @@ class ProjetController extends AppController
       }
     }
 }
+?>

@@ -5,7 +5,7 @@ use Cake\ORM\Table;
 
 class ProjetTable extends Table{
   public function initialize(array $config){
-    
+    ;
   }
 }
 
