@@ -16,9 +16,9 @@
         </div>
       </div>
       <div class="row">
-          <div class="col text-center" style="margin-top: 20px;"><button class="btn btn-primary btn-lg text-left border-dark shadow-sm" type="button">Retour</button></div>
+          <div class="col text-center" style="margin-top: 20px;"><?= $this->Html->link("Retour", array('controller' => 'Tache', 'action'=> 'index'), array( 'class' => 'btn btn-primary')); ?></div>
 
-          <div class="col text-center" style="margin-top: 20px;"><?= $this->Form->submit('Créer', array('class' => 'btn btn-primary')); ?></div>
+          <div class="col text-center" style="margin-top: 20px;"><?= $this->Form->submit('Ajouter une tâche', array('class' => 'btn btn-primary')); ?></div>
       </div>
   </div>
 
