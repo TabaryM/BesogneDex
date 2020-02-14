@@ -15,13 +15,13 @@
               <?php foreach ($taches as $tache): ?>
                 <tr>
                   <td>
-                    <?=   $tache->nom ?>
+                    <?=   $tache->titre ?>
                   </td>
                   <td>
                     None
                   </td>
                   <td>
-                    None
+                    <?=   $tache->etat ?>
                   </td>
                 </tr>
               <?php endforeach; ?>
@@ -34,6 +34,9 @@
       <div class="col-xl-12">
         <?php
           echo $this->Html->link("Projets", array('controller' => 'Projet', 'action'=> 'index'), array( 'class' => 'btn btn-primary'));
+        ?>
+        <?php
+          echo $this->Html->link("Ajouter une tâche", array('controller' => 'Tache', 'action'=> 'add'), array( 'class' => 'btn btn-primary'));
         ?>
       </div>
     </div>
