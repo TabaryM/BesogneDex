@@ -55,3 +55,7 @@ header {
   border-right: 1px;
   border-right: solid;
 }
+
+.btn {
+  margin-right: 10px;
+}
