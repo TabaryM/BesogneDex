@@ -6,19 +6,16 @@
           <table class="table table-bordered">
             <thead class="thead-light">
               <tr>
-                <th>Nom du projet</th>
+                <th>Tache</th>
                 <th>Proprietaire</th>
                 <th>Etat</th>
               </tr>
             </thead>
             <tbody>
-              <?php foreach ($projets as $projet): ?>
+              <?php foreach ($taches as $tache): ?>
                 <tr>
                   <td>
-                    <?=   $projet->titre ?>
-                    <?php
-                      echo $this->Html->link("Tache", array('controller' => 'Tache', 'action'=> 'index'), array( 'class' => 'btn btn-primary'));
-                    ?>
+                    <?=   $tache->titre ?>
                   </td>
                   <td>
                     None
@@ -36,10 +33,7 @@
     <div class="row d-flex align-items-start" >
       <div class="col-xl-12">
         <?php
-          echo $this->Html->link("Projets archivés", array('controller' => 'Projet', 'action'=> 'archives'), array( 'class' => 'btn btn-primary'));
-        ?>
-        <?php
-          echo $this->Html->link("Ajouter un projet", array('controller' => 'Projet', 'action'=> 'add'), array( 'class' => 'btn btn-primary'));
+          echo $this->Html->link("Projets", array('controller' => 'Projet', 'action'=> 'index'), array( 'class' => 'btn btn-primary'));
         ?>
       </div>
     </div>
