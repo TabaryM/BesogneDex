@@ -2,6 +2,7 @@
         <div class="row">
             <div class="col-xl-12 offset-xl-0"><h1><center>Créer un projet</center></h1></div>
         </div>
+        <?= $this->Form->create('Projet'); ?>
         <div class="row" style="margin-left: 20;">
             <div class="col text-center" style="margin-bottom: 20px;margin-top: 20px;"><?= $this->Form->input('titre', array('label' => 'Titre de la tâche :')); ?></div>
         </div>

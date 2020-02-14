@@ -19,10 +19,10 @@
                   ?>
                 </td>
                 <td>
-                  None
+                  <?= $projet->Proprietaire ?>
                 </td>
                 <td>
-                  None
+                  <?= $projet->Etat ?>
                 </td>
               </tr>
             <?php endforeach; ?>
