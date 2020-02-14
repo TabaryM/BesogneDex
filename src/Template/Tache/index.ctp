@@ -15,7 +15,7 @@
               <?php foreach ($taches as $tache): ?>
                 <tr>
                   <td>
-                    <?=   $tache->titre ?>
+                    <?=   $tache->nom ?>
                   </td>
                   <td>
                     None

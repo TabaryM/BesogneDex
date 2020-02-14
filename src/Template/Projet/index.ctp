@@ -17,7 +17,7 @@
                   <td>
                     <?=   $projet->titre ?>
                     <?php
-                      echo $this->Html->link("Tache", array('controller' => 'Tache', 'action'=> 'index'), array( 'class' => 'btn btn-primary'));
+                      echo $this->Html->link("Tache", array('controller' => 'Tache', 'action'=> 'index', 'id'=>$projet->idProjet), array( 'class' => 'btn btn-primary'));
                     ?>
                   </td>
                   <td>
