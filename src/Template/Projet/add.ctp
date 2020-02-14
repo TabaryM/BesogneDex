@@ -1,16 +1,4 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>add</title>
-    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/styles.css">
-</head>
-
-<body class="text-center">
-    <div class="container">
+  <div class="container">
         <div class="row">
             <div class="col-xl-12 offset-xl-0"><h1><center>Créer un projet</center></h1></div>
         </div>
@@ -29,8 +17,3 @@
             <div class="col text-center" style="margin-top: 20px;"><button class="btn btn-primary btn-lg border-dark shadow-sm" type="button">Créer le projet</button></div>
         </div>
     </div>
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
-</body>
-
-</html>
