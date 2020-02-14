@@ -33,14 +33,12 @@
   </div>
   <div class="row d-flex align-items-start" >
     <div class="col-xl-12">
-      <div class="row">
         <?php
         echo $this->Html->link("Projets archivés", array('controller' => 'Projet', 'action'=> 'archives'), array( 'class' => 'btn btn-primary'));
         ?>
         <?php
         echo $this->Html->link("Ajouter un projet", array('controller' => 'Projet', 'action'=> 'add'), array( 'class' => 'btn btn-primary'));
         ?>
-      </div>
     </div>
   </div>
 </div>

@@ -32,7 +32,6 @@
     </div>
     <div class="row d-flex align-items-start" >
       <div class="col-xl-12">
-        <div class="row">
           <?php
           echo $this->Html->link("Projets", array('controller' => 'Projet', 'action'=> 'index'), array( 'class' => 'btn btn-primary'));
         ?>
@@ -42,6 +41,5 @@
         <?php
         echo $this->Html->link("Ajouter une tâche", array('controller' => 'Tache', 'action'=> 'add', 'id' => $id), array( 'class' => 'btn btn-primary'));
         ?>
-      </div>
   </div>
 </div>
