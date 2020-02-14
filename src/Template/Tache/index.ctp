@@ -37,7 +37,7 @@
           echo $this->Html->link("Projets", array('controller' => 'Projet', 'action'=> 'index'), array( 'class' => 'btn btn-primary'));
         ?>
         <?php
-          echo $this->Html->link("Ajouter une tâche", array('controller' => 'Tache', 'action'=> 'add'), array( 'class' => 'btn btn-primary'));
+          echo $this->Html->link("Ajouter une tâche", array('controller' => 'Tache', 'action'=> 'add', 'id' => $id), array( 'class' => 'btn btn-primary'));
         ?>
       </div>
   </div>
