@@ -1,4 +1,4 @@
-<nav class="navbar navbar-light navbar-expand-md bg-light" style="margin-top: 10px;margin-right: 5px;margin-left: 5px;">
+<nav class="navbar navbar-light navbar-expand-md bg-light" style="margin-top: 10px;margin-right: 50px;margin-left: 50px;">
     <div class="container-fluid"><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="navcol-1">
             <ul class="nav navbar-nav d-flex justify-content-around" style="width: 100%;">
