@@ -12,7 +12,7 @@
               </tr>
             </thead>
             <tbody>
-              <?php foreach ($taches as $tache): ?>
+              <?php foreach ($taches as $tache):?>
                 <tr>
                   <td>
                     <?=   $tache->nom ?>
@@ -34,6 +34,9 @@
       <div class="col-xl-12">
         <?php
           echo $this->Html->link("Projets", array('controller' => 'Projet', 'action'=> 'index'), array( 'class' => 'btn btn-primary'));
+        ?>
+        <?php
+          echo $this->Html->link("Détails", array('controller' => 'Tache', 'action'=> 'details', 'id'=>$id), array( 'class' => 'btn btn-primary'));
         ?>
       </div>
     </div>
