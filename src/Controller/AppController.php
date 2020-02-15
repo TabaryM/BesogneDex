@@ -80,6 +80,7 @@ class AppController extends Controller
                 'home'
             ],
             'authError' => 'Vous devez vous connecter pour accéder à cette page.'
+
         ],
 
 
