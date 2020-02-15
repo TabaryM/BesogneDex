@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller;
 
-require('Component\VerificationChamps.php');
+//require('Component\VerificationChamps.php');
 
 class ProjetController extends AppController
 {
@@ -28,7 +28,7 @@ class ProjetController extends AppController
               $this->Flash->error(__("Impossible d'ajouter votre projet."));
 
           } else {
-            $this->Flash->error(__("met un nom correct stp ou une jolie description batard"));
+            $this->Flash->error(__("met un nom correct stp ou une jolie description"));
           }
       }
     }

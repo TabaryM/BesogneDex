@@ -86,7 +86,7 @@ class AppController extends Controller
     }
 
     public function beforeRender(Event $event){
-      if ($this->request->session()->read('Auth.Utilisateur')){
+      if ($this->request->session()->read('Auth.User')){
         $this->set('loggedIn', true);
       }else{
         $this->set('loggedIn', false);
