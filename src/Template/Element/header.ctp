@@ -3,14 +3,11 @@
       <?= $this->Html->image("icones/rotom_dex.png", ['class' => 'image_icone']) ?>
       <h1 class="titre_header"><?= $titre ?></h1>
     </div>
-    <?php
-      //TODO Booléen qui gère si l'utilisateur est connecté ou non
-      if(!$loggedIn):
-        ?>
+    <?php   if(!$loggedIn):  ?>
           <div class="d-flex justify-content-end align-items-center div_mail_mdp_header">
               <div class="d-flex flex-column mail_div_header">
                   <div>
-                    <?php $this->Form->create(null, ['url' => ['controller' => 'Utilisateur', 'action' => 'login']]); ?>
+                    <?= $this->Form->create(null, ['url' => ['controller' => 'Utilisateur', 'action' => 'login']]); ?>
                     <?= $this->Form->control('email', array('label' => 'E-mail :')); ?>
                   </div>
                   <div class="form-check">
@@ -28,8 +25,12 @@
 
               <?= $this->Form->submit('Se connecter', array('class' => 'btn btn-primary')) ?>
               <?= $this->Flash->render() ?>
+              <?= $this->Form->end() ?>
           </div>
-        <?php
-      endif;
-    ?>
+
+        <?php  endif;   ?>
+
+    <?php   if($loggedIn):  ?>
+    <?= $this->Html->link("Se déconnecter", array('controller' => 'Utilisateur','action'=> 'logout'), array( 'class' => 'btn btn-primary'))?>
+    <?php  endif;   ?>
 </header>

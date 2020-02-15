@@ -53,12 +53,7 @@ class AppController extends Controller
                 'Form' =>
                 [
                       'fields'=> ['username' => 'email',  'password' => 'mdp'],
-                      //'fields'=> ['email' => 'email',  'mdp' => 'password'],
                       'userModel' => 'Utilisateur',
-                      //'relatedModel' => 'Users',
-                      //'finder' => 'auth'
-
-
                 ]
             ],
           'loginAction' => [
@@ -73,8 +68,7 @@ class AppController extends Controller
                 'controller' => 'Pages',
                 'action' => 'display',
                 'home'
-            ],
-            'storage' => 'Session'
+            ]
         ]);
 
 
@@ -94,7 +88,7 @@ class AppController extends Controller
     }
 
     public function beforeRender(Event $event){
-      if ($this->request->session()->read('Auth.Utilisateur')){
+      if ($this->request->session()->read('Auth.User')){
         $this->set('loggedIn', true);
       }else{
         $this->set('loggedIn', false);

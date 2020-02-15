@@ -16,7 +16,7 @@ class UtilisateurController extends AppController
       // Allow users to register and logout.
       // You should not add the "login" action to allow list. Doing so would
       // cause problems with normal functioning of AuthComponent.
-      $this->Auth->allow(['add', 'logout']);
+      $this->Auth->allow(['login','add', 'logout']);
   }
 
 
@@ -25,8 +25,8 @@ class UtilisateurController extends AppController
       $utilisateur = $this->Auth->identify();
       if ($utilisateur){
         $this->Auth->setUser($utilisateur);
-        return $this->redirect($this->Auth->redirectUrl());
         $this->Flash->success(__('Vous êtes connecté !'));
+        return $this->redirect($this->Auth->redirectUrl());
       }
       $this->Flash->error(__('E-mail ou mot de passe incorrects'));
     }
@@ -39,11 +39,11 @@ class UtilisateurController extends AppController
           $utilisateur = $this->Utilisateur->patchEntity($utilisateur, $this->request->getData());
           if ($this->Utilisateur->save($utilisateur)) {
               $this->Flash->success(__('The user has been saved.'));
-              return $this->redirect(['action' => 'add']);
+              return $this->redirect(['action' => 'login']);
           }
           $this->Flash->error(__('Unable to add the user.'));
       }
-      $this->set('utilisateur', $utilisateur);
+        $this->set('utilisateur', $utilisateur);
   }
 
   public function logout(){

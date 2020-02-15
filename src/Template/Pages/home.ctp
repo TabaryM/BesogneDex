@@ -96,7 +96,7 @@ $cakeDescription = 'BesogneDex';
                               </div>
                           </div>
                           <div class="col-xl-6 d-flex flex-column justify-content-around" style="height: 100%;">
-                              <?php $this->Form->create('Utilisateur', ['url' => ['controller' => 'Utilisateur', 'action' => 'add']]); ?>
+                              <?= $this->Form->create('Utilisateur', ['url' => ['controller' => 'Utilisateur', 'action' => 'add']]); ?>
                               <div class="row">
                                   <div class="col" style="height: 38px;"><?= $this->Form->control('email', ['label' => '']) ?></div>
                               </div>
@@ -119,7 +119,7 @@ $cakeDescription = 'BesogneDex';
                       </div>
                       <div class="row">
                           <div class="col-xl-12 text-right" style="height: 80px;"><?= $this->Form->submit('Créer mon compte', array('class' => 'btn btn-primary', 'style' =>'height: 100%;width: 60%;font-size: 28px;')) ?></div>
-
+                          <?= $this->Form->end(); ?>
                       </div>
                   </div>
               </div>
