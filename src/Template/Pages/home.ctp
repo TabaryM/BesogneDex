@@ -75,6 +75,7 @@ $cakeDescription = 'BesogneDex';
                   <div class="col-xl-6 d-flex flex-column justify-content-around" data-aos="fade-left" data-aos-duration="700" data-aos-delay="2200" style="height: 80%;">
                       <div class="row" style="height: 60%;">
                           <div class="col-md-6 col-xl-6 text-center d-flex flex-column justify-content-around align-items-end" style="height: 100%;">
+
                               <div class="row">
                                   <div class="col-xl-12"><label class="col-form-label label">E-mail :</label></div>
                               </div>
@@ -95,28 +96,30 @@ $cakeDescription = 'BesogneDex';
                               </div>
                           </div>
                           <div class="col-xl-6 d-flex flex-column justify-content-around" style="height: 100%;">
+                              <?php $this->Form->create('Utilisateur', ['url' => ['controller' => 'Utilisateur', 'action' => 'add']]); ?>
                               <div class="row">
-                                  <div class="col" style="height: 38px;"><input type="text" style="height: 38px;"></div>
+                                  <div class="col" style="height: 38px;"><?= $this->Form->control('email', ['label' => '']) ?></div>
                               </div>
                               <div class="row">
-                                  <div class="col" style="height: 38px;"><input type="text" style="height: 38px;"><a href="#" style="margin-left: 20px;">?</a></div>
+                                  <div class="col" style="height: 38px;"><?= $this->Form->control('mdp', ['label' => '']) ?></a></div>
                               </div>
                               <div class="row">
-                                  <div class="col" style="height: 38px;"><input type="text" style="height: 38px;"></div>
+                                  <div class="col" style="height: 38px;"><?= $this->Form->control('mdpp', ['label' => '']) ?></div>
                               </div>
                               <div class="row">
-                                  <div class="col" style="height: 38px;"><input type="text" style="height: 38px;"></div>
+                                  <div class="col" style="height: 38px;"><?= $this->Form->control('pseudo', ['label' => '']) ?></div>
                               </div>
                               <div class="row">
-                                  <div class="col" style="height: 38px;"><input type="text" style="height: 38px;"></div>
+                                  <div class="col" style="height: 38px;"><?= $this->Form->control('nom', ['label' => '']) ?></div>
                               </div>
                               <div class="row">
-                                  <div class="col" style="height: 38px;"><input type="text" style="height: 38px;"></div>
+                                  <div class="col" style="height: 38px;"><?= $this->Form->control('prenom', ['label' => '']) ?></div>
                               </div>
                           </div>
                       </div>
                       <div class="row">
-                          <div class="col-xl-12 text-right" style="height: 80px;"><button class="btn btn-primary" type="button" style="height: 100%;width: 60%;font-size: 28px;">Créer mon compte !</button></div>
+                          <div class="col-xl-12 text-right" style="height: 80px;"><?= $this->Form->submit('Créer mon compte', array('class' => 'btn btn-primary', 'style' =>'height: 100%;width: 60%;font-size: 28px;')) ?></div>
+
                       </div>
                   </div>
               </div>

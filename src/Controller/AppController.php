@@ -28,6 +28,7 @@ use Cake\Event\Event;
 class AppController extends Controller
 {
 
+
     /**
      * Initialization hook method.
      *
@@ -44,12 +45,59 @@ class AppController extends Controller
         $this->loadComponent('RequestHandler', [
             'enableBeforeRedirect' => false,
         ]);
+
         $this->loadComponent('Flash');
+
+        $this->loadComponent('Auth', [
+          'authenticate' => [
+                'Form' =>
+                [
+                      'fields'=> ['username' => 'email',  'password' => 'mdp'],
+                      //'fields'=> ['email' => 'email',  'mdp' => 'password'],
+                      'userModel' => 'Utilisateur',
+                      //'relatedModel' => 'Users',
+                      //'finder' => 'auth'
+
+
+                ]
+            ],
+          'loginAction' => [
+            'controller' => 'Utilisateur',
+            'action' => 'login'
+          ],
+            'loginRedirect' => [
+                'controller' => 'Projet',
+                'action' => 'index'
+            ],
+            'logoutRedirect' => [
+                'controller' => 'Pages',
+                'action' => 'display',
+                'home'
+            ],
+            'storage' => 'Session'
+        ]);
+
+
 
         /*
          * Enable the following component for recommended CakePHP security settings.
          * see https://book.cakephp.org/3.0/en/controllers/components/security.html
          */
         //$this->loadComponent('Security');
+    }
+
+
+    public function beforeFilter(Event $event)
+    {
+        $this->Auth->allow(['index', 'view', 'display']);
+
+    }
+
+    public function beforeRender(Event $event){
+      if ($this->request->session()->read('Auth.Utilisateur')){
+        $this->set('loggedIn', true);
+      }else{
+        $this->set('loggedIn', false);
+      }
     }
 }
