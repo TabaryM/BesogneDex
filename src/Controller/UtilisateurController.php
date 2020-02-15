@@ -10,16 +10,25 @@ use Cake\Event\Event;
 class UtilisateurController extends AppController
 {
 
+  /**
+  * Pris de la doc officielle :
+  * Permet les utilisateurs de s'inscrire et de se déconnecter.
+  * La doc demande à ne pas ajouter 'login' dans la liste pour ne pas causer de problèmes avec le fonctionnement normal de AuthComponent.
+  *
+  * Auteur : POP Diana
+  */
   public function beforeFilter(Event $event)
   {
       parent::beforeFilter($event);
-      // Allow users to register and logout.
-      // You should not add the "login" action to allow list. Doing so would
-      // cause problems with normal functioning of AuthComponent.
-      $this->Auth->allow(['login','add', 'logout']);
+      $this->Auth->allow(['add', 'logout']);
   }
 
-
+  /**
+  * Permet à l'utilisateur de se connecter.
+  * Les pages qui appellent cette fonction sont : Template/Element/header.ctp et Template/Utilisateur/login.ctp.
+  *
+  * Auteur : POP Diana
+  */
   public function login(){
     if ($this->request->is('post')){
       $utilisateur = $this->Auth->identify();
@@ -33,19 +42,31 @@ class UtilisateurController extends AppController
 
   }
 
+  /**
+  * Permet à l'utilisateur de s'inscrire.
+  * La page qui appelle cette fonction est : Template/Pages/home.ctp.
+  *
+  * Auteur : POP Diana
+  */
   public function add(){
       $utilisateur = $this->Utilisateur->newEntity();
       if ($this->request->is('post')) {
           $utilisateur = $this->Utilisateur->patchEntity($utilisateur, $this->request->getData());
           if ($this->Utilisateur->save($utilisateur)) {
-              $this->Flash->success(__('The user has been saved.'));
+              $this->Flash->success(__('Votre compte est bien enregistré..'));
               return $this->redirect(['action' => 'login']);
           }
-          $this->Flash->error(__('Unable to add the user.'));
+          $this->Flash->error(__('Impossible de créer votre compte.'));
       }
         $this->set('utilisateur', $utilisateur);
   }
 
+  /**
+  * Permet à l'utilisateur de se déconnecter.
+  * La page qui appelle cette fonction est : Template/Element/header.ctp
+  *
+  * Auteur : POP Diana
+  */
   public function logout(){
     return $this->redirect($this->Auth->logout());
   }
