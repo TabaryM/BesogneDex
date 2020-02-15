@@ -75,46 +75,46 @@ $cakeDescription = 'BesogneDex';
                   <div class="col-xl-6 d-flex flex-column justify-content-around" data-aos="fade-left" data-aos-duration="700" data-aos-delay="2200" style="height: 80%;">
                       <div class="row" style="height: 60%;">
                           <div class="col-md-6 col-xl-6 text-center d-flex flex-column justify-content-around align-items-end" style="height: 100%;">
-
                               <div class="row">
-                                  <div class="col-xl-12"><label class="col-form-label label">E-mail :</label></div>
+                                  <div class="col"><label class="col-form-label">E-mail :</label></div>
                               </div>
                               <div class="row">
-                                  <div class="col"><label class="col-form-label label">Mot de passe :</label></div>
+                                  <div class="col"><label class="col-form-label" style="height:38px;">Mot de passe :</label></div>
                               </div>
                               <div class="row">
-                                  <div class="col"><label class="col-form-label label">Confirmation :</label></div>
+                                  <div class="col"><label class="col-form-label" style="height:38px;">Confirmation :</label></div>
                               </div>
                               <div class="row">
-                                  <div class="col"><label class="col-form-label label">Pseudo :</label></div>
+                                  <div class="col"><label class="col-form-label" style="height:38px;">Pseudo :</label></div>
                               </div>
                               <div class="row">
-                                  <div class="col"><label class="col-form-label label">Nom :</label></div>
+                                  <div class="col"><label class="col-form-label" style="height:38px;">Nom :</label></div>
                               </div>
                               <div class="row">
-                                  <div class="col"><label class="col-form-label label">Prénom :</label></div>
+                                  <div class="col"><label class="col-form-label" style="height:38px;">Prénom :</label></div>
                               </div>
+                          </div>
+                          <div>
                               <?= $this->Form->create('Utilisateur', ['url' => ['controller' => 'Utilisateur', 'action' => 'add']]); ?>
                           </div>
                           <div class="col-xl-6 d-flex flex-column justify-content-around" style="height: 100%;">
-
                               <div class="row">
-                                  <div class="col" style="height: 38px;"><?= $this->Form->control('email', ['label' => '', 'style'=>'height: 38px;']) ?></div>
+                                  <div class="col"><?= $this->Form->control('email', ['label' => '', 'style'=>'height: 38px;']) ?></div>
                               </div>
                               <div class="row">
-                                  <div class="col" style="height: 38px;"><?= $this->Form->control('mdp', ['label' => '', 'style'=>'height: 38px;']) ?></a></div>
+                                  <div class="col"><?= $this->Form->control('mdp', ['label' => '', 'style'=>'height: 38px;']) ?></a></div>
                               </div>
                               <div class="row">
-                                  <div class="col" style="height: 38px;"><?= $this->Form->control('mdpp', ['label' => '', 'style'=>'height: 38px;']) ?></div>
+                                  <div class="col"><?= $this->Form->control('mdpp', ['label' => '', 'style'=>'height: 38px;']) ?></div>
                               </div>
                               <div class="row">
-                                  <div class="col" style="height: 38px;"><?= $this->Form->control('pseudo', ['label' => '', 'style'=>'height: 38px;']) ?></div>
+                                  <div class="col"><?= $this->Form->control('pseudo', ['label' => '', 'style'=>'height: 38px;']) ?></div>
                               </div>
                               <div class="row">
-                                  <div class="col" style="height: 38px;"><?= $this->Form->control('nom', ['label' => '', 'style'=>'height: 38px;']) ?></div>
+                                  <div class="col"><?= $this->Form->control('nom', ['label' => '', 'style'=>'height: 38px;']) ?></div>
                               </div>
                               <div class="row">
-                                  <div class="col" style="height: 38px;"><?= $this->Form->control('prenom', ['label' => '', 'style'=>'height: 38px;']) ?></div>
+                                  <div class="col"><?= $this->Form->control('prenom', ['label' => '', 'style'=>'height: 38px;']) ?></div>
                               </div>
                           </div>
                       </div>
