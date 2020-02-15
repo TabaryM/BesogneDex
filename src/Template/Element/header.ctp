@@ -5,27 +5,29 @@
     </div>
     <?php
       //TODO Booléen qui gère si l'utilisateur est connecté ou non
-      if(true):
+      if(!$loggedIn):
         ?>
           <div class="d-flex justify-content-end align-items-center div_mail_mdp_header">
               <div class="d-flex flex-column mail_div_header">
                   <div>
-                    <label class="mail_label_header">E-mail :</label>
-                    <input type="text">
+                    <?php $this->Form->create(null, ['url' => ['controller' => 'Utilisateur', 'action' => 'login']]); ?>
+                    <?= $this->Form->control('email', array('label' => 'E-mail :')); ?>
                   </div>
                   <div class="form-check">
+
                     <input class="form-check-input" type="checkbox" id="formCheck-1">
                     <label class="form-check-label" for="formCheck-1">Rester connecté</label>
                   </div>
               </div>
               <div class="d-flex flex-column mdp_div_header">
                   <div>
-                    <label class="label_mdp_header">Mot de passe :</label>
-                    <input type="text">
+                    <?= $this->Form->control('mdp', array('label' => 'Mot de passe :')); ?>
                   </div>
                   <a href="#">Mot de passe oublié ?</a>
               </div>
-              <?= $this->Html->link("Se connecter", array('controller' => 'Projet', 'action'=> 'index'), array( 'class' => 'btn btn-primary')) ?>
+
+              <?= $this->Form->submit('Se connecter', array('class' => 'btn btn-primary')) ?>
+              <?= $this->Flash->render() ?>
           </div>
         <?php
       endif;
