@@ -1,3 +1,4 @@
+<?= $this->Flash->render() ?>
 <header class="d-flex flex-row justify-content-start align-items-center header">
     <div class="d-flex flex-row justify-content-start align-items-center header">
       <?= $this->Html->image("icones/rotom_dex.png", ['class' => 'image_icone']) ?>
@@ -24,7 +25,7 @@
               </div>
 
               <?= $this->Form->submit('Se connecter', array('class' => 'btn btn-primary')) ?>
-              <?= $this->Flash->render() ?>
+
               <?= $this->Form->end() ?>
           </div>
 

@@ -36,11 +36,13 @@ class UtilisateurController extends AppController
         $this->Auth->setUser($utilisateur);
         $this->Flash->success(__('Vous êtes connecté !'));
         return $this->redirect($this->Auth->redirectUrl());
-      }
-      $this->Flash->error(__('E-mail ou mot de passe incorrects'));
+      }else{
+        $this->Flash->error(__('E-mail ou mot de passe incorrects'));
+        return $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
     }
 
   }
+}
 
   /**
   * Permet à l'utilisateur de s'inscrire.
@@ -57,6 +59,7 @@ class UtilisateurController extends AppController
               return $this->redirect(['action' => 'login']);
           }
           $this->Flash->error(__('Impossible de créer votre compte.'));
+          return $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
       }
         $this->set('utilisateur', $utilisateur);
   }

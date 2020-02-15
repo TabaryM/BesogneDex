@@ -20,8 +20,11 @@ class UtilisateurTable extends Table{
     return $validator
     ->notEmpty('email', 'Une adresse email est nécessaire.')
     ->notEmpty('mdp', 'Un mot de passe est nécessaire.')
-    ->notEmpty('pseudo', 'Un pseudo est nécessaire.');
-    }
+    ->notEmpty('pseudo', 'Un pseudo est nécessaire.')
+    ->add('mdp', [  'compare' => [
+        'rule' => ['compareWith', 'mdpp']
+    ]], 'Les mots de passe doivent correspondre.');
+  }
 }
 
  ?>

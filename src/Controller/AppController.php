@@ -78,8 +78,12 @@ class AppController extends Controller
                 'controller' => 'Pages',
                 'action' => 'display',
                 'home'
-            ]
-        ]);
+            ],
+            'authError' => 'Vous devez vous connecter pour accéder à cette page.'
+        ],
+
+
+      );
 
 
         /*
@@ -96,7 +100,7 @@ class AppController extends Controller
   */
     public function beforeFilter(Event $event)
     {
-        $this->Auth->allow(['index', 'view', 'display']);
+        $this->Auth->allow([ 'view', 'display']);
 
     }
 
