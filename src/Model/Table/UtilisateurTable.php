@@ -10,12 +10,17 @@ class UtilisateurTable extends Table{
     ;
   }
 
+/**
+* Vérifications du formulaire d'inscription avec messsages d'erreurs.
+*
+* Auteur : POP Diana
+*/
   public function validationDefault(Validator $validator)
   {
     return $validator
-    ->notEmpty('email', 'A username is required')
-    ->notEmpty('mdp', 'A password is required')
-    ->notEmpty('pseudo', 'Un pseudo est nécessaire');
+    ->notEmpty('email', 'Une adresse email est nécessaire.')
+    ->notEmpty('mdp', 'Un mot de passe est nécessaire.')
+    ->notEmpty('pseudo', 'Un pseudo est nécessaire.');
     }
 }
 

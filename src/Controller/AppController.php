@@ -25,6 +25,17 @@ use Cake\Event\Event;
  *
  * @link https://book.cakephp.org/3.0/en/controllers.html#the-app-controller
  */
+
+ /**
+ * Gère l'authentification et les redirections lors de la connexion.
+ * Les fields de 'Form' sont liés à ceux de la page Template/Element/header.ctp.
+ *
+ * On a utilisé des tables personnalisées plutôt que le modèle Users proposé par CakePhp donc de nombreuses modifications sont faites ;
+ * pour préciser qu'on utilise notre propre modèle, il ne faut pas oublier de préciser userModel => Utilisateur.
+ *
+ * Auteur : POP Diana, ROSSI Djessy
+ *
+ */
 class AppController extends Controller
 {
 
@@ -78,15 +89,24 @@ class AppController extends Controller
         //$this->loadComponent('Security');
     }
 
-
+  /**
+  * Pris de la doc officielle.
+  *
+  * Auteur : POP Diana
+  */
     public function beforeFilter(Event $event)
     {
         $this->Auth->allow(['index', 'view', 'display']);
 
     }
 
+    /**
+    * Booléen permettant d'afficher le header différemment selon si l'utilisateur est connecté ou non.
+    *
+    * Auteur : ROSSI Djessy
+    */
     public function beforeRender(Event $event){
-      if ($this->request->session()->read('Auth.User')){
+      if ($this->request->getSession()->read('Auth.User')){
         $this->set('loggedIn', true);
       }else{
         $this->set('loggedIn', false);
