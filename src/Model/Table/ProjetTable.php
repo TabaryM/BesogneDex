@@ -8,7 +8,6 @@ class ProjetTable extends Table{
     $this->hasMany('tache')
       ->setForeignKey('idProjet')
       ->setBindingKey('idProjet');
-    ;
   }
 }
 

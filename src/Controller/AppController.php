@@ -58,7 +58,6 @@ class AppController extends Controller
         ]);
 
         $this->loadComponent('Flash');
-
         $this->loadComponent('Auth', [
           'authenticate' => [
                 'Form' =>
@@ -81,7 +80,6 @@ class AppController extends Controller
                 'home'
             ]
         ]);
-
 
 
         /*

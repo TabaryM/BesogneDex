@@ -19,7 +19,7 @@
                   ?>
                 </td>
                 <td>
-                  <?= $projet->Proprietaire ?>
+                  <?= $projet->bindingKey ?>
                 </td>
                 <td>
                   <?= $projet->Etat ?>
