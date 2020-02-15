@@ -102,13 +102,13 @@ $cakeDescription = 'BesogneDex';
                                   <div class="col"><?= $this->Form->control('email', ['label' => '', 'style'=>'height: 38px;']) ?></div>
                               </div>
                               <div class="row">
-                                  <div class="col"><?= $this->Form->control('mdp', ['label' => '', 'style'=>'height: 38px;']) ?></a></div>
+                                  <div class="col"><?= $this->Form->control('mdp', ['label' => '', 'style'=>'height: 38px;', 'pattern'=>'.{6,}', 'title'=>'Le mot de passe doit comporter au moins 6 caractères.', 'required'=>'true', 'type'=>'password']) ?></a></div>
                               </div>
                               <div class="row">
-                                  <div class="col"><?= $this->Form->control('mdpp', ['label' => '', 'style'=>'height: 38px;']) ?></div>
+                                  <div class="col"><?= $this->Form->control('mdpp', ['label' => '', 'style'=>'height: 38px;','pattern'=>'.{6,}', 'type'=>'password']) ?></div>
                               </div>
                               <div class="row">
-                                  <div class="col"><?= $this->Form->control('pseudo', ['label' => '', 'style'=>'height: 38px;']) ?></div>
+                                  <div class="col"><?= $this->Form->control('pseudo', ['label' => '', 'style'=>'height: 38px;', 'pattern'=>'.{3,}', 'title'=>'Le pseudo doit comporter au moins 3 caractères.', 'required'=>'true']) ?></div>
                               </div>
                               <div class="row">
                                   <div class="col"><?= $this->Form->control('nom', ['label' => '', 'style'=>'height: 38px;']) ?></div>

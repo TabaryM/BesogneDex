@@ -55,10 +55,10 @@ class UtilisateurController extends AppController
       if ($this->request->is('post')) {
           $utilisateur = $this->Utilisateur->patchEntity($utilisateur, $this->request->getData());
           if ($this->Utilisateur->save($utilisateur)) {
-              $this->Flash->success(__('Votre compte est bien enregistré..'));
-              return $this->redirect(['action' => 'login']);
+              $this->Flash->success(__('Votre compte est bien enregistré.'));
+              return $this->redirect(['controller' => 'pages', 'action' => 'display','home']);
           }
-          $this->Flash->error(__('Impossible de créer votre compte.'));
+          $this->Flash->error(__('Les mots de passe doivent correspondre.'));
           return $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
       }
         $this->set('utilisateur', $utilisateur);
