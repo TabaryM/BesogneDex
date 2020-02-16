@@ -51,7 +51,13 @@ class ProjetController extends AppController
       }
     }
 
+    //A remplir
     public function details(){
+      return null;
+    }
+
+    //A remplir
+    public function archives(){
       return null;
     }
 }
