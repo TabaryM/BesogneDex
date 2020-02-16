@@ -20,9 +20,7 @@ class TacheController extends AppController
           //TODO: affichage erreur (au cas où)
         }
 
-        $query = $this->Tache->find()->where(['idProjet' => $id]);
-
-        $taches = $this->Paginator->paginate($query);
+        $taches = $this->Paginator->paginate($this->Tache->find()->where(['idProjet' => $id]));
         $this->set(compact('taches', 'id'));
     }
 
