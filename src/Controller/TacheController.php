@@ -6,27 +6,43 @@ use Cake\ORM\TableRegistry;
 class TacheController extends AppController
 {
 
+    /**
+     * Affichage d'un projet avec sa liste de tâches (en fonction de l'id donnée)
+     * @author Thibault Choné
+     */
     public function index()
     {
         $this->loadComponent('Paginator');
-        $id = $this->request->query['id'];
+        if (isset($this->request->query['id'])){
+          $id = $this->request->query['id'];
+        }else{
+          die();
+          //TODO: affichage erreur (au cas où)
+        }
+
         $taches = $this->Paginator->paginate($this->Tache->find()->where(['idProjet' => $id]));
         $this->set(compact('taches', 'id'));
     }
 
+    /**
+     * Permet d'afficher les détails d'un projet (Description + liste membres)
+     * @author Thibault Choné
+     */
     public function details()
     {
-        $id = $this->request->query['id'];
-
+        if (isset($this->request->query['id'])){
+          $id = $this->request->query['id'];
+        }else{
+          die();
+          //TODO: affichage erreur (au cas où)
+        }
         $projets = TableRegistry::getTableLocator()->get('Projet');
 
-        $query = $projets->find()->where(['idProjet' => $id]);
+        $projet = $projets->find()->where(['idProjet' => $id])->first();
 
-        $desc = "";
+        $desc = $projet->description;
 
-        foreach ($query as $row) {
-            $desc = $row->description;
-        }
+        //TODO:Liste membre à afficher
 
         $this->set(compact('desc', 'id'));
     }

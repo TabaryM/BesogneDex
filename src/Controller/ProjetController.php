@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller;
 
-require_once 'Component/VerificationChamps.php';
+require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'VerificationChamps.php');
 
 class ProjetController extends AppController
 {

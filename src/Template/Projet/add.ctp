@@ -4,7 +4,7 @@
         </div>
         <?= $this->Form->create('Projet'); ?>
         <div class="row" style="margin-left: 20;">
-            <div class="col text-center" style="margin-bottom: 20px;margin-top: 20px;"><?= $this->Form->input('titre', array('label' => 'Titre de la tâche :')); ?></div>
+            <div class="col text-center" style="margin-bottom: 20px;margin-top: 20px;"><?= $this->Form->input('titre', array('label' => 'Titre du projet :')); ?></div>
         </div>
         <div class="row">
             <div class="col text-center" style="margin-bottom: 20px;margin-top: 20px;"><label>Date de début :&nbsp;</label><input type="date"></div>

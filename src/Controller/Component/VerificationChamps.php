@@ -12,7 +12,7 @@ function verification_titre($nom){
 function verification_description($description){
     $res = false;
     // Vérification de la taille
-    if(!(strlen($description) < 1  || strlen($description) > 512)){
+    if(!(strlen($description) > 512)){
         $res = true;
     }
 
