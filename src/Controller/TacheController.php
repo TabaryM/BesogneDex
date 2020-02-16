@@ -8,7 +8,11 @@ class TacheController extends AppController
 
     /**
      * Affichage d'un projet avec sa liste de tâches (en fonction de l'id donnée)
+     * TODO : Ne pas afficher le projet si l'utilisateur n'en est pas membre (modification de l'url)
+     *       -> à faire quand on aura géré 'Inviter un membre'.
      * @author Thibault Choné
+     *
+     *
      */
     public function index()
     {
@@ -65,6 +69,15 @@ class TacheController extends AppController
         }
         $this->Flash->error(__('Impossible d\'ajouter votre tâche.'));
       }
+    }
+
+    /**
+    * Affiche les membres d'un projet.
+    *
+    * Auteur : POP Diana
+    */
+    public function manageMembers(){
+
     }
 
 }
