@@ -111,10 +111,10 @@ $cakeDescription = 'BesogneDex';
                                   <div class="col"><?= $this->Form->control('pseudo', ['label' => '', 'style'=>'height: 38px;', 'pattern'=>'.{3,}', 'title'=>'Le pseudo doit comporter au moins 3 caractères.', 'required'=>'true']) ?></div>
                               </div>
                               <div class="row">
-                                  <div class="col"><?= $this->Form->control('nom', ['label' => '', 'style'=>'height: 38px;']) ?></div>
+                                  <div class="col"><?= $this->Form->control('nom', ['label' => '', 'style'=>'height: 38px;', 'pattern'=>'[A-Za-z]+[-]?[A-Za-z]+', 'title'=>'Le nom doit comporter au moins 2 caractères.']) ?></div>
                               </div>
                               <div class="row">
-                                  <div class="col"><?= $this->Form->control('prenom', ['label' => '', 'style'=>'height: 38px;']) ?></div>
+                                  <div class="col"><?= $this->Form->control('prenom', ['label' => '', 'style'=>'height: 38px;', 'pattern'=>'[A-Za-z]+[-]?[A-Za-z]+', 'title'=>'Le prénom doit comporter au moins 2 caractères.']) ?></div>
                               </div>
                           </div>
                       </div>
