@@ -17,7 +17,9 @@ class ProjetController extends AppController
     {
         $this->loadComponent('Paginator');
         $session = $this->request->getSession();
-        $projets = $this->Paginator->paginate($this->Projet->find()->where(['idProprietaire' => $session->read('Auth.User.idUtilisateur')]));
+        $projets = $this->Paginator->paginate($this->Projet->find()
+        ->contain(['Utilisateur'])
+        ->where(['idProprietaire' => $session->read('Auth.User.idUtilisateur')]));
         $this->set(compact('projets'));
     }
 
@@ -47,6 +49,16 @@ class ProjetController extends AppController
             $this->Flash->error(__("met un nom correct stp ou une jolie description"));
           }
       }
+    }
+
+    //A remplir
+    public function details(){
+      return null;
+    }
+
+    //A remplir
+    public function archives(){
+      return null;
     }
 }
 ?>

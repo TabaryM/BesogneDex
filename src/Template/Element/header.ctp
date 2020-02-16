@@ -1,8 +1,10 @@
 <?= $this->Flash->render() ?>
 <header class="d-flex flex-row justify-content-start align-items-center header">
     <div class="d-flex flex-row justify-content-start align-items-center header">
+      <div class="col-xl-4 d-flex align-items-center">
       <?= $this->Html->image("icones/rotom_dex.png", ['class' => 'image_icone']) ?>
       <h1 class="titre_header"><?= $titre ?></h1>
+      </div>
     </div>
     <?php   if(!$loggedIn):  ?>
           <div class="d-flex justify-content-end align-items-center div_mail_mdp_header">
@@ -32,6 +34,9 @@
         <?php  endif;   ?>
 
     <?php   if($loggedIn):  ?>
-    <?= $this->Html->link("Se déconnecter", array('controller' => 'Utilisateur','action'=> 'logout'), array( 'class' => 'btn btn-primary'))?>
+    <div class="col d-flex flex-row-reverse justify-content-start align-items-center">
+    <?= $this->Html->link("Se déconnecter", array('controller' => 'Utilisateur','action'=> 'logout'), array( 'class' => 'btn btn-primary shadow'))?>
+    <?= $this->Html->link("Mon profil", array('controller' => 'Utilisateur','action'=> '#'), array( 'class' => 'btn btn-primary shadow'))?>
+  </div>
     <?php  endif;   ?>
 </header>

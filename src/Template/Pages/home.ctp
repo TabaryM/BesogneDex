@@ -79,7 +79,16 @@ $cakeDescription = 'BesogneDex';
                                   <div class="col"><label class="col-form-label">E-mail :</label></div>
                               </div>
                               <div class="row">
-                                  <div class="col"><label class="col-form-label" style="height:38px;">Mot de passe :</label></div>
+                                  <div class="col">
+                                                          <div class="tooltipblblbl" style="margin-right: 4px;" >
+                                                            ?
+                                                          <div class="tooltiptext">
+                                                            - Votre mot de passe doit faire 8 caractères minimum </br>
+                                                            - Votre mot de passe doit contenir au moins une minuscule </br>
+                                                            - Votre mot de passe doit contenir au moins une majuscule </br>
+                                                            - Votre mot de passe doit contenir au moins un chiffre </br>
+                                                          </div>
+                                                        </div><label class="col-form-label" style="height:38px;"> Mot de passe :</label></div>
                               </div>
                               <div class="row">
                                   <div class="col"><label class="col-form-label" style="height:38px;">Confirmation :</label></div>
@@ -102,7 +111,9 @@ $cakeDescription = 'BesogneDex';
                                   <div class="col"><?= $this->Form->control('email', ['label' => '', 'style'=>'height: 38px;']) ?></div>
                               </div>
                               <div class="row">
-                                  <div class="col"><?= $this->Form->control('mdp', ['label' => '', 'style'=>'height: 38px;', 'pattern'=>'.{6,}', 'title'=>'Le mot de passe doit comporter au moins 6 caractères.', 'required'=>'true', 'type'=>'password']) ?></a></div>
+                                  <div class="col" style="white-space:nowrap;"><?= $this->Form->control('mdp', ['label' => '', 'style'=>'height: 38px; white-space:nowrap;', 'pattern'=>'.{6,}', 'title'=>'Le mot de passe ne respecte pas les contraintes.', 'required'=>'true', 'type'=>'password']) ?>
+
+                                   </div>
                               </div>
                               <div class="row">
                                   <div class="col"><?= $this->Form->control('mdpp', ['label' => '', 'style'=>'height: 38px;','pattern'=>'.{6,}', 'type'=>'password']) ?></div>
@@ -111,10 +122,10 @@ $cakeDescription = 'BesogneDex';
                                   <div class="col"><?= $this->Form->control('pseudo', ['label' => '', 'style'=>'height: 38px;', 'pattern'=>'.{3,}', 'title'=>'Le pseudo doit comporter au moins 3 caractères.', 'required'=>'true']) ?></div>
                               </div>
                               <div class="row">
-                                  <div class="col"><?= $this->Form->control('nom', ['label' => '', 'style'=>'height: 38px;', 'pattern'=>'[A-Za-z]+[-]?[A-Za-z]+', 'title'=>'Le nom doit comporter au moins 2 caractères.']) ?></div>
+                                  <div class="col"><?= $this->Form->control('nom', ['label' => '', 'style'=>'height: 38px;', 'pattern'=>'[A-Za-z]*[-]?[A-Za-z]*', 'title'=>'(optionnel) Le nom doit comporter au moins deux caractères (alphabétiques ou -).']) ?></div>
                               </div>
                               <div class="row">
-                                  <div class="col"><?= $this->Form->control('prenom', ['label' => '', 'style'=>'height: 38px;', 'pattern'=>'[A-Za-z]+[-]?[A-Za-z]+', 'title'=>'Le prénom doit comporter au moins 2 caractères.']) ?></div>
+                                  <div class="col"><?= $this->Form->control('prenom', ['label' => '', 'style'=>'height: 38px;', 'pattern'=>'[A-Za-z]*[-]?[A-Za-z]*', 'title'=>'(optionnel) Le prénom doit comporter au moins deux caractères (alphabétiques ou -).']) ?></div>
                               </div>
                           </div>
                       </div>
