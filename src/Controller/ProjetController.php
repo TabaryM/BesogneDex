@@ -50,5 +50,9 @@ class ProjetController extends AppController
           }
       }
     }
+
+    public function details(){
+      return null;
+    }
 }
 ?>
