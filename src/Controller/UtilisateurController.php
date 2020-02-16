@@ -58,7 +58,25 @@ class UtilisateurController extends AppController
               $this->Flash->success(__('Votre compte est bien enregistré.'));
               return $this->redirect(['controller' => 'pages', 'action' => 'display','home']);
           }
-          $this->Flash->error(__('Les mots de passe doivent correspondre.'));
+
+          if($utilisateur->errors()){
+               $error_msg = [];
+               foreach( $utilisateur->errors() as $errors){
+                   if(is_array($errors)){
+                       foreach($errors as $error){
+                           $error_msg[]    =   $error;
+                       }
+                   }else{
+                       $error_msg[]    =   $errors;
+                   }
+               }
+
+               if(!empty($error_msg)){
+                   $this->Flash->error(
+                       __("Veuillez modifier ce(s) champs : ".implode("\n \r", $error_msg))
+                   );
+               }
+           }
           return $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
       }
         $this->set('utilisateur', $utilisateur);
