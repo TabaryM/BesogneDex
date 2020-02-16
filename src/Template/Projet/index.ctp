@@ -19,10 +19,10 @@
                   ?>
                 </td>
                 <td>
-                  <?= $projet->bindingKey ?>
+                  <?= $projet->un_utilisateur->pseudo; ?>
                 </td>
                 <td>
-                  <?= $projet->Etat ?>
+                  <?= $projet->etat ?>
                 </td>
               </tr>
             <?php endforeach; ?>

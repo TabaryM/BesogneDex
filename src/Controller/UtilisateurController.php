@@ -10,6 +10,11 @@ use Cake\Event\Event;
 class UtilisateurController extends AppController
 {
 
+  public function initialize()
+  {
+      parent::initialize();
+  }
+
   /**
   * Pris de la doc officielle :
   * Permet les utilisateurs de s'inscrire et de se déconnecter.
@@ -90,6 +95,10 @@ class UtilisateurController extends AppController
   */
   public function logout(){
     return $this->redirect($this->Auth->logout());
+  }
+
+  public function edit(){
+    return null;
   }
 
 }
