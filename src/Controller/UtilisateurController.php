@@ -40,7 +40,7 @@ class UtilisateurController extends AppController
       if ($utilisateur){
         $this->Auth->setUser($utilisateur);
         $this->Flash->success(__('Vous êtes connecté !'));
-        return $this->redirect($this->Auth->redirectUrl());
+        return $this->redirect(['controller' => 'Accueil', 'action' => 'index']);
       }else{
         $this->Flash->error(__('E-mail ou mot de passe incorrects'));
         return $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
