@@ -5,23 +5,34 @@
         <div class="table-responsive">
           <table class="table table-bordered">
             <thead class="thead-light">
+              Date debut :  <?php echo '10/10/2010';//TODO: garder en mémoire le projet avec ses informations?> -
+              Date fin : <?php echo '10/10/2010'; ?>
               <tr>
-                <th>Tache</th>
-                <th>Proprietaire</th>
-                <th>Etat</th>
+                <th>Tâche</th>
+                <th>Attribuée à</th>
+                <th>Fait ?</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               <?php foreach ($taches as $tache):?>
                 <tr>
                   <td>
-                    <?=   $tache->titre ?>
+                    <?= $tache->titre ?>
                   </td>
                   <td>
-                    None
+                    <?= $tache->responsable ?>
                   </td>
                   <td>
-                    <?=   $tache->etat ?>
+                    <input type="checkbox" name="<?=$tache->idTache?>" checked>
+                  </td>
+                  <td>
+                    <?php
+                    echo $this->Html->link("Test1", array('controller' => 'Tache', 'action'=> 'index', 'id'=>$id), array( 'class' => 'btn btn-primary'));?>
+                    <?php
+                    echo $this->Html->link("Test2", array('controller' => 'Tache', 'action'=> 'index', 'id'=>$id), array( 'class' => 'btn btn-primary'));?>
+                    <?php
+                    echo $this->Html->link("Test3", array('controller' => 'Tache', 'action'=> 'index', 'id'=>$id), array( 'class' => 'btn btn-primary'));?>
                   </td>
                 </tr>
               <?php endforeach; ?>
