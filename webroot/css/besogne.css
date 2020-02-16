@@ -110,6 +110,7 @@ header {
 .tooltipblblbl:hover .tooltiptext {
  visibility: visible;
  opacity: 1;
+}
 
 .bleuClair {
   background-color: #e6eef8;
