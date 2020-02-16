@@ -29,6 +29,12 @@ endif;
 
 $cakeDescription = 'BesogneDex';
 ?>
+
+<?php
+if ($loggedIn):
+//header ("Location: ".$this->Html->url(array('controller'=>'Accueil','action'=>'index')));
+endif;
+?>
 <!DOCTYPE html>
 <html>
 <head>
