@@ -79,6 +79,10 @@ class UtilisateurController extends AppController
     return $this->redirect($this->Auth->logout());
   }
 
+  public function edit(){
+    return null;
+  }
+
 }
 
 ?>

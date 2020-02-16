@@ -17,7 +17,9 @@ class ProjetController extends AppController
     {
         $this->loadComponent('Paginator');
         $session = $this->request->getSession();
-        $projets = $this->Paginator->paginate($this->Projet->find()->where(['idProprietaire' => $session->read('Auth.User.idUtilisateur')]));
+        $projets = $this->Paginator->paginate($this->Projet->find()
+        ->contain(['Utilisateur'])
+        ->where(['idProprietaire' => $session->read('Auth.User.idUtilisateur')]));
         $this->set(compact('projets'));
     }
 
