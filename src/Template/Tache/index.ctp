@@ -25,7 +25,7 @@
                   </td>
                   <td>
                     <?=
-                    $tache->responsable//->pseudo //TODO: faire fonctionner?>
+                    $tache->responsable->pseudo; //TODO: faire fonctionner?>
                   </td>
                   <td>
                     <input type="checkbox" name="<?=$tache->idTache?>" checked>
