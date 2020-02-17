@@ -75,5 +75,8 @@
         <?php
         echo $this->Html->link("Ajouter une tâche", array('controller' => 'Tache', 'action'=> 'add', $id), array( 'class' => 'btn btn-primary'));
         ?>
+        <?php
+        echo $this->Html->link("Quitter le projet", array('controller' => 'Projet', 'action'=> 'delete', $id), array( 'class' => 'btn btn-danger'));
+        ?>
   </div>
 </div>
