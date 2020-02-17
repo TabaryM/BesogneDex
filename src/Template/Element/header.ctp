@@ -1,4 +1,3 @@
-<?= $this->Flash->render() ?>
 <header class="d-flex flex-row justify-content-start align-items-center header">
     <div class="d-flex flex-row justify-content-start align-items-center header">
       <div class="col-xl-4 d-flex align-items-center">
@@ -41,3 +40,4 @@
   </div>
     <?php  endif;   ?>
 </header>
+<?= $this->Flash->render() ?>
