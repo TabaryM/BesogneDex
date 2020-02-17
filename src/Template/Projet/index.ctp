@@ -14,7 +14,7 @@
               <tr>
                 <td>
                   <?php
-                  echo $this->Html->link($projet->titre, array('controller' => 'Tache', 'action'=> 'index', 'id'=>$projet->idProjet));
+                  echo $this->Html->link($projet->titre, array('controller' => 'Tache', 'action'=> 'index', $projet->idProjet));
                   ?>
                 </td>
                 <td>
