@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'VerificationChamps.php');
+use Cake\ORM\TableRegistry;
 
 class ProjetController extends AppController
 {
@@ -59,6 +60,28 @@ class ProjetController extends AppController
     //A remplir
     public function archives(){
       return null;
+    }
+
+    /**
+    * Supprime un projet
+    *TODO: pour l'instant ça supprime le projet quoi qu'il arrive ( peut etre des problemes de securité(pas test))
+    * Auteurs : WATELOT Paul-Emile
+    */
+    public function delete($id){
+      if ($this->request->is('post')){
+
+        //supprime les taches du projet
+        $taches = TableRegistry::getTableLocator()->get('Tache');
+        $query = $taches->query();
+        $query->delete()->where(['idProjet' => $id])->execute();
+
+        //supprime le projet
+        $projets = TableRegistry::getTableLocator()->get('Projet');
+        $query = $projets->query();
+        $query->delete()->where(['idProjet' => $id])->execute();
+
+        return $this->redirect(['action'=> 'index']);
+      }
     }
 }
 ?>
