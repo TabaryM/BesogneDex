@@ -24,9 +24,7 @@ class TacheController extends AppController
           //TODO: affichage erreur (au cas où)
         }
 
-        $taches = $this->Paginator->paginate($this->Tache->find()
-        ->contain(['Utilisateur'])
-        ->where(['idProjet' => $id]));
+        $taches = $this->Paginator->paginate($this->Tache->find()->where(['idProjet' => $id]));
         $this->set(compact('taches', 'id'));
     }
 
@@ -79,7 +77,7 @@ class TacheController extends AppController
     * Auteur : POP Diana
     */
     public function manageMembers(){
-
+      $projet = $projets->find()->where(['idProjet' => $id])->first();
     }
 
 }

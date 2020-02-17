@@ -31,10 +31,11 @@ $cakeDescription = 'BesogneDex';
 ?>
 
 <?php
-if ($loggedIn):
-//header ("Location: ".$this->Html->url(array('controller'=>'Accueil','action'=>'index')));
-endif;
+  if ($loggedIn):
+    $this->requestAction(array('controller' => 'Pages', 'action' => 'redirectacc'));
+  endif;
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -54,6 +55,7 @@ endif;
 
 </head>
 <body class="home">
+
 
       <?= $this->element('header', ['titre' => 'BesogneDex']) ?>
 
