@@ -80,5 +80,25 @@ class TacheController extends AppController
       $projet = $projets->find()->where(['idProjet' => $id])->first();
     }
 
+    /**
+     * Affiche toutes les tâches de l'utilisateur
+     * 
+     * @author Pedro
+     */
+    public function my() {
+      $session = $this->request->getSession();
+      if ($session->check('Auth.User.idUtilisateur')) {
+        $user = $session->read('Auth.User.idUtilisateur');
+        $taches = $this->Tache->find()
+          ->contain(['Utilisateur', 'Projet'])
+          ->where(['idResponsable' => $session->read('Auth.User.idUtilisateur')])->toArray();
+      
+        $this->set(compact('taches'));
+      } else {
+        $this->Flash->error(_('Une erreur est survenue lors de la récupérations des tâches.'));
+        $this->redirect($this->referer);
+      }
+    }
+
 }
 ?>
