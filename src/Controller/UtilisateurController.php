@@ -106,7 +106,7 @@ class UtilisateurController extends AppController
     $data = $this->request->getData();
     if(!empty($data)){
       $utilisateur = $this->Utilisateur->find()
-      ->where(['idUtilisateur' => $session->read('Auth.User.idUtilisateur')])
+      ->where(['idUtilisateur' => $session->read('Auth.User.idUtilisateur')]);
 
       //TODO: Vérification formulaire
     }
