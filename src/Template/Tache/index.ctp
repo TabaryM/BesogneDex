@@ -64,10 +64,10 @@
     <div class="row d-flex align-items-start" >
       <div class="col-xl-12">
         <?php
+        echo $this->Html->link("Retour", array('controller' => 'Projet', 'action'=> 'index'), array( 'class' => 'btn btn-primary'));
+      ?>
+        <?php
         echo $this->Html->link("Gérer les membres", array('controller' => 'Tache', 'action'=> 'manageMembers', $id), array( 'class' => 'btn btn-primary'));
-        ?>
-          <?php
-          echo $this->Html->link("Projets", array('controller' => 'Projet', 'action'=> 'index'), array( 'class' => 'btn btn-primary'));
         ?>
         <?php
         echo $this->Html->link("Détails", array('controller' => 'Tache', 'action'=> 'details', $id), array( 'class' => 'btn btn-primary'));
