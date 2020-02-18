@@ -31,7 +31,8 @@
               <?php foreach ($taches as $tache): ?>
                 <tr>
                   <td>
-                    <?= $tache->titre ?>
+                    <?= $this->Html->link($tache->titre, array('controller' => 'Tache', 'action'=> 'index', $id));
+                     ?>
                   </td>
                   <td>
                     <?php
@@ -48,11 +49,11 @@
                   <td>
                     <?php
                     //TODO: faire la liste déroulante
-                    echo $this->Html->link("Test1", array('controller' => 'Tache', 'action'=> 'index', $id), array( 'class' => 'btn btn-primary'));?>
+                    echo $this->Html->link("Supprimer la tâche", array('controller' => 'Tache', 'action'=> 'index', $id), array( 'class' => 'btn btn-primary'));?>
                     <?php
-                    echo $this->Html->link("Test2", array('controller' => 'Tache', 'action'=> 'index', $id), array( 'class' => 'btn btn-primary'));?>
+                    echo $this->Html->link("Modifier la tâche", array('controller' => 'Tache', 'action'=> 'index', $id), array( 'class' => 'btn btn-primary'));?>
                     <?php
-                    echo $this->Html->link("Test3", array('controller' => 'Tache', 'action'=> 'index', $id), array( 'class' => 'btn btn-primary'));?>
+                    echo $this->Html->link("Se proposer pour la tâche", array('controller' => 'Tache', 'action'=> 'index', $id), array( 'class' => 'btn btn-primary'));?>
                   </td>
                 </tr>
               <?php endforeach; ?>
