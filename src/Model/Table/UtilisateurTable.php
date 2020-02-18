@@ -7,7 +7,7 @@ use Cake\Validation\Validator;
 class UtilisateurTable extends Table{
 
   public function initialize(array $config){
-    $this->hasMany('Utilisateur');
+    
   }
 
 /**

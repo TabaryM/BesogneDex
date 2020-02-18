@@ -97,8 +97,23 @@ class UtilisateurController extends AppController
     return $this->redirect($this->Auth->logout());
   }
 
-  public function edit(){
+  public function profil(){
     return null;
+  }
+
+  public function edit(){
+    $session = $this->request->getSession();
+    $data = $this->request->getData();
+    if(!empty($data)){
+      $utilisateur = $this->Utilisateur->find()
+      ->where(['idUtilisateur' => $session->read('Auth.User.idUtilisateur')])
+
+      //TODO: Vérification formulaire
+    }
+    $utilisateur = $this->Utilisateur->find()
+      ->where(['idUtilisateur' => $session->read('Auth.User.idUtilisateur')])
+      ->first();
+    $this->set(compact('utilisateur'));
   }
 
 }

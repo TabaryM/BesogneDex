@@ -19,7 +19,7 @@ class TacheController extends AppController
         $taches = $this->Paginator->paginate($this->Tache->find()
         ->contain('Utilisateur')
         ->where(['idProjet' => $id]));
-        $projetTab = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire
+        $projetTab = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
           ->get('Projet')->find()
           ->where(['idProjet' => $id])
           ->first();
@@ -74,7 +74,7 @@ class TacheController extends AppController
 
     /**
      * Affiche toutes les tâches de l'utilisateur
-     * 
+     *
      * @author Pedro
      */
     public function my() {
@@ -84,7 +84,7 @@ class TacheController extends AppController
         $taches = $this->Tache->find()
           ->contain(['Utilisateur', 'Projet'])
           ->where(['idResponsable' => $session->read('Auth.User.idUtilisateur')])->toArray();
-      
+
         $this->set(compact('taches'));
       } else {
         $this->Flash->error(_('Une erreur est survenue lors de la récupérations des tâches.'));
