@@ -7,7 +7,7 @@ class TacheTable extends Table{
   /**
   * Initialisation base de données côté Table Tache
   *
-  * Auteur : Thibault CHONÉ
+  * @author : Thibault CHONÉ
   */
   public function initialize(array $config){
     $this->belongsTo('Utilisateur', [

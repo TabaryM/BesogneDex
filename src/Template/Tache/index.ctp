@@ -1,5 +1,5 @@
 
-<!-- Auteur : Thibault -->
+<!-- Auteur : Thibault CHONÉ -->
 <div style="height: 80vh;margin-top: 20px;">
   <div class="container">
     <div class="row d-flex align-items-start" style="height: 100%;">
