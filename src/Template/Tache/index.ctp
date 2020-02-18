@@ -7,8 +7,18 @@
         <div class="table-responsive">
           <table class="table table-bordered">
             <thead class="thead-light">
-              Date debut :  <?php echo '10/10/2010';//TODO: garder en mémoire le projet avec ses informations?> -
-              Date fin : <?php echo '10/10/2010'; ?>
+              <?php
+                if(isset($projetTab->dateDebut) && !empty($projetTab->dateDebut)){
+                  echo 'Date debut : ';
+                  echo date('Y-m-d H:i:s', strtotime($projetTab->dateDebut));
+                }
+                ?>
+                <?php
+                if(isset($projetTab->dateFin) && !empty($projetTab->dateFin)){
+                  echo 'Date fin : ';
+                  echo date('Y-m-d H:i:s', strtotime($projetTab->dateFin)); //TODO:changer format affichage heure
+                }
+                ?>
               <tr>
                 <th>Tâche</th>
                 <th>Attribuée à</th>
@@ -24,8 +34,13 @@
                     <?= $tache->titre ?>
                   </td>
                   <td>
-                    <?=
-                    $tache->responsable->pseudo; //TODO: faire fonctionner?>
+                    <?php
+                    if(isset($tache->responsable->pseudo)){
+                        echo $tache->responsable->pseudo;
+                    }else{
+                      echo 'None';
+                    }
+                    ?>
                   </td>
                   <td>
                     <input type="checkbox" name="<?=$tache->idTache?>" checked>
@@ -33,11 +48,11 @@
                   <td>
                     <?php
                     //TODO: faire la liste déroulante
-                    echo $this->Html->link("Test1", array('controller' => 'Tache', 'action'=> 'index', 'id'=>$id), array( 'class' => 'btn btn-primary'));?>
+                    echo $this->Html->link("Test1", array('controller' => 'Tache', 'action'=> 'index', $id), array( 'class' => 'btn btn-primary'));?>
                     <?php
-                    echo $this->Html->link("Test2", array('controller' => 'Tache', 'action'=> 'index', 'id'=>$id), array( 'class' => 'btn btn-primary'));?>
+                    echo $this->Html->link("Test2", array('controller' => 'Tache', 'action'=> 'index', $id), array( 'class' => 'btn btn-primary'));?>
                     <?php
-                    echo $this->Html->link("Test3", array('controller' => 'Tache', 'action'=> 'index', 'id'=>$id), array( 'class' => 'btn btn-primary'));?>
+                    echo $this->Html->link("Test3", array('controller' => 'Tache', 'action'=> 'index', $id), array( 'class' => 'btn btn-primary'));?>
                   </td>
                 </tr>
               <?php endforeach; ?>
@@ -49,16 +64,19 @@
     <div class="row d-flex align-items-start" >
       <div class="col-xl-12">
         <?php
-        echo $this->Html->link("Gérer les membres", array('controller' => 'Tache', 'action'=> 'manageMembers', 'id' => $id), array( 'class' => 'btn btn-primary'));
+        echo $this->Html->link("Gérer les membres", array('controller' => 'Tache', 'action'=> 'manageMembers', $id), array( 'class' => 'btn btn-primary'));
         ?>
           <?php
           echo $this->Html->link("Projets", array('controller' => 'Projet', 'action'=> 'index'), array( 'class' => 'btn btn-primary'));
         ?>
         <?php
-        echo $this->Html->link("Détails", array('controller' => 'Tache', 'action'=> 'details', 'id'=>$id), array( 'class' => 'btn btn-primary'));
+        echo $this->Html->link("Détails", array('controller' => 'Tache', 'action'=> 'details', $id), array( 'class' => 'btn btn-primary'));
         ?>
         <?php
-        echo $this->Html->link("Ajouter une tâche", array('controller' => 'Tache', 'action'=> 'add', 'id' => $id), array( 'class' => 'btn btn-primary'));
+        echo $this->Html->link("Ajouter une tâche", array('controller' => 'Tache', 'action'=> 'add', $id), array( 'class' => 'btn btn-primary'));
+        ?>
+        <?php
+        echo $this->Html->link("Quitter le projet", array('controller' => 'Projet', 'action'=> 'delete', $id), array( 'class' => 'btn btn-danger'));
         ?>
   </div>
 </div>
