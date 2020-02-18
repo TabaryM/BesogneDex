@@ -5,7 +5,7 @@
     <div class="row d-flex align-items-start" style="height: 100%;">
       <div class="col-xl-12" style="height: 80%;">
         <div class="table-responsive">
-          <table class="table table-bordered">
+          <table class="table table-borderless table-green">
             <thead class="thead-light">
               <?php
                 if(isset($projetTab->dateDebut) && !empty($projetTab->dateDebut)){
@@ -44,7 +44,7 @@
                     ?>
                   </td>
                   <td>
-                    <input type="checkbox" name="<?=$tache->idTache?>" checked>
+                    <input type="checkbox" name="<?=$tache->idTache?>">
                   </td>
                   <td>
                     <?php
