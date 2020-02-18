@@ -5,7 +5,7 @@ use App\Controller\AppController;
 use Cake\Event\Event;
 
 /**
-* Auteur : Diana
+* @author Diana
 */
 class UtilisateurController extends AppController
 {
@@ -16,11 +16,37 @@ class UtilisateurController extends AppController
   }
 
   /**
+  * Permet d'afficher les erreurs
+  *
+  * @author Diana POP, (Thibault CHONÉ)
+  */
+  private function affichage_erreurs($ArrayError){
+    if($ArrayError){
+      $error_msg = [];
+      foreach($ArrayError as $errors){
+        if(is_array($errors)){
+          foreach($errors as $error){
+            $error_msg[]    =   $error;
+          }
+        }else{
+          $error_msg[]    =   $errors;
+        }
+      }
+
+      if(!empty($error_msg)){
+        $this->Flash->error(
+          __("Veuillez modifier ce(s) champs : ".implode("\n \r", $error_msg))
+        );
+      }
+    }
+  }
+
+  /**
   * Pris de la doc officielle :
   * Permet les utilisateurs de s'inscrire et de se déconnecter.
   * La doc demande à ne pas ajouter 'login' dans la liste pour ne pas causer de problèmes avec le fonctionnement normal de AuthComponent.
   *
-  * Auteur : POP Diana
+  * @author POP Diana
   */
   public function beforeFilter(Event $event)
   {
@@ -32,7 +58,7 @@ class UtilisateurController extends AppController
   * Permet à l'utilisateur de se connecter.
   * Les pages qui appellent cette fonction sont : Template/Element/header.ctp et Template/Utilisateur/login.ctp.
   *
-  * Auteur : POP Diana
+  * @author POP Diana
   */
   public function login(){
     if ($this->request->is('post')){
@@ -53,7 +79,7 @@ class UtilisateurController extends AppController
   * Permet à l'utilisateur de s'inscrire.
   * La page qui appelle cette fonction est : Template/Pages/home.ctp.
   *
-  * Auteur : POP Diana
+  * @author POP Diana
   */
   public function add(){
       $utilisateur = $this->Utilisateur->newEntity();
@@ -64,34 +90,18 @@ class UtilisateurController extends AppController
               return $this->redirect(['controller' => 'pages', 'action' => 'display','home']);
           }
 
-          if($utilisateur->errors()){
-               $error_msg = [];
-               foreach( $utilisateur->errors() as $errors){
-                   if(is_array($errors)){
-                       foreach($errors as $error){
-                           $error_msg[]    =   $error;
-                       }
-                   }else{
-                       $error_msg[]    =   $errors;
-                   }
-               }
+          $this->affichage_erreurs($utilisateur->errors());
 
-               if(!empty($error_msg)){
-                   $this->Flash->error(
-                       __("Veuillez modifier ce(s) champs : ".implode("\n \r", $error_msg))
-                   );
-               }
-           }
           return $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
       }
-        $this->set('utilisateur', $utilisateur);
+      $this->set('utilisateur', $utilisateur);
   }
 
   /**
   * Permet à l'utilisateur de se déconnecter.
   * La page qui appelle cette fonction est : Template/Element/header.ctp
   *
-  * Auteur : POP Diana
+  * @author POP Diana
   */
   public function logout(){
     return $this->redirect($this->Auth->logout());
@@ -101,21 +111,30 @@ class UtilisateurController extends AppController
     return null;
   }
 
+  /**
+  * Enregistre les nouvelles informations dans la base de données.
+  *
+  * @author Thibault CHONÉ
+  */
   public function edit(){
     $session = $this->request->getSession();
     $data = $this->request->getData();
+    $data = array_filter($data, function($value) { return !is_null($value) && $value !== '' && !empty($value); }); //On supprime les éléments vide
     if(!empty($data)){
-      $utilisateur = $this->Utilisateur->find()
-      ->where(['idUtilisateur' => $session->read('Auth.User.idUtilisateur')]);
+      $utilisateur = $this->Utilisateur->get($session->read('Auth.User.idUtilisateur'));
+      $data2 = $this->Utilisateur->patchEntity($utilisateur, $data);
 
-      //TODO: Vérification formulaire
+      if($this->Utilisateur->save($data2)){
+        $this->Flash->success(__('Votre compte a été édité.'));
+      }
+
+      $this->affichage_erreurs($utilisateur->errors());
     }
     $utilisateur = $this->Utilisateur->find()
       ->where(['idUtilisateur' => $session->read('Auth.User.idUtilisateur')])
       ->first();
     $this->set(compact('utilisateur'));
   }
-
 }
 
 ?>
