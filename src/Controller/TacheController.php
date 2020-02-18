@@ -57,7 +57,7 @@ class TacheController extends AppController
         if ($this->Tache->save($tache)) {
           $this->Flash->success(__('Votre tâche a été sauvegardée.'));
 
-          return $this->redirect(['action'=> 'index', 'id' => $tache->idProjet]);
+          return $this->redirect(['action'=> 'index', $id]);
         }
         $this->Flash->error(__('Impossible d\'ajouter votre tâche.'));
       }
