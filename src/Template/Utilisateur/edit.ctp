@@ -14,14 +14,14 @@
       </div>
       <?= $this->Form->create('Utilisateur'); ?>
       <div class="col d-flex flex-column justify-content-around align-items-end align-content-end">
-        <div class="col text-center" style="margin-bottom: 5px;margin-top: 5px;"><?= $this->Form->input('pseudo', array('label' => 'Nouveau pseudo :')); ?></div>
-        <div class="col text-center" style="margin-bottom: 5px;margin-top: 5px;"><?= $this->Form->input('nom', array('label' => 'Nouveau nom :')); ?></div>
-        <div class="col text-center" style="margin-bottom: 5px;margin-top: 5px;"><?= $this->Form->input('prenom', array('label' => 'Nouveau prénom :')); ?></div>
+        <div class="col text-center" style="margin-bottom: 5px;margin-top: 5px;"><?= $this->Form->input('pseudo', array('label' => 'Nouveau pseudo :', 'class' => 'label')); ?></div>
+        <div class="col text-center" style="margin-bottom: 5px;margin-top: 5px;"><?= $this->Form->input('nom', array('label' => 'Nouveau nom :', 'class' => 'label')); ?></div>
+        <div class="col text-center" style="margin-bottom: 5px;margin-top: 5px;"><?= $this->Form->input('prenom', array('label' => 'Nouveau prénom :', 'class' => 'label')); ?></div>
       </div>
     </div>
     <div class="row" style="margin-top: 40px;">
-      <div class="col-xl-8 d-flex justify-content-end align-items-center" style="width: 30%;height: 40%;background-color: #b6d7a8;color: rgb(0,0,0);margin-right: 80px;">
-        <?= $this->Form->submit('Valider', array('class' => 'btn shadow')); ?>
+      <div class="col-xl-8 d-flex justify-content-end align-items-center">
+        <?= $this->Form->submit('Valider', array('class' => 'btn shadow boutonValider')); ?>
       </div>
       <div class="col d-flex flex-column justify-content-around align-items-center"
       style="height: 150px;">
