@@ -201,3 +201,8 @@ div.message.success {
 div.message.hidden {
   height: 0;
 }
+
+.boutonValider {
+  background-color: #b6d7a8;
+  margin-right: 150px;
+}

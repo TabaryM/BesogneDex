@@ -5,7 +5,7 @@ use App\Controller\AppController;
 use Cake\Event\Event;
 
 /**
-* Auteur : Diana
+* @author Diana
 */
 class UtilisateurController extends AppController
 {
@@ -13,6 +13,33 @@ class UtilisateurController extends AppController
   public function initialize()
   {
       parent::initialize();
+  }
+
+  /**
+  * Permet d'afficher les erreurs
+  *
+  * @author Diana POP, (Thibault CHONÉ)
+  * @param $ArrayError : Liste des erreurs à afficher (il est possible que cette variable contiennent également des tableaux d'erreurs)
+  */
+  private function affichage_erreurs($ArrayError){
+    if($ArrayError){
+      $error_msg = [];
+      foreach($ArrayError as $errors){
+        if(is_array($errors)){
+          foreach($errors as $error){
+            $error_msg[]    =   $error;
+          }
+        }else{
+          $error_msg[]    =   $errors;
+        }
+      }
+
+      if(!empty($error_msg)){
+        $this->Flash->error(
+          __("Veuillez modifier ce(s) champs : ".implode("\n \r", $error_msg))
+        );
+      }
+    }
   }
 
   public function index(){
@@ -24,7 +51,7 @@ class UtilisateurController extends AppController
   * Permet les utilisateurs de s'inscrire et de se déconnecter.
   * La doc demande à ne pas ajouter 'login' dans la liste pour ne pas causer de problèmes avec le fonctionnement normal de AuthComponent.
   *
-  * Auteur : POP Diana
+  * @author POP Diana
   */
   public function beforeFilter(Event $event)
   {
@@ -36,7 +63,7 @@ class UtilisateurController extends AppController
   * Permet à l'utilisateur de se connecter.
   * Les pages qui appellent cette fonction sont : Template/Element/header.ctp et Template/Utilisateur/login.ctp.
   *
-  * Auteur : POP Diana
+  * @author POP Diana
   */
   public function login(){
     if ($this->request->is('post')){
@@ -57,7 +84,7 @@ class UtilisateurController extends AppController
   * Permet à l'utilisateur de s'inscrire.
   * La page qui appelle cette fonction est : Template/Pages/home.ctp.
   *
-  * Auteur : POP Diana
+  * @author POP Diana
   */
   public function add(){
       $utilisateur = $this->Utilisateur->newEntity();
@@ -68,41 +95,88 @@ class UtilisateurController extends AppController
               return $this->redirect(['controller' => 'pages', 'action' => 'display','home']);
           }
 
-          if($utilisateur->errors()){
-               $error_msg = [];
-               foreach( $utilisateur->errors() as $errors){
-                   if(is_array($errors)){
-                       foreach($errors as $error){
-                           $error_msg[]    =   $error;
-                       }
-                   }else{
-                       $error_msg[]    =   $errors;
-                   }
-               }
+          $this->affichage_erreurs($utilisateur->errors());
 
-               if(!empty($error_msg)){
-                   $this->Flash->error(
-                       __("Veuillez modifier ce(s) champs : ".implode("\n \r", $error_msg))
-                   );
-               }
-           }
           return $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
       }
-        $this->set('utilisateur', $utilisateur);
+      $this->set('utilisateur', $utilisateur);
   }
 
   /**
   * Permet à l'utilisateur de se déconnecter.
-  * La page qui appelle cette fonction est : Template/Element/header.ctp
+  * La page qui appelle cette fonction est : Template/Element/Utilisateur/logout_confirmation.ctp
   *
-  * Auteur : POP Diana
+  * @author POP Diana
   */
   public function logout(){
     return $this->redirect($this->Auth->logout());
   }
 
-  public function edit(){
+  /**
+  * Utilisée dans la page : Template/Element/header.ctp
+  *
+  * @author MARISSENS Valérie
+  */
+  public function logoutConfirmation(){
     return null;
+  }
+
+  public function profil(){}
+
+  /**
+  * Enregistre les nouvelles informations dans la base de données.
+  *
+  * @author Thibault CHONÉ
+  */
+  public function edit(){
+    $session = $this->request->getSession();
+    $data = $this->request->getData();
+    $data = array_filter($data, function($value) { return !is_null($value) && $value !== '' && !empty($value); }); //On supprime les éléments vide
+    if(!empty($data)){
+      $utilisateur = $this->Utilisateur->get($session->read('Auth.User.idUtilisateur'));
+      $data2 = $this->Utilisateur->patchEntity($utilisateur, $data);
+
+      if($this->Utilisateur->save($data2)){
+        $this->Flash->success(__('Votre compte a été édité.'));
+      }
+
+      $this->affichage_erreurs($utilisateur->errors());
+    }
+    $utilisateur = $this->Utilisateur->find()
+      ->where(['idUtilisateur' => $session->read('Auth.User.idUtilisateur')])
+      ->first();
+    $this->set(compact('utilisateur'));
+  }
+
+
+  public function deleteConfirmation() {
+
+
+  }
+
+    /** Supprime le compte de l'utilisateur ainsi que les données associées
+     *
+     * @author PALMIERI Adrien
+     */
+    // IMPORTANT : Lorsque les notifications seront ajoutées, il faudra ajouter la suppression des notifications associées.
+    // TODO : Verifier que la suppression des projets / taches associées fonctionne : acces interface PHPMYADMIN timeout... demander Pedro.
+    public function deleteAccount() {
+     $currentUserId = $this->request->getSession()->read('Auth.User.idUtilisateur');
+     $utilisateur = $this->Utilisateur->get($currentUserId);
+
+     if(empty($utilisateur)) {
+         $this->Flash->error(__('Impossible de supprimer votre compte utilisateur : vérifiez qu\'il existe et que vous êtes bien connecté.'));
+     } else {
+         $success = $this->Utilisateur->delete($utilisateur);
+         if($success) {
+             $this->Auth->logout();
+             $this->Flash->success(__('Vous avez supprimé votre compte avec succès'));
+             $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
+         } else {
+             $this->Flash->error(__('Impossible de supprimer votre compte utilisateur  ou les projets/tâches associé(e)s à celui-ci'));
+
+         }
+     }
   }
 
     /**
