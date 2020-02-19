@@ -11,6 +11,7 @@ class TacheController extends AppController
      * TODO : Ne pas afficher le projet si l'utilisateur n'en est pas membre (modification de l'url)
      *       -> à faire quand on aura géré 'Inviter un membre'.
      * @author Thibault Choné
+     * @param $id : id du projet cliqué ou affiché
      */
     public function index($id)
     {
@@ -38,6 +39,7 @@ class TacheController extends AppController
     /**
      * Permet d'afficher les détails d'un projet (Description + liste membres)
      * @author Thibault Choné
+     * @param $id : id du projet cliqué ou affiché
      */
     public function details($id)
     {

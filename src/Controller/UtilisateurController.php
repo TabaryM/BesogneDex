@@ -19,6 +19,7 @@ class UtilisateurController extends AppController
   * Permet d'afficher les erreurs
   *
   * @author Diana POP, (Thibault CHONÉ)
+  * @param $ArrayError : Liste des erreurs à afficher (il est possible que cette variable contiennent également des tableaux d'erreurs)
   */
   private function affichage_erreurs($ArrayError){
     if($ArrayError){
@@ -145,7 +146,7 @@ class UtilisateurController extends AppController
 
 
   public function deleteConfirmation() {
-      // TODO : Here show Utilisateur\delete_confirmation.ctp
+
 
   }
 
@@ -165,8 +166,8 @@ class UtilisateurController extends AppController
          $success = $this->Utilisateur->delete($utilisateur);
          if($success) {
              $this->Auth->logout();
-
-
+             $this->Flash->success(__('Vous avez supprimé votre compte avec succès'));
+             $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
          } else {
              $this->Flash->error(__('Impossible de supprimer votre compte utilisateur  ou les projets/tâches associé(e)s à celui-ci'));
 
