@@ -142,6 +142,37 @@ class UtilisateurController extends AppController
       ->first();
     $this->set(compact('utilisateur'));
   }
+
+
+  public function deleteConfirmation() {
+      // TODO : Here show Utilisateur\delete_confirmation.ctp
+
+  }
+
+    /** Supprime le compte de l'utilisateur ainsi que les données associées
+     *
+     * @author PALMIERI Adrien
+     */
+    // IMPORTANT : Lorsque les notifications seront ajoutées, il faudra ajouter la suppression des notifications associées.
+    // TODO : Verifier que la suppression des projets / taches associées fonctionne : acces interface PHPMYADMIN timeout... demander Pedro.
+    public function deleteAccount() {
+     $currentUserId = $this->request->getSession()->read('Auth.User.idUtilisateur');
+     $utilisateur = $this->Utilisateur->get($currentUserId);
+
+     if(empty($utilisateur)) {
+         $this->Flash->error(__('Impossible de supprimer votre compte utilisateur : vérifiez qu\'il existe et que vous êtes bien connecté.'));
+     } else {
+         $success = $this->Utilisateur->delete($utilisateur);
+         if($success) {
+             $this->Auth->logout();
+
+
+         } else {
+             $this->Flash->error(__('Impossible de supprimer votre compte utilisateur  ou les projets/tâches associé(e)s à celui-ci'));
+
+         }
+     }
+  }
 }
 
 ?>

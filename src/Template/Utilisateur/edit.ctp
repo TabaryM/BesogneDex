@@ -26,7 +26,10 @@
       <div class="col d-flex flex-column justify-content-around align-items-center"
       style="height: 150px;">
       <button class="btn btn-primary shadow" type="button">Modifier votre mot de passe</button>
-      <button class="btn shadow" type="button" style="background-color: #ea9999;color: rgb(0,0,0);">Supprimer mon compte</button>
+
+      <button class="btn shadow" type="button" style="background-color: #ea9999;color: rgb(0,0,0);">
+          <?= $this->Html->link("Supprimer mon compte", array('controller' => 'Utilisateur', 'action' => 'deleteConfirmation')); ?>
+      </button>
     </div>
   </div>
 </div>
