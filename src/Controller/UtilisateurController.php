@@ -144,6 +144,10 @@ class UtilisateurController extends AppController
   }
 
 
+  public function deleteConfirmation() {
+      
+
+  }
 
     /** Supprime le compte de l'utilisateur ainsi que les données associées
      *
