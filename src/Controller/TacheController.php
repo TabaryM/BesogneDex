@@ -14,16 +14,25 @@ class TacheController extends AppController
      */
     public function index($id)
     {
-        $this->loadComponent('Paginator');
+      $estProprietaire = false;
+      $this->loadComponent('Paginator');
 
-        $taches = $this->Paginator->paginate($this->Tache->find()
-        ->contain('Utilisateur')
-        ->where(['idProjet' => $id]));
-        $projetTab = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
-          ->get('Projet')->find()
-          ->where(['idProjet' => $id])
-          ->first();
-        $this->set(compact('taches', 'id', 'projetTab'));
+      $taches = $this->Paginator->paginate($this->Tache->find()
+      ->contain('Utilisateur')
+      ->where(['idProjet' => $id]));
+
+      $projetTab = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
+        ->get('Projet')->find()
+        ->where(['idProjet' => $id])
+        ->first();
+      $session = $this->request->getSession();
+      if ($session->check('Auth.User.idUtilisateur')) {
+        $user = $session->read('Auth.User.idUtilisateur');
+        if($projetTab->idProprietaire == $user){
+          $estProprietaire = true;
+        }
+      }
+      $this->set(compact('taches', 'id', 'projetTab', 'estProprietaire'));
     }
 
     /**
@@ -91,6 +100,12 @@ class TacheController extends AppController
         $this->redirect($this->referer);
       }
     }
+
+
+   public function edit($id)
+   {
+     return null;
+   }
 
 }
 ?>

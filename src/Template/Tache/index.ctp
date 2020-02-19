@@ -8,17 +8,21 @@
           <table class="table table-borderless table-green">
             <thead class="thead-light">
               <?php
-                if(isset($projetTab->dateDebut) && !empty($projetTab->dateDebut)){
-                  echo 'Date debut : ';
-                  echo date('Y-m-d H:i:s', strtotime($projetTab->dateDebut));
-                }
-                ?>
-                <?php
-                if(isset($projetTab->dateFin) && !empty($projetTab->dateFin)){
-                  echo 'Date fin : ';
-                  echo date('Y-m-d H:i:s', strtotime($projetTab->dateFin)); //TODO:changer format affichage heure
-                }
-                ?>
+              if($estProprietaire){
+                echo "Vous êtes le propriétaire du projet.</br>";
+              }
+
+              if(isset($projetTab->dateDebut) && !empty($projetTab->dateDebut)){
+                echo 'Date debut : ';
+                echo date('Y-m-d H:i:s', strtotime($projetTab->dateDebut));
+              }
+              ?>
+              <?php
+              if(isset($projetTab->dateFin) && !empty($projetTab->dateFin)){
+                echo 'Date fin : ';
+                echo date('Y-m-d H:i:s', strtotime($projetTab->dateFin)); //TODO:changer format affichage heure
+              }
+              ?>
               <tr>
                 <th>Tâche</th>
                 <th>Attribuée à</th>
@@ -32,12 +36,12 @@
                 <tr>
                   <td>
                     <?= $this->Html->link($tache->titre, array('controller' => 'Tache', 'action'=> 'index', $id));
-                     ?>
+                    ?>
                   </td>
                   <td>
                     <?php
                     if(isset($tache->responsable->pseudo)){
-                        echo $tache->responsable->pseudo;
+                      echo $tache->responsable->pseudo;
                     }else{
                       echo 'None';
                     }
@@ -66,18 +70,24 @@
       <div class="col-xl-12">
         <?php
         echo $this->Html->link("Retour", array('controller' => 'Projet', 'action'=> 'index'), array( 'class' => 'btn btn-primary'));
-      ?>
-        <?php
-        echo $this->Html->link("Gérer les membres", array('controller' => 'Tache', 'action'=> 'manageMembers', $id), array( 'class' => 'btn btn-primary'));
         ?>
         <?php
         echo $this->Html->link("Détails", array('controller' => 'Tache', 'action'=> 'details', $id), array( 'class' => 'btn btn-primary'));
         ?>
         <?php
-        echo $this->Html->link("Ajouter une tâche", array('controller' => 'Tache', 'action'=> 'add', $id), array( 'class' => 'btn btn-primary'));
+        if($estProprietaire){
+          echo $this->Html->link("Gérer les membres", array('controller' => 'Tache', 'action'=> 'manageMembers', $id), array( 'class' => 'btn btn-primary'));
+          echo '        ';
+          echo $this->Html->link("Modifier", array('controller' => 'Tache', 'action'=> 'edit', $id), array( 'class' => 'btn btn-primary'));
+        }
         ?>
         <?php
         echo $this->Html->link("Quitter le projet", array('controller' => 'Projet', 'action'=> 'delete', $id), array( 'class' => 'btn btn-danger'));
         ?>
+        <?php
+        echo $this->Html->link("Ajouter une tâche", array('controller' => 'Tache', 'action'=> 'add', $id), array( 'class' => 'btn btn-primary'));
+        ?>
+      </div>
+    </div>
   </div>
 </div>
