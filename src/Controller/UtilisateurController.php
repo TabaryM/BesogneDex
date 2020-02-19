@@ -15,6 +15,10 @@ class UtilisateurController extends AppController
       parent::initialize();
   }
 
+  public function index(){
+
+  }
+
   /**
   * Pris de la doc officielle :
   * Permet les utilisateurs de s'inscrire et de se déconnecter.
@@ -101,6 +105,17 @@ class UtilisateurController extends AppController
     return null;
   }
 
+    /**
+     * @author TABARY Mathieu
+     */
+  public function showDetails(){
+      $this->loadComponent('Paginator');
+      $session = $this->request->getSession();
+      $detailsUtilisateur = $this->Paginator->paginate($this->Utilisateur->find()
+          ->contain([])
+          ->where(['idProprietaire' => $session->read('Auth.User.idUtilisateur')]));
+      $this->set(compact('$detailsUtilisateur'));
+  }
 }
 
 ?>
