@@ -144,10 +144,6 @@ class UtilisateurController extends AppController
   }
 
 
-  public function deleteConfirmation() {
-      // TODO : Here show Utilisateur\delete_confirmation.ctp
-
-  }
 
     /** Supprime le compte de l'utilisateur ainsi que les données associées
      *
@@ -165,8 +161,8 @@ class UtilisateurController extends AppController
          $success = $this->Utilisateur->delete($utilisateur);
          if($success) {
              $this->Auth->logout();
-
-
+             $this->Flash->success(__('Vous avez supprimé votre compte avec succès'));
+             $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
          } else {
              $this->Flash->error(__('Impossible de supprimer votre compte utilisateur  ou les projets/tâches associé(e)s à celui-ci'));
 

@@ -26,6 +26,7 @@ class Utilisateur extends Entity
      * @author : PALMIERI Adrien
      */
     public function initialize(array $config) {
+
         $this->hasMany('Projet', [
                        'className' => 'Projet',
                        'dependent' => true,
