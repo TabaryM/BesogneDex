@@ -107,6 +107,13 @@ class UtilisateurController extends AppController
     return $this->redirect($this->Auth->logout());
   }
 
+  /**
+  * @author MARISSENS Valérie
+  */
+  public function logoutConfirmation(){
+    return null;
+  }
+
   public function profil(){
     return null;
   }
