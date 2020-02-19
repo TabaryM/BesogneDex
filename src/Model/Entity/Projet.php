@@ -1,5 +1,4 @@
 <?php
-// src/Model/Entity/Article.php
 namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
@@ -19,6 +18,11 @@ class Projet extends Entity
     public function initialize(array $config)
     {
         $this->belongsTo('Utilisateur');
+        $this->hasMany('Tache', [
+            'className' => 'Tache',
+            'dependent' => true,
+            'cascadeCallbacks' => true,
+        ]);
     }
 }
 

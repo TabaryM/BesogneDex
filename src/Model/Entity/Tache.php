@@ -19,6 +19,7 @@ class Tache extends Entity
         public function initialize(array $config)
         {
             $this->belongsTo('Utilisateur');
+            $this->belongsTo('Projet');
         }
 
 }
