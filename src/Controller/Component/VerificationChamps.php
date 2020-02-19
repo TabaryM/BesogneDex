@@ -28,3 +28,16 @@ function verification_description($description){
 
     return $res;
 }
+
+function verification_dates($dateDebut, $dateFin){
+    $res = false;
+    // On convertis les dates en format comparable facilement
+    $dateDebut = strtotime(implode($dateDebut));
+    $dateFin = strtotime(implode($dateFin));
+
+    // Si la date de début est infèrieur à la date de fin, on dit que les dates sont valides
+    if(!($dateDebut > $dateFin)){
+        $res = true;
+    }
+    return $res;
+}

@@ -7,8 +7,8 @@
             <div class="col text-center" style="margin-bottom: 20px;margin-top: 20px;"><?= $this->Form->input('titre', array('label' => 'Titre du projet :')); ?></div>
         </div>
         <div class="row">
-            <div class="col text-center" style="margin-bottom: 20px;margin-top: 20px;"><label>Date de début :&nbsp;</label><input type="date"></div>
-            <div class="col text-left"><label>Date de fin :&nbsp;</label><input type="date" style="margin-top: 20px;margin-bottom: 20px;"></div>
+            <div class="col text-center" style="margin-bottom: 20px;margin-top: 20px;"><?= $this->Form->input('dateDebut', array('type' => 'date', 'label' => 'Date de début : ')); ?></div>
+            <div class="col text-left" style="margin-bottom: 20px;margin-top: 20px;"><?= $this->Form->input('dateFin', array('label' => 'Date de fin : ', 'type' => 'date')); ?></div>
         </div>
         <div class="row">
             <div class="col text-center" style="margin-bottom: 20px;margin-top: 20px;"><?= $this->Form->input('description', array('label' => 'Description :')); ?></div>

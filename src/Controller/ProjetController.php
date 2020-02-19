@@ -34,20 +34,34 @@ class ProjetController extends AppController
         $receivedData = $this->request->getData();
 
           // Vérification des saisies utilisateurs
-          if(verification_titre($receivedData['titre']) && verification_description($receivedData['description'])){
-              $projet = $this->Projet->newEntity($receivedData);
-              $session = $this->request->getSession();
-              $projet->idProprietaire = $session->read('Auth.User.idUtilisateur');
+          if(verification_titre($receivedData['titre'])){
+              if(verification_description($receivedData['description'])){
+                  if(verification_dates($receivedData['dateDebut'], $receivedData['dateFin'])){
+                      $projet = $this->Projet->newEntity($receivedData);
+                      $session = $this->request->getSession();
+                      $projet->idProprietaire = $session->read('Auth.User.idUtilisateur');
 
-              if ($this->Projet->save($projet)) {
-                  $this->Flash->success(__('Votre projet a été sauvegardé.'));
+                      if ($this->Projet->save($projet)) {
+                          $this->Flash->success(__('Votre projet a été sauvegardé.'));
 
-                  return $this->redirect(['action'=> 'index']);
+                          return $this->redirect(['action'=> 'index']);
+                      }
+                      // Si il y a eu une erreur lors de l'ajout dans la database
+                      $this->Flash->error(__("Impossible d'ajouter votre projet."));
+
+                  } else {
+                      // Si les dates ne sont pas cohérentes
+                      $this->Flash->error(__("La fin du projet ne peut pas se faire avant le début de ce projet"));
+                  }
+
+              } else {
+                  // Si la description n'est pas correcte
+                  $this->Flash->error(__("La description est trop longue"));
               }
-              $this->Flash->error(__("Impossible d'ajouter votre projet."));
 
           } else {
-            $this->Flash->error(__("met un nom correct stp ou une jolie description"));
+              // Si le titre n'est pas correcte
+            $this->Flash->error(__("Titre incorrecte (doit avoir entre 1 et 128 caractères)"));
           }
       }
     }
