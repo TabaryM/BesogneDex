@@ -8,10 +8,10 @@
     <!-- Informations : à compléter -->
     <div class="row">
         <div class="col text-center" style="font-size: 14px;">
-          <p>E-Mail : </p>
-          <p>Nom : </p>
-          <p>Prénom : </p>
-          <p>Pseudo : </p>
+            <p>E-Mail : <?= $utilisateur->email; ?></p>
+            <p>Nom : <?= $utilisateur->nom; ?></p>
+            <p>Prénom : <?= $utilisateur->prenom; ?></p>
+            <p>Pseudo : <?= $utilisateur->pseudo; ?></p>
         </div>
     </div>
 

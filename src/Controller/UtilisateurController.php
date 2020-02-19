@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\Event\Event;
+use Cake\ORM\TableRegistry;
 
 /**
 * @author Diana
@@ -43,7 +44,7 @@ class UtilisateurController extends AppController
   }
 
   public function index(){
-
+      return $this->redirect(['action'=> 'profil']);
   }
 
   /**
@@ -121,7 +122,25 @@ class UtilisateurController extends AppController
     return null;
   }
 
-  public function profil(){}
+    /**
+     * Affiche le profil utilisateur
+     *
+     * @author Mathieu TABARY
+     */
+  public function profil(){
+      // Récupère le cookie de session
+      $session = $this->request->getSession();
+      // Récupère la table utilisateur
+      $utilisateurs = TableRegistry::getTableLocator()->get('utilisateur');
+
+      // Récupère les données de l'utilisateur connecté
+      $utilisateur = $utilisateurs->find()
+          ->where(['idUtilisateur' => $session->read('Auth.User.idUtilisateur')])
+          ->first();
+
+      // On enregistre les données de l'utilisateur connecté dans une varible réutilisable dans le fichier .ctp
+      $this->set(compact('utilisateur'));
+  }
 
   /**
   * Enregistre les nouvelles informations dans la base de données.
@@ -179,17 +198,6 @@ class UtilisateurController extends AppController
      }
   }
 
-    /**
-     * @author TABARY Mathieu
-     */
-  public function showDetails(){
-      $this->loadComponent('Paginator');
-      $session = $this->request->getSession();
-      $detailsUtilisateur = $this->Paginator->paginate($this->Utilisateur->find()
-          ->contain([])
-          ->where(['idProprietaire' => $session->read('Auth.User.idUtilisateur')]));
-      $this->set(compact('$detailsUtilisateur'));
-  }
 }
 
 ?>
