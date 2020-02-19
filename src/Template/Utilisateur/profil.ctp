@@ -5,13 +5,13 @@
         </div>
     </div>
 
-    <!-- Informations : -->
+    <!-- Informations : à compléter -->
     <div class="row">
         <div class="col text-center" style="font-size: 14px;">
-          <p>E-Mail : <?php echo $utilisateur->email; ?></p>
-          <p>Nom : <?php echo $utilisateur->nom; ?></p>
-          <p>Prénom : <?php echo $utilisateur->prenom; ?></p>
-          <p>Pseudo : <?php echo $utilisateur->pseudo; ?></p>
+          <p>E-Mail : </p>
+          <p>Nom : </p>
+          <p>Prénom : </p>
+          <p>Pseudo : </p>
         </div>
     </div>
 

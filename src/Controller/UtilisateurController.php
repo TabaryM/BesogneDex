@@ -99,7 +99,7 @@ class UtilisateurController extends AppController
 
   /**
   * Permet à l'utilisateur de se déconnecter.
-  * La page qui appelle cette fonction est : Template/Element/header.ctp
+  * La page qui appelle cette fonction est : Template/Element/Utilisateur/logout_confirmation.ctp
   *
   * @author POP Diana
   */
@@ -108,15 +108,15 @@ class UtilisateurController extends AppController
   }
 
   /**
+  * Utilisée dans la page : Template/Element/header.ctp
+  *
   * @author MARISSENS Valérie
   */
   public function logoutConfirmation(){
     return null;
   }
 
-  public function profil(){
-    return null;
-  }
+  public function profil(){}
 
   /**
   * Enregistre les nouvelles informations dans la base de données.
