@@ -19,6 +19,7 @@ class UtilisateurController extends AppController
   * Permet d'afficher les erreurs
   *
   * @author Diana POP, (Thibault CHONÉ)
+  * @param $ArrayError : Liste des erreurs à afficher (il est possible que cette variable contiennent également des tableaux d'erreurs)
   */
   private function affichage_erreurs($ArrayError){
     if($ArrayError){
@@ -145,7 +146,7 @@ class UtilisateurController extends AppController
 
 
   public function deleteConfirmation() {
-      
+
 
   }
 
