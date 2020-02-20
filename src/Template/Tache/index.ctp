@@ -76,7 +76,7 @@
         echo $this->Html->link("Retour", array('controller' => 'Projet', 'action'=> 'index'), array( 'class' => 'btn btn-primary'));
         ?>
         <?php
-        echo $this->Html->link("Détails", array('controller' => 'Tache', 'action'=> 'details', $id), array( 'class' => 'btn btn-primary'));
+        echo $this->Html->link("Détails du projet", array('controller' => 'Tache', 'action'=> 'details', $id), array( 'class' => 'btn btn-primary'));
         ?>
         <?php
         if($estProprietaire){
