@@ -11,35 +11,38 @@ class TacheController extends AppController
      * TODO : Ne pas afficher le projet si l'utilisateur n'en est pas membre (modification de l'url)
      *       -> à faire quand on aura géré 'Inviter un membre'.
      * @author Thibault Choné
-     *
-     *
+     * @param $id : id du projet cliqué ou affiché
      */
-    public function index()
+    public function index($id)
     {
-        $this->loadComponent('Paginator');
-        if (isset($this->request->query['id'])){
-          $id = $this->request->query['id'];
-        }else{
-          die();
-          //TODO: affichage erreur (au cas où)
-        }
+      $estProprietaire = false;
+      $this->loadComponent('Paginator');
 
-        $taches = $this->Paginator->paginate($this->Tache->find()->where(['idProjet' => $id]));
-        $this->set(compact('taches', 'id'));
+      $taches = $this->Paginator->paginate($this->Tache->find()
+      ->contain('Utilisateur')
+      ->where(['idProjet' => $id]));
+
+      $projetTab = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
+        ->get('Projet')->find()
+        ->where(['idProjet' => $id])
+        ->first();
+      $session = $this->request->getSession();
+      if ($session->check('Auth.User.idUtilisateur')) {
+        $user = $session->read('Auth.User.idUtilisateur');
+        if($projetTab->idProprietaire == $user){
+          $estProprietaire = true;
+        }
+      }
+      $this->set(compact('taches', 'id', 'projetTab', 'estProprietaire'));
     }
 
     /**
      * Permet d'afficher les détails d'un projet (Description + liste membres)
      * @author Thibault Choné
+     * @param $id : id du projet cliqué ou affiché
      */
-    public function details()
+    public function details($id)
     {
-        if (isset($this->request->query['id'])){
-          $id = $this->request->query['id'];
-        }else{
-          die();
-          //TODO: affichage erreur (au cas où)
-        }
         $projets = TableRegistry::getTableLocator()->get('Projet');
 
         $projet = $projets->find()->where(['idProjet' => $id])->first();
@@ -55,21 +58,47 @@ class TacheController extends AppController
      * Ajoute une ligne dans la table tache
      * @author Clément
      */
-    public function add(){
+    public function add($id){
       if ($this->request->is('post')){
         $tache = $this->Tache->newEntity($this->request->getData());
         $tache->finie = 0;
-        $id = $this->request->query['id'];
+
         $tache->idProjet = $id;
 
         if ($this->Tache->save($tache)) {
           $this->Flash->success(__('Votre tâche a été sauvegardée.'));
 
-          return $this->redirect(['action'=> 'index', 'id' => $tache->idProjet]);
+          return $this->redirect(['action'=> 'index', $id]);
         }
         $this->Flash->error(__('Impossible d\'ajouter votre tâche.'));
       }
     }
 
+}
+
+/**
+ * Affiche toutes les tâches de l'utilisateur
+ *
+ * @author Pedro
+ */
+public function my() {
+  $session = $this->request->getSession();
+  if ($session->check('Auth.User.idUtilisateur')) {
+    $user = $session->read('Auth.User.idUtilisateur');
+    $taches = $this->Tache->find()
+      ->contain(['Utilisateur', 'Projet'])
+      ->where(['idResponsable' => $session->read('Auth.User.idUtilisateur')])->toArray();
+
+    $this->set(compact('taches'));
+  } else {
+    $this->Flash->error(_('Une erreur est survenue lors de la récupérations des tâches.'));
+    $this->redirect($this->referer);
+  }
+}
+
+
+public function edit($id)
+{
+ return null;
 }
 ?>

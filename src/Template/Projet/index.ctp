@@ -1,6 +1,5 @@
-<div class="container" style="margin-top: 20px">
-  <div class="row d-flex align-items-start" style="height: 100%;">
-    <div class="col-xl-12" style="height: 80%;">
+  <div class="row d-flex align-items-start" style="margin-right: 60px;margin-left: 60px;">
+    <div class="col-xl-12" style="height: 80%;margin-top: 50px;">
       <div class="table-responsive">
         <table class="table table-bleu table-striped table-borderless">
           <thead class="thead-light">
@@ -15,7 +14,7 @@
               <tr>
                 <td>
                   <?php
-                  echo $this->Html->link($projet->titre, array('controller' => 'Tache', 'action'=> 'index', 'id'=>$projet->idProjet));
+                  echo $this->Html->link($projet->titre, array('controller' => 'Tache', 'action'=> 'index', $projet->idProjet));
                   ?>
                 </td>
                 <td>
@@ -31,14 +30,13 @@
       </div>
     </div>
   </div>
-  <div class="row d-flex align-items-start" >
-    <div class="col-xl-12">
+  <div class="row d-flex justify-content-end" style="margin-right: 60px;margin-left: 60px;margin-top:60px;">
+    <div class="col-xl-12 d-flex justify-content-end">
         <?php
-        echo $this->Html->link("Projets archivés", array('controller' => 'Projet', 'action'=> 'archives'), array( 'class' => 'btn btn-primary'));
+        echo $this->Html->link("Projets archivés", array('controller' => 'Projet', 'action'=> 'archives'), array( 'class' => 'btn btn-primary grosBouton shadow'));
         ?>
         <?php
-        echo $this->Html->link("Ajouter un projet", array('controller' => 'Projet', 'action'=> 'add'), array( 'class' => 'btn btn-primary'));
+        echo $this->Html->link("Ajouter un projet", array('controller' => 'Projet', 'action'=> 'add'), array( 'class' => 'btn btn-primary grosBouton shadow'));
         ?>
     </div>
   </div>
-</div>

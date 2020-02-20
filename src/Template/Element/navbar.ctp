@@ -5,7 +5,7 @@
             <ul class="nav navbar-nav d-flex justify-content-around mr-auto" style="width: 100%;">
                 <li class="nav-item" role="presentation"><?= $this->Html->link("Accueil", ['controller' => 'Accueil', 'action' => 'index'], ['class' => 'nav-link']) ?></li>
                 <li class="nav-item" role="presentation"><?= $this->Html->link("Mes projets", ['controller' => 'Projet', 'action' => 'index'], ['class' => 'nav-link']) ?></li>
-                <li class="nav-item" role="presentation"><?= $this->Html->link("Mes tâches", ['controller' => 'Erreur', 'action' => 'inProgress'], ['class' => 'nav-link']) ?></li>
+                <li class="nav-item" role="presentation"><?= $this->Html->link("Mes tâches", ['controller' => 'Tache', 'action' => 'my'], ['class' => 'nav-link']) ?></li>
                 <li class="nav-item" role="presentation"><?= $this->Html->link("A propos", ['controller' => 'Erreur', 'action' => 'inProgress'], ['class' => 'nav-link']) ?></li>
             </ul>
         </div>

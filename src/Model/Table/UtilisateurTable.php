@@ -7,7 +7,7 @@ use Cake\Validation\Validator;
 class UtilisateurTable extends Table{
 
   public function initialize(array $config){
-    $this->hasMany('Utilisateur');
+
   }
 
 /**
@@ -86,7 +86,8 @@ class UtilisateurTable extends Table{
                   $val_prenom = $context['data']['prenom'];
                   return (bool)preg_match("/[A-Za-z]*[-]?[A-Za-z]*/", $val_prenom);
               },
-            'message' => 'Le prénom est incorrect.'
+            'message' => 'Le prénom est incorrect.',
+            'allowEmpty' => true
           )
       )// fin array 'prenom'
     )//fin add de prenom
@@ -96,7 +97,8 @@ class UtilisateurTable extends Table{
                 $val_nom = $context['data']['nom'];
                 return (bool)preg_match("/[A-Za-z]*[-]?[A-Za-z]*/", $val_nom);
               },
-            'message' => 'Le nom est incorrect.'
+            'message' => 'Le nom est incorrect.',
+            'allowEmpty' => true
           )
 
       )// fin array de 'nom'

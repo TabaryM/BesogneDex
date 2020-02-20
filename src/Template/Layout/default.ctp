@@ -1,4 +1,7 @@
 <?php
+
+use Cake\Core\Configure;
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -42,7 +45,7 @@ $cakeDescription = 'BesogneDex';
 </head>
 <body class="default">
 
-      <?= $this->element('header', ['titre' => 'BesogneDex']) ?>
+      <?= $this->element('header', ['titre' => Configure::read('titre_header_tache')]) ?>
       <?= $this->element('navbar') ?>
       <?= $this->Flash->render() ?>
       <?= $this->fetch('content') ?>

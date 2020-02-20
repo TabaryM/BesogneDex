@@ -8,7 +8,7 @@
 <!-- <?php //Router::url(array('controller' => 'Utilisateur', 'action' => 'complete')); ?> -->
 <script>
   var local_source= ['a', 'b','c', 'chocolat', 'cacaco', 'azert'];
-  
+
 // C'est bien recherche-utilisateurs et non recherche_utilisateurs pour l'id d'après le code source
     $('#recherche-utilisateurs').autocomplete({
         source:local_source,
