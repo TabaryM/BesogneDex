@@ -74,8 +74,6 @@ class TacheController extends AppController
       }
     }
 
-}
-
 /**
  * Affiche toutes les tâches de l'utilisateur
  *
@@ -97,8 +95,11 @@ public function my() {
 }
 
 
-public function edit($id)
-{
- return null;
-}
+  public function edit($id)
+  {
+   return null;
+  }
+
+ } 
+
 ?>
