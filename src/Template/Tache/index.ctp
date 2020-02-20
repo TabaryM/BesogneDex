@@ -73,8 +73,9 @@
     <div class="row d-flex align-items-start" >
       <div class="col-xl-12">
         <?php
-        echo $this->Html->link("Retour", array('controller' => 'Projet', 'action'=> 'index'), array( 'class' => 'btn btn-primary'));
-        ?>
+        echo $this->Html->link("Gérer les membres", array('controller' => 'Membre', 'action'=> 'index', 'id' => $id), array( 'class' => 'btn btn-primary'));
+          echo $this->Html->link("Retour", array('controller' => 'Projet', 'action'=> 'index'), array( 'class' => 'btn btn-primary'));
+          ?>
         <?php
         echo $this->Html->link("Détails du projet", array('controller' => 'Tache', 'action'=> 'details', $id), array( 'class' => 'btn btn-primary'));
         ?>

@@ -104,6 +104,30 @@ class UtilisateurController extends AppController
   }
 
   /**
+  * Fonction pour auto-complétion de Membre/index
+  *
+  * Auteur : POP Diana (c'est un c/c de ce site : http://www.naidim.org/cakephp-3-tutorial-18-autocomplete)
+  */
+    function complete(){
+      if ($this->requrest->is('ajax')) {
+          $this->autoRender = false;
+          $name = $this->request->query['term'];
+          $results = $this->Utilisateur->find('all', [
+              'conditions' => [
+                  'pseudo LIKE' => $name.'%',
+              ]
+          ]);
+          $resultsArr = [];
+          foreach ($results as $result) {
+               $resultsArr[] =['label' => $result['pseudo'], 'value' => $result['id']];
+              debug($result);
+              die();
+          }
+          echo $this->response->body(json_encode($resultsArr));
+      }
+}
+
+  /**
   * Permet à l'utilisateur de se déconnecter.
   * La page qui appelle cette fonction est : Template/Element/Utilisateur/logout_confirmation.ctp
   *
