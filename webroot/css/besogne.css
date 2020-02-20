@@ -206,3 +206,12 @@ div.message.hidden {
   background-color: #b6d7a8;
   margin-right: 150px;
 }
+
+.grosBouton {
+  width:250px;
+  height:60px;
+  text-align: center;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}

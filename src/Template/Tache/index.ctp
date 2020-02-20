@@ -1,4 +1,8 @@
+<?php
+  use Cake\Core\Configure;
 
+  Configure::write('titre_header_tache',$projetTab->titre);
+ ?>
 <!-- Auteur : Thibault CHONÉ -->
 <div style="height: 80vh;margin-top: 20px;">
   <div class="container">
