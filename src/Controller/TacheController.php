@@ -71,14 +71,5 @@ class TacheController extends AppController
       }
     }
 
-    /**
-    * Affiche les membres d'un projet.
-    *
-    * Auteur : POP Diana
-    */
-    public function manageMembers(){
-      $projet = $projets->find()->where(['idProjet' => $id])->first();
-    }
-
 }
 ?>
