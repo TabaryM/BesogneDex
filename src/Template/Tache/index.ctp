@@ -73,7 +73,7 @@
     <div class="row d-flex align-items-start" >
       <div class="col-xl-12">
         <?php
-        echo $this->Html->link("Gérer les membres", array('controller' => 'Membre', 'action'=> 'index', 'id' => $id), array( 'class' => 'btn btn-primary'));
+
           echo $this->Html->link("Retour", array('controller' => 'Projet', 'action'=> 'index'), array( 'class' => 'btn btn-primary'));
           ?>
         <?php
@@ -81,7 +81,7 @@
         ?>
         <?php
         if($estProprietaire){
-          echo $this->Html->link("Gérer les membres", array('controller' => 'Tache', 'action'=> 'manageMembers', $id), array( 'class' => 'btn btn-primary'));
+          echo $this->Html->link("Gérer les membres", array('controller' => 'Membre', 'action'=> 'index', $id), array( 'class' => 'btn btn-primary'));
           echo '        ';
           echo $this->Html->link("Modifier", array('controller' => 'Tache', 'action'=> 'edit', $id), array( 'class' => 'btn btn-primary'));
         }

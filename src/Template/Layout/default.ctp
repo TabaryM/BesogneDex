@@ -29,11 +29,6 @@ $cakeDescription = 'BesogneDex';
     </title>
     <?= $this->Html->meta('icon') ?>
 
-    <?php
-          echo $this->Html->css('https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css');
-          echo $this->Html->script('https://code.jquery.com/jquery-1.10.2.js');
-          echo $this->Html->script('https://code.jquery.com/ui/1.11.4/jquery-ui.js');
-    ?>
 
     <?= $this->Html->css('bootstrap.min.css') ?>
     <?= $this->Html->css('besogne.css') ?>
@@ -41,6 +36,12 @@ $cakeDescription = 'BesogneDex';
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
     <?= $this->fetch('script') ?>
+    <?php
+      echo $this->Html->script('https://code.jquery.com/jquery-1.10.2.js');
+      echo $this->Html->script('https://code.jquery.com/ui/1.11.4/jquery-ui.js');
+      echo $this->Html->css('https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css');
+    ?>
+
 
 </head>
 <body class="default">
