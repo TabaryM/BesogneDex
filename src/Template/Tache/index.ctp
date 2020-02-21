@@ -4,9 +4,7 @@
   Configure::write('titre_header_tache',$projetTab->titre);
  ?>
 <!-- Auteur : Thibault CHONÉ -->
-<div style="height: 80vh;margin-top: 20px;">
-  <div class="container">
-    <div class="row d-flex align-items-start" style="height: 100%;">
+    <div class="row d-flex align-items-start" style="margin-left:60px;margin-right:60px;margin-top:20px;">
       <div class="col-xl-12" style="height: 80%;">
         <div class="table-responsive">
           <table class="table table-borderless table-green">
@@ -70,7 +68,7 @@
         </div>
       </div>
     </div>
-    <div class="row d-flex align-items-start" >
+    <div class="row d-flex align-items-start" style="margin-left:60px;margin-right:60px;">
       <div class="col-xl-12">
         <?php
 
@@ -94,5 +92,3 @@
         ?>
       </div>
     </div>
-  </div>
-</div>
