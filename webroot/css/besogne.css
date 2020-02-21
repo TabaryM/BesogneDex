@@ -215,3 +215,13 @@ div.message.hidden {
   justify-content: center;
   align-items: center;
 }
+
+.boutonVert {
+  color: black;
+  border: none;
+  background-color: #b6d7a8;
+}
+
+.boutonVert:hover{
+  background-color: #a3c197;
+}
