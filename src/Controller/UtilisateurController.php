@@ -78,6 +78,8 @@ class UtilisateurController extends AppController
         return $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
     }
 
+  } else {
+    return $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
   }
 }
 

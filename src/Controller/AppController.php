@@ -83,7 +83,7 @@ class AppController extends Controller
             ['controller'=>'Pages', 'action' => 'display','home'],
 
           'unauthorizedRedirect'=>
-            $this->referer()
+            [$this->referer()]
         ]
 
 
