@@ -84,8 +84,6 @@ class AppController extends Controller
 
           'unauthorizedRedirect'=>
             $this->referer()
-
-
         ]
 
 
