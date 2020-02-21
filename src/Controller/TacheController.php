@@ -6,15 +6,17 @@ use Cake\ORM\TableRegistry;
 class TacheController extends AppController
 {
 
+
     /**
-     * Affichage d'un projet avec sa liste de tâches (en fonction de l'id donnée)
-     * TODO : Ne pas afficher le projet si l'utilisateur n'en est pas membre (modification de l'url)
-     *       -> à faire quand on aura géré 'Inviter un membre'.
-     * @author Thibault Choné
+     * Affichage d'un projet avec sa liste de tâches (en fonction de l'id donnée).
+     * Redirige vers l'accueil si le projet n'existe pas ou si la personne n'en est pas membre.
+     *
+     * @author Thibault Choné, POP Diana
      * @param $id : id du projet cliqué ou affiché
      */
     public function index($id)
     {
+
       $estProprietaire = false;
       $this->loadComponent('Paginator');
 
@@ -26,15 +28,31 @@ class TacheController extends AppController
         ->get('Projet')->find()
         ->where(['idProjet' => $id])
         ->first();
+
       $session = $this->request->getSession();
       if ($session->check('Auth.User.idUtilisateur')) {
         $user = $session->read('Auth.User.idUtilisateur');
         if($projetTab->idProprietaire == $user){
           $estProprietaire = true;
+
+        // S'il n'est pas propriétaire, est-il membre ?
+        // -> Vérifie en même temps si le projet existe.
+      }else{
+        $membres = TableRegistry::get('Membre');
+        $query = $membres->find()
+            ->select(['idUtilisateur'])
+            ->where(['idUtilisateur' => $user])
+            ->count();
+            // S'il n'est pas membre non plus, on le redirige.
+        if ($query==0){
+          $this->Flash->error(__('Ce projet n\'existe pas ou vous n\'y avez pas accès.'));
+          $this->redirect(['controller'=>'Accueil', 'action'=>'index']);
         }
       }
+
+    }// fin session check idUtilisateur
       $this->set(compact('taches', 'id', 'projetTab', 'estProprietaire'));
-    }
+    }// fin fonction
 
     /**
      * Permet d'afficher les détails d'un projet (Description + liste membres)
@@ -100,6 +118,6 @@ public function my() {
    return null;
   }
 
- } 
+ }
 
 ?>

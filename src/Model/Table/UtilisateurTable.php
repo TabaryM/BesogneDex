@@ -103,6 +103,8 @@ class UtilisateurTable extends Table{
 
       )// fin array de 'nom'
     )//fin add de nom
+    ->allowEmptyString('prenom')
+    ->allowEmptyString('nom')
     ;// point-virgule vital
 
   }
