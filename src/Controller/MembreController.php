@@ -23,16 +23,27 @@ class MembreController extends AppController
 
 
     /**
-    * TODO: sprint 5, envoi notif
+    * TODO: sprint 5, envoi notif au membre invité
     * @author POP Diana
     */
     public function add($id){
       if ($this->request->is('post')){
+          $utilisateurs = TableRegistry::get('Utilisateur');
+          $query = $utilisateurs->find()
+              ->select(['idUtilisateur'])
+              ->where(['pseudo' => $this->request->getData()['recherche_utilisateurs']])
+              ->first();
+          $id_utilisateur = $query['idUtilisateur'];
+        if ($id_utilisateur===null){
+          $this->Flash->error(__('Ce membre n\'existe pas.'));
+          return $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id]);
+        }
 
         $membre = $this->Membre->newEntity();
 
+
         $membre->idProjet= $id;
-        $membre->idUtilisateur= $this->request->getData()['recherche_utilisateurs'];
+        $membre->idUtilisateur= $id_utilisateur;
 
         if ($this->Membre->save($membre)) {
           $this->Flash->success(__('Le membre a été ajouté à la liste.'));

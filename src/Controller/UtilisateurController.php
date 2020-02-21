@@ -118,7 +118,7 @@ class UtilisateurController extends AppController
           ]);
           $resultsArr = [];
           foreach ($results as $result) {
-               $resultsArr[] =['label' => $result['pseudo'], 'value' => $result['idUtilisateur']];
+               $resultsArr[] =['label' => $result['pseudo'], 'value' => $result['pseudo']];
 
           }
           echo json_encode($resultsArr);
