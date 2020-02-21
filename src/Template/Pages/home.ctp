@@ -32,9 +32,10 @@ $cakeDescription = 'BesogneDex';
 
 <?php
   if ($loggedIn):
-    $this->requestAction(array('controller' => 'Pages', 'action' => 'redirectacc'));
+    $this->requestAction(array('controller' => 'Accueil', 'action' => 'index'));
   endif;
 ?>
+
 
 <!DOCTYPE html>
 <html>

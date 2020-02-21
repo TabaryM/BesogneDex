@@ -65,10 +65,11 @@ class PagesController extends AppController
             }
             throw new NotFoundException();
         }
+        
     }
 
     public function redirectacc(){
       return $this->redirect(['controller'=>'Accueil','action'=>'index']);
     }
-    
+
 }
