@@ -106,10 +106,9 @@ class UtilisateurController extends AppController
   /**
   * Fonction pour auto-complétion de Membre/index
   *
-  * Auteur : POP Diana (c'est un c/c de ce site : http://www.naidim.org/cakephp-3-tutorial-18-autocomplete)
+  * Auteur : POP Diana (c'est un presque c/c de ce site : http://www.naidim.org/cakephp-3-tutorial-18-autocomplete)
   */
     function complete(){
-      if ($this->requrest->is('ajax')) {
           $this->autoRender = false;
           $name = $this->request->query['term'];
           $results = $this->Utilisateur->find('all', [
@@ -119,12 +118,10 @@ class UtilisateurController extends AppController
           ]);
           $resultsArr = [];
           foreach ($results as $result) {
-               $resultsArr[] =['label' => $result['pseudo'], 'value' => $result['id']];
-              debug($result);
-              die();
+               $resultsArr[] =['label' => $result['pseudo'], 'value' => $result['idUtilisateur']];
+
           }
-          echo $this->response->body(json_encode($resultsArr));
-      }
+          echo json_encode($resultsArr);
 }
 
   /**
