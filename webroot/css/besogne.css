@@ -225,3 +225,12 @@ div.message.hidden {
 .boutonVert:hover{
   background-color: #a3c197;
 }
+
+#pMembres:hover{
+  background-color: red;
+}
+
+.selected {
+    background-color: brown;
+    color: #FFF;
+}

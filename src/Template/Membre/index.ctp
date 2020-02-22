@@ -12,10 +12,16 @@
     <div class="col-xl-8"><label>Liste des membres :</label>
         <div class="card shadow">
             <div class="card-body">
+                <table id="table">
                 <?php foreach ($membres as $membre): ?>
-                  <?= $membre->un_utilisateur->pseudo ?>
-                  </br>
+                  <tr>
+                    <td>
+                      <?= $membre->un_utilisateur->pseudo ?>
+                    </td>
+                  </tr>
                 <?php endforeach; ?>
+                </table>
+
             </div>
         </div>
     </div>
@@ -24,7 +30,6 @@
     <div class="col-xl-10 d-flex flex-row justify-content-between align-items-xl-center"><button class="btn btn-primary shadow grosBouton" type="button">Changer de propriétaire</button><button class="btn btn-danger shadow grosBouton" type="button">Supprimer</button><button class="btn btn-primary shadow grosBouton boutonRouge" type="button">Retour</button></div>
 </div>
 
-
 <script>
   var local_source= '<?php echo Router::url(array('controller' => 'Utilisateur', 'action' => 'complete')); ?>';
   jQuery('#recherche-utilisateurs').autocomplete({
@@ -32,3 +37,5 @@
     minLength: 1
 });
 </script>
+
+<?= $this->Html->script('membres.js') ?>

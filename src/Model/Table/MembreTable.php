@@ -25,10 +25,12 @@ class MembreTable extends Table{
         'foreignKey' => 'idUtilisateur',
         'propertyName' => 'un_utilisateur'
       ]);
+
       $this->belongsTo('Projet', [
         'foreignKey' => 'idProjet',
         'propertyName' => 'un_projet'
       ]);
+      
   }
 }
 
