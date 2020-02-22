@@ -1,7 +1,7 @@
 <header class="d-flex flex-row justify-content-start align-items-center header">
     <div class="d-flex flex-row justify-content-start align-items-center header">
       <div class="col-xl-4 d-flex align-items-center">
-      <?= $this->Html->image("icones/rotom_dex.png", ['class' => 'image_icone']) ?>
+      <?= $this->Html->image("icones/rotom_dex.png", ['class' => 'image_icone_header']) ?>
       <h1 class="titre_header"><?= $titre ?></h1>
       </div>
     </div>

@@ -29,8 +29,8 @@ header {
 }
 
 .image_icone {
-  width:90px;
-  height:90px;
+  width:70px;
+  height:50px;
 }
 
 .div_mail_mdp_header {
@@ -233,4 +233,22 @@ div.message.hidden {
 .selected {
     background-color: brown;
     color: #FFF;
+}
+
+.image_icone_header {
+  width:90px;
+  height:90px;
+}
+
+.color-card {
+  background-color: #b7d4fa;
+  border-radius: 20px;
+}
+
+.rond-croix {
+  border-radius: 500px;
+  width:60px;
+  height:60px;
+  background-image: url(../img/icones/add.png);
+  background-size: contain;
 }
