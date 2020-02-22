@@ -26,13 +26,7 @@
       <div class="col-xl-8 d-flex justify-content-end align-items-center">
         <?= $this->Form->submit('Valider', array('class' => 'btn shadow boutonValider')); ?>
       </div>
-      <div class="col d-flex flex-column justify-content-around align-items-center"
-      style="height: 150px;">
-<<<<<<< HEAD
-      <!--<button class="btn btn-primary shadow" type="button">Modifier votre mot de passe</button>-->
-=======
->>>>>>> 695da1cf2f09c8738ab3fa72f91008426bea5d8a
-
+      <div class="col d-flex flex-column justify-content-around align-items-center" style="height: 150px;">
       <?php
       echo $this->Html->link("Supprimer mon compte", array('controller' => 'Utilisateur', 'action' => 'deleteConfirmation'), array( 'class' => 'btn btn-danger'));
       ?>
