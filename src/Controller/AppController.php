@@ -82,10 +82,14 @@ class AppController extends Controller
             'authError' => 'Vous devez vous connecter pour accéder à cette page.',
             ['controller'=>'Pages', 'action' => 'display','home'],
 
+<<<<<<< HEAD
           'unauthorizedRedirect'=>
             [$this->referer()]
         ]
 
+=======
+          'unauthorizedRedirect'=>[$this->referer()]]
+>>>>>>> 695da1cf2f09c8738ab3fa72f91008426bea5d8a
 
       );
 
