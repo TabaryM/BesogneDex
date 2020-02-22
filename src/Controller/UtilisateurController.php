@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Controller\AppController;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Security;
 
 /**
 * @author Diana
@@ -97,9 +98,7 @@ class UtilisateurController extends AppController
               $this->Flash->success(__('Votre compte est bien enregistré.'));
               return $this->redirect(['controller' => 'pages', 'action' => 'display','home']);
           }
-
           $this->affichage_erreurs($utilisateur->errors());
-
           return $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
       }
       $this->set('utilisateur', $utilisateur);
@@ -168,15 +167,54 @@ class UtilisateurController extends AppController
   /**
   * Enregistre les nouvelles informations dans la base de données.
   *
-  * @author Thibault CHONÉ
+  * @author Thibault CHONÉ - Clément COLNE
   */
   public function edit(){
     $session = $this->request->getSession();
     $data = $this->request->getData();
-    if(empty($data['mdp_actu'])){
+    $utilisateur = $this->Utilisateur->find()
+      ->where(['idUtilisateur' => $session->read('Auth.User.idUtilisateur')])
+      ->first();
+    $this->set(compact('utilisateur'));
+
+    $new_mdp_encrypt = Security::hash($data['mdp_new'], 'sha256', $utilisateur['mdp']);
+    $new_mdp_conf_encrypt = Security::hash($data['mdp_new_conf'], 'sha256', $utilisateur['mdp']);
+    var_dump($new_mdp_encrypt);
+    var_dump($new_mdp_conf_encrypt);
+    var_dump(Security::hash($data['mdp_actu'], 'sha256', $utilisateur['mdp']));
+    var_dump($utilisateur['mdp']);
+    var_dump(Security::hash($data['mdp_actu'], 'sha256', $utilisateur['mdp']) == $utilisateur['mdp']);
+    var_dump(hash_equals(Security::hash($data['mdp_actu'], 'sha256', $utilisateur['mdp']), $utilisateur['mdp'], ));
+    die;
+
+    if(empty($data['mdp_actu'])) {
         $this->Flash->error(__('Veuillez saisir votre mot de passe pour modifier vos informations.'));
-    } else {
-        // TODO : tu vois quoi
+    }else{
+        if(Security::hash($data['mdp_actu'], null, true) == $utilisateur['mdp']) {
+            if($data['mdp_new'] == $data['mdp_new_conf']) {
+              $new_mdp_encrypt = Security::hash($data['mdp_new'], null, true);
+              $new_mdp_conf_encrypt = Security::hash($data['mdp_new_conf'], null, true);
+              var_dump($new_mdp_encrypt);
+              var_dump($new_mdp_conf_encrypt);
+
+              $data = array_filter($data, function($value) { return !is_null($value) && $value !== '' && !empty($value); }); //On supprime les éléments vide
+              if(!empty($data)){
+                  $utilisateur['mdp'] = $data['mdp_new'];
+                  $utilisateur = $this->Utilisateur->get($session->read('Auth.User.idUtilisateur'));
+                  $data2 = $this->Utilisateur->patchEntity($utilisateur, $data);
+
+                  if($this->Utilisateur->save($data2)){
+                      $this->Flash->success(__('Votre compte a été édité.'));
+                  }
+
+                  $this->affichage_erreurs($utilisateur->errors());
+              }
+            }else{
+              $this->Flash->error(__('Le nouveau mot de passe ne correspond pas au mot de passe confirmé.'));
+            }
+        }else{
+          $this->Flash->error(__('L\'ancien mot de passe est erroné.'));
+        }
         $data = array_filter($data, function($value) { return !is_null($value) && $value !== '' && !empty($value); }); //On supprime les éléments vide
         if(!empty($data)){
             $utilisateur = $this->Utilisateur->get($session->read('Auth.User.idUtilisateur'));
@@ -190,10 +228,6 @@ class UtilisateurController extends AppController
         }
 
     }
-    $utilisateur = $this->Utilisateur->find()
-      ->where(['idUtilisateur' => $session->read('Auth.User.idUtilisateur')])
-      ->first();
-    $this->set(compact('utilisateur'));
   }
 
 
