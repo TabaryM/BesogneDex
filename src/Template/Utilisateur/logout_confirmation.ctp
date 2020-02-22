@@ -1,4 +1,5 @@
 <!-- Demande confirmation pour se déconnecter : -->
+<!-- Auteur : Valérie MARISSENS -->
 
 <div class="container" style="margin-top: 150px;">
     <!-- Question -->

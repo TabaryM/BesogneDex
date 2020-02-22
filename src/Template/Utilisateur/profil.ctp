@@ -1,3 +1,4 @@
+<!-- Auteur : Valérie MARISSENS -->
 <div class="container" style="margin-top: 50px;">
     <div class="row">
         <div class="col" style="margin-bottom: 54px;">
@@ -5,7 +6,7 @@
         </div>
     </div>
 
-    <!-- Informations : à compléter -->
+    <!-- Informations : -->
     <div class="row">
         <div class="col text-center" style="font-size: 14px;">
             <p>E-Mail : <?= $utilisateur->email; ?></p>
