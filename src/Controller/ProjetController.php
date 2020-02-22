@@ -68,7 +68,10 @@ class ProjetController extends AppController
 
     //A remplir
     public function archives(){
-      return null;
+      $projets = TableRegistry::getTableLocator()->get('Projet');
+      $archives = $projets->find()->select(['idProjet', 'titre', 'dateFin'])->where(['etat' => 'Archive'])->all();
+      $this->set(compact('archives'));
+
     }
 
     /**

@@ -2,7 +2,7 @@
   <div class="row d-flex align-items-start" style="height: 100%;">
     <div class="col-xl-12" style="height: 80%;">
       <div class="table-responsive">
-        <table class="table table-bordered">
+        <table class="table table-bleu table-striped table-borderless">
           <thead class="thead-light">
             <tr>
               <th>Nom du projet</th>
@@ -11,7 +11,21 @@
             </tr>
           </thead>
           <tbody>
-            <!-- faire un foreach pour afficher les projets archivés -->
+            <?php foreach ($archives as $archive): ?>
+              <tr>
+                <td>
+                  <?php
+                  echo $this->Html->link($archive->titre, array('controller' => 'Tache', 'action'=> 'index', $archive->idProjet));
+                  ?>
+                </td>
+                <td>
+                  <?= $archive->dateFin; ?>
+                </td>
+                <td>
+                  <?= null; ?>
+                </td>
+              </tr>
+            <?php endforeach; ?>
           </tbody>
         </table>
       </div>
