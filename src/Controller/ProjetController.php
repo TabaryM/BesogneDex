@@ -66,7 +66,11 @@ class ProjetController extends AppController
       }
     }
 
-    //A remplir
+    /**
+    * liste les projets archivés
+    *TODO: pour l'instant les taches d'un projet archivés sont modifiables
+    * Auteurs : WATELOT Paul-Emile
+    */
     public function archives(){
       $projets = TableRegistry::getTableLocator()->get('Projet');
       $archives = $projets->find()->select(['idProjet', 'titre', 'dateFin'])->where(['etat' => 'Archive'])->all();
