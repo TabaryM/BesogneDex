@@ -59,7 +59,7 @@
                     <?php
                     echo $this->Html->link("Modifier la tâche", array('controller' => 'Tache', 'action'=> 'index', $id), array( 'class' => 'btn btn-primary'));?>
                     <?php
-                    echo $this->Html->link("Se proposer pour la tâche", array('controller' => 'Tache', 'action'=> 'index', $id), array( 'class' => 'btn btn-primary'));?>
+                    echo $this->Html->link("Se proposer pour la tâche", array('controller' => 'Tache', 'action'=> 'devenirResponsable', $id, $tache->idTache), array( 'class' => 'btn btn-primary'));?>
                   </td>
                 </tr>
               <?php endforeach; ?>

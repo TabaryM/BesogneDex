@@ -119,10 +119,16 @@ class TacheController extends AppController
      * Permet à un membre de projet de devenir responsable d'une tache
      * @author Mathieu TABARY
      */
-    public function devenirResponsable(){
+    public function devenirResponsable($id, $idTache) {
+        // TODO demander au front-end de griser si c'est déjà pris
+        $session = $this->request->getSession();
 
+        $this->Tache->updateAll(
+            array('idResponsable' => $session->read('Auth.User.idUtilisateur')),
+            array('idTache' => $idTache)
+        );
+        return $this->redirect(['action' => 'index', $id]);
     }
-
- }
+}
 
 ?>

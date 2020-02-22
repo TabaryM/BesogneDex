@@ -177,25 +177,11 @@ class UtilisateurController extends AppController
       ->first();
     $this->set(compact('utilisateur'));
 
-    $new_mdp_encrypt = Security::hash($data['mdp_new'], 'sha256', $utilisateur['mdp']);
-    $new_mdp_conf_encrypt = Security::hash($data['mdp_new_conf'], 'sha256', $utilisateur['mdp']);
-    var_dump($new_mdp_encrypt);
-    var_dump($new_mdp_conf_encrypt);
-    var_dump(Security::hash($data['mdp_actu'], 'sha256', $utilisateur['mdp']));
-    var_dump($utilisateur['mdp']);
-    var_dump(Security::hash($data['mdp_actu'], 'sha256', $utilisateur['mdp']) == $utilisateur['mdp']);
-    var_dump(hash_equals(Security::hash($data['mdp_actu'], 'sha256', $utilisateur['mdp']), $utilisateur['mdp'], ));
-    die;
-
     if(empty($data['mdp_actu'])) {
         $this->Flash->error(__('Veuillez saisir votre mot de passe pour modifier vos informations.'));
     }else{
         if(Security::hash($data['mdp_actu'], null, true) == $utilisateur['mdp']) {
             if($data['mdp_new'] == $data['mdp_new_conf']) {
-              $new_mdp_encrypt = Security::hash($data['mdp_new'], null, true);
-              $new_mdp_conf_encrypt = Security::hash($data['mdp_new_conf'], null, true);
-              var_dump($new_mdp_encrypt);
-              var_dump($new_mdp_conf_encrypt);
 
               $data = array_filter($data, function($value) { return !is_null($value) && $value !== '' && !empty($value); }); //On supprime les éléments vide
               if(!empty($data)){
