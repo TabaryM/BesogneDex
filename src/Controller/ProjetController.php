@@ -27,7 +27,7 @@ class ProjetController extends AppController
     /**
     * Crée un projet dont l'utilisateur connecté sera le propriétaire.
     *
-    * Auteurs : POP Diana, ???
+    * @authors : POP Diana, TABARY Mathieu
     */
     public function add(){
       if ($this->request->is('post')){
@@ -37,6 +37,10 @@ class ProjetController extends AppController
           if(verification_titre($receivedData['titre'])){
               if(verification_description($receivedData['description'])){
                   if(verification_dates($receivedData['dateDebut'], $receivedData['dateFin'])){
+                      $dateDuJour = getdate();
+                      if($receivedData['dateDebut'] == $receivedData['dateFin']){
+
+                      }
                       $projet = $this->Projet->newEntity($receivedData);
                       $session = $this->request->getSession();
                       $projet->idProprietaire = $session->read('Auth.User.idUtilisateur');

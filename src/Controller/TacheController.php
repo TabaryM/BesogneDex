@@ -5,8 +5,6 @@ use Cake\ORM\TableRegistry;
 
 class TacheController extends AppController
 {
-
-
     /**
      * Affichage d'un projet avec sa liste de tâches (en fonction de l'id donnée).
      * Redirige vers l'accueil si le projet n'existe pas ou si la personne n'en est pas membre.
@@ -92,31 +90,38 @@ class TacheController extends AppController
       }
     }
 
-/**
- * Affiche toutes les tâches de l'utilisateur
- *
- * @author Pedro
- */
-public function my() {
-  $session = $this->request->getSession();
-  if ($session->check('Auth.User.idUtilisateur')) {
-    $user = $session->read('Auth.User.idUtilisateur');
-    $taches = $this->Tache->find()
-      ->contain(['Utilisateur', 'Projet'])
-      ->where(['idResponsable' => $session->read('Auth.User.idUtilisateur')])->toArray();
+    /**
+     * Affiche toutes les tâches de l'utilisateur
+     *
+     * @author Pedro
+     */
+    public function my() {
+      $session = $this->request->getSession();
+      if ($session->check('Auth.User.idUtilisateur')) {
+        $user = $session->read('Auth.User.idUtilisateur');
+        $taches = $this->Tache->find()
+          ->contain(['Utilisateur', 'Projet'])
+          ->where(['idResponsable' => $session->read('Auth.User.idUtilisateur')])->toArray();
 
-    $this->set(compact('taches'));
-  } else {
-    $this->Flash->error(_('Une erreur est survenue lors de la récupérations des tâches.'));
-    $this->redirect($this->referer);
-  }
-}
+        $this->set(compact('taches'));
+      } else {
+        $this->Flash->error(_('Une erreur est survenue lors de la récupérations des tâches.'));
+        $this->redirect($this->referer);
+      }
+    }
 
+    public function edit($id)
+    {
+    return null;
+    }
 
-  public function edit($id)
-  {
-   return null;
-  }
+    /**
+     * @author Mathieu TABARY
+     * Permet à un membre de projet de devenir responsable d'une tache
+     */
+    public function devenirResponsable(){
+
+    }
 
  }
 
