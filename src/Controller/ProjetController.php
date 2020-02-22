@@ -6,8 +6,6 @@ use Cake\ORM\TableRegistry;
 
 class ProjetController extends AppController
 {
-
-
   /**
   *  Affiche la liste des projets dont l'utilisateur est membre.
   *

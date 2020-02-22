@@ -173,16 +173,22 @@ class UtilisateurController extends AppController
   public function edit(){
     $session = $this->request->getSession();
     $data = $this->request->getData();
-    $data = array_filter($data, function($value) { return !is_null($value) && $value !== '' && !empty($value); }); //On supprime les éléments vide
-    if(!empty($data)){
-      $utilisateur = $this->Utilisateur->get($session->read('Auth.User.idUtilisateur'));
-      $data2 = $this->Utilisateur->patchEntity($utilisateur, $data);
+    if(empty($data['mdp_actu'])){
+        $this->Flash->error(__('Veuillez saisir votre mot de passe pour modifier vos informations.'));
+    } else {
+        // TODO : tu vois quoi
+        $data = array_filter($data, function($value) { return !is_null($value) && $value !== '' && !empty($value); }); //On supprime les éléments vide
+        if(!empty($data)){
+            $utilisateur = $this->Utilisateur->get($session->read('Auth.User.idUtilisateur'));
+            $data2 = $this->Utilisateur->patchEntity($utilisateur, $data);
 
-      if($this->Utilisateur->save($data2)){
-        $this->Flash->success(__('Votre compte a été édité.'));
-      }
+            if($this->Utilisateur->save($data2)){
+                $this->Flash->success(__('Votre compte a été édité.'));
+            }
 
-      $this->affichage_erreurs($utilisateur->errors());
+            $this->affichage_erreurs($utilisateur->errors());
+        }
+
     }
     $utilisateur = $this->Utilisateur->find()
       ->where(['idUtilisateur' => $session->read('Auth.User.idUtilisateur')])

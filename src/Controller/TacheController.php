@@ -116,8 +116,8 @@ class TacheController extends AppController
     }
 
     /**
-     * @author Mathieu TABARY
      * Permet à un membre de projet de devenir responsable d'une tache
+     * @author Mathieu TABARY
      */
     public function devenirResponsable(){
 
