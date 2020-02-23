@@ -40,6 +40,10 @@ class PagesController extends AppController
      */
     public function display(...$path)
     {
+
+        if($this->request->getSession()->read('Auth.User')){
+          return $this->redirect(['controller'=>'Accueil','action'=>'index']);
+        }
         $count = count($path);
         if (!$count) {
             return $this->redirect('/');
@@ -65,11 +69,7 @@ class PagesController extends AppController
             }
             throw new NotFoundException();
         }
-        
-    }
 
-    public function redirectacc(){
-      return $this->redirect(['controller'=>'Accueil','action'=>'index']);
     }
 
 }
