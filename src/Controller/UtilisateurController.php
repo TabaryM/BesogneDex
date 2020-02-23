@@ -227,21 +227,42 @@ class UtilisateurController extends AppController
      * @author PALMIERI Adrien
      */
     // IMPORTANT : Lorsque les notifications seront ajoutées, il faudra ajouter la suppression des notifications associées.
-    // TODO : Verifier que la suppression des projets / taches associées fonctionne : acces interface PHPMYADMIN timeout... demander Pedro.
-    public function deleteAccount() {
+     public function deleteAccount() {
      $currentUserId = $this->request->getSession()->read('Auth.User.idUtilisateur');
      $utilisateur = $this->Utilisateur->get($currentUserId);
 
      if(empty($utilisateur)) {
          $this->Flash->error(__('Impossible de supprimer votre compte utilisateur : vérifiez qu\'il existe et que vous êtes bien connecté.'));
      } else {
+
+         // TODO : THIS SHOULDN'T BE DONE LIKE THAT (TEMPORARY CODE) , THE PROPER WAY IS TO FIX THE MODELS BEHAVIOUR !!!!!!!!!!
+         $projectsUser = TableRegistry::getTableLocator()->get('Projet')->find()->where(['idProprietaire' => $utilisateur->idUtilisateur])->all();
+         $tasksUsers = TableRegistry::getTableLocator()->get('Tache')->find()->where(['idResponsable' => $utilisateur->idUtilisateur])->all();
+         if(!empty($tasksUsers)) {
+             foreach($tasksUsers as $taskUser) { // All the tasks where the user was responsible are now unassigned
+                 $taskUser->idProprietaire = null;
+                 TableRegistry::getTableLocator()->get('Tache')->save($taskUser);
+             }
+         }
+         if(!empty($projectsUser)) {
+             foreach ($projectsUser as $project) { // All the projects created by the user are deleted and all the tasks inside the project too
+                 $tasksProject = TableRegistry::getTableLocator()->get('Tache')->find()->where(['idProjet' => $project->idProjet])->all();
+                 foreach($tasksProject as $taskProject) {
+                     TableRegistry::getTableLocator()->get('Tache')->delete($taskProject);
+                 }
+                 TableRegistry::getTableLocator()->get('Projet')->delete($project);
+             }
+         }
+         // TODO : END OF THE TEMPORARY CODE
+
          $success = $this->Utilisateur->delete($utilisateur);
          if($success) {
              $this->Auth->logout();
              $this->Flash->success(__('Vous avez supprimé votre compte avec succès'));
              $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
          } else {
-             $this->Flash->error(__('Impossible de supprimer votre compte utilisateur  ou les projets/tâches associé(e)s à celui-ci'));
+             $this->Flash->error(__('Impossible de supprimer votre compte utilisateur.'));
+             $this->redirect(array('controller' => 'Utilisateur', 'action'=> 'edit'));
 
          }
      }
