@@ -16,7 +16,7 @@
         </div>
       </div>
       <div class="row">
-          <div class="col text-center" style="margin-top: 20px;"><?= $this->Html->link("Retour", array('controller' => 'Tache', 'action'=> 'index'), array( 'class' => 'btn btn-primary')); ?></div>
+          <div class="col text-center" style="margin-top: 20px;"><?= $this->Html->link("Retour", array('controller' => 'Tache', 'action'=> 'index', $id), array( 'class' => 'btn btn-primary')); ?></div>
 
           <div class="col text-center" style="margin-top: 20px;"><?= $this->Form->submit('Ajouter une tâche', array('class' => 'btn btn-primary')); ?></div>
       </div>

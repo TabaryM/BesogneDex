@@ -252,3 +252,9 @@ div.message.hidden {
   background-image: url(../img/icones/add.png);
   background-size: contain;
 }
+
+
+.test a:hover{
+  text-decoration: none;
+  color: inherit;
+}
