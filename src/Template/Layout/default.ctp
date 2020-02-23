@@ -46,7 +46,7 @@ $cakeDescription = 'BesogneDex';
 </head>
 <body class="default">
 
-      <?= $this->element('header', ['titre' => Configure::read('titre_header_tache')]) ?>
+      <?= $this->element('header', ['titre' => Configure::read('titre_header_tache'), 'utilisateurProprietaire' => Configure::read('utilisateurProprietaire')]) ?>
       <?= $this->element('navbar') ?>
       <?= $this->Flash->render() ?>
       <?= $this->fetch('content') ?>

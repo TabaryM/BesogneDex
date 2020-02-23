@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use Cake\ORM\TableRegistry;
+use Cake\Core\Configure;
 
 class TacheController extends AppController
 {
@@ -16,6 +17,8 @@ class TacheController extends AppController
     {
 
       $estProprietaire = false;
+      //Pour la couronne dans le header
+      Configure::write('utilisateurProprietaire', false);
       $this->loadComponent('Paginator');
 
       $taches = $this->Paginator->paginate($this->Tache->find()
@@ -32,6 +35,8 @@ class TacheController extends AppController
         $user = $session->read('Auth.User.idUtilisateur');
         if($projetTab->idProprietaire == $user){
           $estProprietaire = true;
+          //Pour la couronne dans le header
+          Configure::write('utilisateurProprietaire', true);
 
         // S'il n'est pas propriétaire, est-il membre ?
         // -> Vérifie en même temps si le projet existe.

@@ -1,8 +1,11 @@
 <header class="d-flex flex-row justify-content-start align-items-center header">
     <div class="d-flex flex-row justify-content-start align-items-center header">
       <div class="col-xl-4 d-flex align-items-center">
-      <?= $this->Html->image("icones/rotom_dex.png", ['class' => 'image_icone_header']) ?>
+      <?php echo $this->Html->image("icones/rotom_dex.png", ['class' => 'image_icone_header']); ?>
       <h1 class="titre_header"><?= $titre ?></h1>
+      <?php if($utilisateurProprietaire): ?>
+        <?php echo $this->Html->image("icones/crown.png", ['class' => 'image_icone_header', 'style' => 'margin-left:20px;']); ?>
+      <?php endif; ?>
       </div>
     </div>
     <?php   if(!$loggedIn):  ?>
