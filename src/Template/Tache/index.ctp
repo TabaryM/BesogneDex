@@ -119,8 +119,13 @@
               <?= $this->Html->image("icones/list.png", ['class' => 'image_icone']) ?>
               <?php
               if($estProprietaire){
+<<<<<<< HEAD
                 echo $this->Html->link("Modifier", array('controller' => 'Projet', 'action'=> 'edit', $id), array( 'class' => 'btn btn-primary shadow'));
                 echo $this->Html->link("Supprimer", array('controller' => 'Projet', 'action'=> 'delete', $id), array( 'class' => 'btn btn-primary shadow'));
+=======
+                echo $this->Html->link("Modifier", array('controller' => 'Tache', 'action'=> 'edit', $id), array( 'class' => 'btn btn-primary shadow'));
+                echo $this->Html->link("Supprimer", array('controller' => 'Projet', 'action'=> 'delete', $id), array( 'class' => 'btn btn-danger shadow'));
+>>>>>>> a1662273fa0e43425df24e80a195f31426660759
               } else {
                 echo $this->Html->link("Quitter le projet", array('controller' => 'Projet', 'action'=> 'delete', $id), array( 'class' => 'btn btn-danger shadow'));
               }

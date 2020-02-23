@@ -76,7 +76,7 @@ class ProjetController extends AppController
 
     /**
     * liste les projets archivés
-    *TODO: pour l'instant les taches d'un projet archivés sont modifiables
+    *
     * Auteurs : WATELOT Paul-Emile
     */
     public function archives(){
@@ -96,22 +96,47 @@ class ProjetController extends AppController
     }
 
     /**
-    * Supprime un projet
-    *TODO: pour l'instant ça supprime le projet quoi qu'il arrive
+    * Supprime un projet si propriétaire et enleve un membre du groupe si il quitte
+    *
     * Auteurs : WATELOT Paul-Emile
     */
     public function delete($id){
       if ($this->request->is('post')){
 
-        //supprime les taches du projet
-        $taches = TableRegistry::getTableLocator()->get('Tache');
-        $query = $taches->query();
-        $query->delete()->where(['idProjet' => $id])->execute();
+        $projetTab = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
+          ->get('Projet')->find()
+          ->where(['idProjet' => $id])
+          ->first();
 
-        //supprime le projet
-        $projets = TableRegistry::getTableLocator()->get('Projet');
-        $query = $projets->query();
-        $query->delete()->where(['idProjet' => $id])->execute();
+        //permet de savoir si un utilisateur est propriétaire
+        $session = $this->request->getSession();
+        if ($session->check('Auth.User.idUtilisateur')) {
+          $user = $session->read('Auth.User.idUtilisateur');
+          if($projetTab->idProprietaire == $user){
+
+            //degage tout les membres du projet
+            $membres = TableRegistry::getTableLocator()->get('Membre');
+            $query = $membres->query();
+            $query->delete()->where(['idProjet' => $id])->execute();
+
+            //supprime les taches du projet
+            $taches = TableRegistry::getTableLocator()->get('Tache');
+            $query = $taches->query();
+            $query->delete()->where(['idProjet' => $id])->execute();
+
+            //supprime le projet
+            $projets = TableRegistry::getTableLocator()->get('Projet');
+            $query = $projets->query();
+            $query->delete()->where(['idProjet' => $id])->execute();
+
+          }
+          //sinon si c'est un invité on le degage dans la table membre
+          else{
+            $membres = TableRegistry::getTableLocator()->get('Membre');
+            $query = $membres->query();
+            $query->delete()->where(['idProjet' => $id, 'idUtilisateur' => $user])->execute();
+          }
+        }
 
         return $this->redirect(['action'=> 'index']);
       }
