@@ -20,7 +20,7 @@ class ProjetController extends AppController
         $projets = $this->Paginator->paginate($this->Projet->find()->distinct()->contain('Utilisateur')
         ->leftJoinWith('Membre')
         ->where(
-          ['OR' => [
+          ['etat !=' => 'Archive', 'OR' => [
               'Membre.idUtilisateur' => $session->read('Auth.User.idUtilisateur'),
               'Projet.idProprietaire' => $session->read('Auth.User.idUtilisateur')
          ]]));
