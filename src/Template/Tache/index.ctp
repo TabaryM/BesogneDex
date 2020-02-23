@@ -34,8 +34,6 @@
             </thead>
             <tbody>
               <?php
-                // Compteur utilisé pour chaque liste déroulante.
-                $cpt = 1;
                 foreach ($taches as $tache): ?>
 
                 <tr style="height: 50px;">

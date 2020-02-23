@@ -115,7 +115,7 @@ class TacheController extends AppController
     */
     public function edit($id)
     {
-      return null;
+        $this->set(compact('id'));
     }
 
     /**
@@ -138,7 +138,7 @@ class TacheController extends AppController
     * lors de la suppression d'une tâche.
     */
     public function delete($id){
-      return null;
+        $this->set(compact('id'));
     }
 }
 
