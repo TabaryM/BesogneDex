@@ -120,9 +120,9 @@
               <?php
               if($estProprietaire){
                 echo $this->Html->link("Modifier", array('controller' => 'Tache', 'action'=> 'edit', $id), array( 'class' => 'btn btn-primary shadow'));
-                echo $this->Html->link("Supprimer", array('controller' => 'Tache', 'action'=> 'delete', $id), array( 'class' => 'btn btn-primary shadow'));
+                echo $this->Html->link("Supprimer", array('controller' => 'Projet', 'action'=> 'delete', $id), array( 'class' => 'btn btn-danger shadow'));
               } else {
-                echo $this->Html->link("Quitter le projet", array('controller' => 'Tache', 'action'=> 'delete', $id), array( 'class' => 'btn btn-danger shadow'));
+                echo $this->Html->link("Quitter le projet", array('controller' => 'Projet', 'action'=> 'delete', $id), array( 'class' => 'btn btn-danger shadow'));
               }
               ?>
             </div>
