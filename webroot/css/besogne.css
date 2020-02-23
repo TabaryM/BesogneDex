@@ -152,6 +152,15 @@ a {
     background-color: #6fa8dc;
 }
 
+.table-orange td {
+  background-color: #b6d7a8;
+}
+
+.table-orange>tbody>tr:nth-child(odd)>td,
+.table-orange>tbody>tr:nth-child(odd)>th {
+   background-color: #f6b26b;
+}
+
 .card {
   border-radius: 20px;
 }

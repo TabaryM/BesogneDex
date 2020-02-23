@@ -2,7 +2,7 @@
 <div class="row d-flex align-items-start" style="margin-left:60px;margin-right:60px;margin-top:50px;">
   <div class="col-xl-12" style="height: 80%;">
     <div class="table-responsive">
-      <table class="table table-bordered">
+      <table class="table table-borderless table-orange">
         <thead class="thead-light">
           <tr>
             <th>Tâche</th>
