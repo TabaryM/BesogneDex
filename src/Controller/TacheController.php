@@ -110,9 +110,12 @@ class TacheController extends AppController
       }
     }
 
+    /**
+    * Utilisée dans : Template/Tache/index.ctp
+    */
     public function edit($id)
     {
-    return null;
+      return null;
     }
 
     /**
@@ -128,6 +131,14 @@ class TacheController extends AppController
             array('idTache' => $idTache)
         );
         return $this->redirect(['action' => 'index', $id]);
+    }
+
+    /**
+    * Utilisée dans Template/Tache/index.ctp
+    * lors de la suppression d'une tâche.
+    */
+    public function delete($id){
+      return null;
     }
 }
 
