@@ -59,7 +59,7 @@
                     <div class="text-center"><a class="btn btn-dark" data-toggle="collapse" aria-expanded="false" aria-controls="collapse-<?php echo $cpt; ?>" href="#collapse-<?php echo $cpt; ?>" role="button"></a>
                       <div class="collapse" id="collapse-<?php echo $cpt; $cpt++; ?>">
                         <?php
-                        echo $this->Html->link("Supprimer la tâche", array('controller' => 'Tache', 'action'=> 'delete', $id), array( 'class' => 'btn btn-primary bg-dark border-dark'));?>
+                        echo $this->Html->link("Supprimer la tâche", array('controller' => 'Tache', 'action'=> 'delete', $id), array( 'class' => 'btn btn-danger'));?>
                         <?php
                         echo $this->Html->link("Modifier la tâche", array('controller' => 'Tache', 'action'=> 'edit', $id), array( 'class' => 'btn btn-primary bg-dark border-dark'));?>
                         <?php
@@ -119,13 +119,8 @@
               <?= $this->Html->image("icones/list.png", ['class' => 'image_icone']) ?>
               <?php
               if($estProprietaire){
-<<<<<<< HEAD
-                echo $this->Html->link("Modifier", array('controller' => 'Projet', 'action'=> 'edit', $id), array( 'class' => 'btn btn-primary shadow'));
-                echo $this->Html->link("Supprimer", array('controller' => 'Projet', 'action'=> 'delete', $id), array( 'class' => 'btn btn-primary shadow'));
-=======
                 echo $this->Html->link("Modifier", array('controller' => 'Tache', 'action'=> 'edit', $id), array( 'class' => 'btn btn-primary shadow'));
                 echo $this->Html->link("Supprimer", array('controller' => 'Projet', 'action'=> 'delete', $id), array( 'class' => 'btn btn-danger shadow'));
->>>>>>> a1662273fa0e43425df24e80a195f31426660759
               } else {
                 echo $this->Html->link("Quitter le projet", array('controller' => 'Projet', 'action'=> 'delete', $id), array( 'class' => 'btn btn-danger shadow'));
               }
