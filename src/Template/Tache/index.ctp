@@ -34,8 +34,6 @@
             </thead>
             <tbody>
               <?php
-                // Compteur utilisé pour chaque liste déroulante.
-                $cpt = 1;
                 foreach ($taches as $tache): ?>
 
                 <tr style="height: 50px;">
@@ -43,7 +41,7 @@
                     <?= $this->Html->link($tache->titre, array('controller' => 'Tache', 'action'=> 'index', $id));
                     ?>
                   </td>
-                  <td>
+                  <td class="text-center">
                     <?php
                     if(isset($tache->responsable->pseudo)){
                       echo $tache->responsable->pseudo;
@@ -55,15 +53,13 @@
                   <td class="text-center">
                     <input type="checkbox" name="<?=$tache->idTache?>">
                   </td>
-                  <td>
-                    <div class="text-center"><a class="btn btn-dark" data-toggle="collapse" aria-expanded="false" aria-controls="collapse-<?php echo $cpt; ?>" href="#collapse-<?php echo $cpt; ?>" role="button"></a>
-                      <div class="collapse" id="collapse-<?php echo $cpt; $cpt++; ?>">
-                        <?php
-                        echo $this->Html->link("Supprimer la tâche", array('controller' => 'Tache', 'action'=> 'delete', $id), array( 'class' => 'btn btn-danger'));?>
-                        <?php
-                        echo $this->Html->link("Modifier la tâche", array('controller' => 'Tache', 'action'=> 'edit', $id), array( 'class' => 'btn btn-primary bg-dark border-dark'));?>
-                        <?php
-                        echo $this->Html->link("Se proposer pour la tâche", array('controller' => 'Tache', 'action'=> 'devenirResponsable', $id, $tache->idTache), array( 'class' => 'btn btn-primary bg-dark border-dark'));?>
+                  <td class="text-center">
+                    <div class="dropdown">
+                      <a class="test" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">●●●</a>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <?php echo $this->Html->link("Supprimer la tâche", array('controller' => 'Tache', 'action'=> 'delete', $id), array( 'class' => 'dropdown-item')); ?>
+                        <?php echo $this->Html->link("Modifier la tâche", array('controller' => 'Tache', 'action'=> 'edit', $id), array( 'class' => 'dropdown-item'));?>
+                        <?php echo $this->Html->link("Se proposer pour la tâche", array('controller' => 'Tache', 'action'=> 'devenirResponsable', $id, $tache->idTache), array( 'class' => 'dropdown-item'));?>
                       </div>
                     </div>
                   </td>
