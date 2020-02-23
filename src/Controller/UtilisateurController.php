@@ -14,7 +14,7 @@ class UtilisateurController extends AppController
 
   public function initialize()
   {
-      parent::initialize();
+    parent::initialize();
   }
 
   /**
@@ -45,7 +45,7 @@ class UtilisateurController extends AppController
   }
 
   public function index(){
-      return $this->redirect(['action'=> 'profil']);
+    return $this->redirect(['action'=> 'profil']);
   }
 
   /**
@@ -57,8 +57,8 @@ class UtilisateurController extends AppController
   */
   public function beforeFilter(Event $event)
   {
-      parent::beforeFilter($event);
-      $this->Auth->allow(['add', 'logout']);
+    parent::beforeFilter($event);
+    $this->Auth->allow(['add', 'logout']);
   }
 
   /**
@@ -77,12 +77,12 @@ class UtilisateurController extends AppController
       }else{
         $this->Flash->error(__('E-mail ou mot de passe incorrects'));
         return $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
-    }
+      }
 
-  } else {
-    return $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
+    } else {
+      return $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
+    }
   }
-}
 
   /**
   * Permet à l'utilisateur de s'inscrire.
@@ -91,17 +91,17 @@ class UtilisateurController extends AppController
   * @author POP Diana
   */
   public function add(){
-      $utilisateur = $this->Utilisateur->newEntity();
-      if ($this->request->is('post')) {
-          $utilisateur = $this->Utilisateur->patchEntity($utilisateur, $this->request->getData());
-          if ($this->Utilisateur->save($utilisateur)) {
-              $this->Flash->success(__('Votre compte est bien enregistré.'));
-              return $this->redirect(['controller' => 'pages', 'action' => 'display','home']);
-          }
-          $this->affichage_erreurs($utilisateur->errors());
-          return $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
+    $utilisateur = $this->Utilisateur->newEntity();
+    if ($this->request->is('post')) {
+      $utilisateur = $this->Utilisateur->patchEntity($utilisateur, $this->request->getData());
+      if ($this->Utilisateur->save($utilisateur)) {
+        $this->Flash->success(__('Votre compte est bien enregistré.'));
+        return $this->redirect(['controller' => 'pages', 'action' => 'display','home']);
       }
-      $this->set('utilisateur', $utilisateur);
+      $this->affichage_erreurs($utilisateur->errors());
+      return $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
+    }
+    $this->set('utilisateur', $utilisateur);
   }
 
   /**
@@ -109,21 +109,21 @@ class UtilisateurController extends AppController
   *
   * Auteur : POP Diana (c'est un presque c/c de ce site : http://www.naidim.org/cakephp-3-tutorial-18-autocomplete)
   */
-    function complete(){
-          $this->autoRender = false;
-          $name = $this->request->query['term'];
-          $results = $this->Utilisateur->find('all', [
-              'conditions' => [
-                  'pseudo LIKE' => $name.'%',
-              ]
-          ]);
-          $resultsArr = [];
-          foreach ($results as $result) {
-               $resultsArr[] =['label' => $result['pseudo'], 'value' => $result['pseudo']];
+  function complete(){
+    $this->autoRender = false;
+    $name = $this->request->query['term'];
+    $results = $this->Utilisateur->find('all', [
+      'conditions' => [
+        'pseudo LIKE' => $name.'%',
+      ]
+    ]);
+    $resultsArr = [];
+    foreach ($results as $result) {
+      $resultsArr[] =['label' => $result['pseudo'], 'value' => $result['pseudo']];
 
-          }
-          echo json_encode($resultsArr);
-}
+    }
+    echo json_encode($resultsArr);
+  }
 
   /**
   * Permet à l'utilisateur de se déconnecter.
@@ -144,24 +144,24 @@ class UtilisateurController extends AppController
     return null;
   }
 
-    /**
-     * Affiche le profil utilisateur
-     *
-     * @author Mathieu TABARY
-     */
+  /**
+  * Affiche le profil utilisateur
+  *
+  * @author Mathieu TABARY
+  */
   public function profil(){
-      // Récupère le cookie de session
-      $session = $this->request->getSession();
-      // Récupère la table utilisateur
-      $utilisateurs = TableRegistry::getTableLocator()->get('utilisateur');
+    // Récupère le cookie de session
+    $session = $this->request->getSession();
+    // Récupère la table utilisateur
+    $utilisateurs = TableRegistry::getTableLocator()->get('utilisateur');
 
-      // Récupère les données de l'utilisateur connecté
-      $utilisateur = $utilisateurs->find()
-          ->where(['idUtilisateur' => $session->read('Auth.User.idUtilisateur')])
-          ->first();
+    // Récupère les données de l'utilisateur connecté
+    $utilisateur = $utilisateurs->find()
+    ->where(['idUtilisateur' => $session->read('Auth.User.idUtilisateur')])
+    ->first();
 
-      // On enregistre les données de l'utilisateur connecté dans une varible réutilisable dans le fichier .ctp
-      $this->set(compact('utilisateur'));
+    // On enregistre les données de l'utilisateur connecté dans une varible réutilisable dans le fichier .ctp
+    $this->set(compact('utilisateur'));
   }
 
   /**
@@ -173,47 +173,57 @@ class UtilisateurController extends AppController
     $session = $this->request->getSession();
     $data = $this->request->getData();
     $utilisateur = $this->Utilisateur->find()
-      ->where(['idUtilisateur' => $session->read('Auth.User.idUtilisateur')])
-      ->first();
-    $this->set(compact('utilisateur'));
+    ->where(['idUtilisateur' => $session->read('Auth.User.idUtilisateur')])
+    ->first();
 
-    if(empty($data['mdp_actu'])) {
+    if(!empty($data)){ //Evite l'affichage des flashs quand on arrive sur la page
+
+      if(empty($data['mdp_actu'])) {
         $this->Flash->error(__('Veuillez saisir votre mot de passe pour modifier vos informations.'));
-    }else{
+      }else{
         if(Security::hash($data['mdp_actu'], null, true) == $utilisateur['mdp']) {
-            if($data['mdp_new'] == $data['mdp_new_conf']) {
+          if($data['mdp_new'] == $data['mdp_new_conf']) {
 
-              $data = array_filter($data, function($value) { return !is_null($value) && $value !== '' && !empty($value); }); //On supprime les éléments vide
-              if(!empty($data)){
-                  $utilisateur['mdp'] = $data['mdp_new'];
-                  $utilisateur = $this->Utilisateur->get($session->read('Auth.User.idUtilisateur'));
-                  $data2 = $this->Utilisateur->patchEntity($utilisateur, $data);
+            $data = array_filter($data, function($value) { return !is_null($value) && $value !== '' && !empty($value); }); //On supprime les éléments vide
 
-                  if($this->Utilisateur->save($data2)){
-                      $this->Flash->success(__('Votre compte a été édité.'));
-                  }
+            if(!empty($data)){
+              $utilisateur['mdp'] = $data['mdp_new']; //TODO:Il est possible que cette ligne soit inutile
+              $utilisateur = $this->Utilisateur->get($session->read('Auth.User.idUtilisateur')); //On récupère les données utilisateurs
+              $data2 = $this->Utilisateur->patchEntity($utilisateur, $data); //On "assemble" les données entre data et utilisateur
 
-                  $this->affichage_erreurs($utilisateur->errors());
+              if($this->Utilisateur->save($data2)){ //On sauvegarde les données (Le vérificator passe avant)
+                $this->Flash->success(__('Votre compte a été édité.'));
               }
-            }else{
-              $this->Flash->error(__('Le nouveau mot de passe ne correspond pas au mot de passe confirmé.'));
+
+              $this->affichage_erreurs($utilisateur->errors()); //Affichage des erreurs si le vérificator n'as pas accepté
             }
+          }else{
+            $this->Flash->error(__('Le nouveau mot de passe ne correspond pas au mot de passe confirmé.'));
+          }
         }else{
           $this->Flash->error(__('L\'ancien mot de passe est erroné.'));
         }
+
         $data = array_filter($data, function($value) { return !is_null($value) && $value !== '' && !empty($value); }); //On supprime les éléments vide
+
         if(!empty($data)){
-            $utilisateur = $this->Utilisateur->get($session->read('Auth.User.idUtilisateur'));
-            $data2 = $this->Utilisateur->patchEntity($utilisateur, $data);
+          $utilisateur = $this->Utilisateur->get($session->read('Auth.User.idUtilisateur'));
+          $data2 = $this->Utilisateur->patchEntity($utilisateur, $data);
 
-            if($this->Utilisateur->save($data2)){
-                $this->Flash->success(__('Votre compte a été édité.'));
-            }
+          if($this->Utilisateur->save($data2)){
+            $this->Flash->success(__('Votre compte a été édité.'));
+          }
 
-            $this->affichage_erreurs($utilisateur->errors());
+          $utilisateur = $this->Utilisateur->find()
+          ->where(['idUtilisateur' => $session->read('Auth.User.idUtilisateur')])
+          ->first(); //TODO:Sûrement une meilleure méthode de retrouver les nouvelles infos de l'utilisateur
+
+          $this->affichage_erreurs($utilisateur->errors());
         }
+      }
 
     }
+    $this->set(compact('utilisateur'));
   }
 
 
@@ -222,50 +232,50 @@ class UtilisateurController extends AppController
 
   }
 
-    /** Supprime le compte de l'utilisateur ainsi que les données associées
-     *
-     * @author PALMIERI Adrien
-     */
-    // IMPORTANT : Lorsque les notifications seront ajoutées, il faudra ajouter la suppression des notifications associées.
-     public function deleteAccount() {
-     $currentUserId = $this->request->getSession()->read('Auth.User.idUtilisateur');
-     $utilisateur = $this->Utilisateur->get($currentUserId);
+  /** Supprime le compte de l'utilisateur ainsi que les données associées
+  *
+  * @author PALMIERI Adrien
+  */
+  // IMPORTANT : Lorsque les notifications seront ajoutées, il faudra ajouter la suppression des notifications associées.
+  public function deleteAccount() {
+    $currentUserId = $this->request->getSession()->read('Auth.User.idUtilisateur');
+    $utilisateur = $this->Utilisateur->get($currentUserId);
 
-     if(empty($utilisateur)) {
-         $this->Flash->error(__('Impossible de supprimer votre compte utilisateur : vérifiez qu\'il existe et que vous êtes bien connecté.'));
-     } else {
+    if(empty($utilisateur)) {
+      $this->Flash->error(__('Impossible de supprimer votre compte utilisateur : vérifiez qu\'il existe et que vous êtes bien connecté.'));
+    } else {
 
-         // TODO : THIS SHOULDN'T BE DONE LIKE THAT (TEMPORARY CODE) , THE PROPER WAY IS TO FIX THE MODELS BEHAVIOUR !!!!!!!!!!
-         $projectsUser = TableRegistry::getTableLocator()->get('Projet')->find()->where(['idProprietaire' => $utilisateur->idUtilisateur])->all();
-         $tasksUsers = TableRegistry::getTableLocator()->get('Tache')->find()->where(['idResponsable' => $utilisateur->idUtilisateur])->all();
-         if(!empty($tasksUsers)) {
-             foreach($tasksUsers as $taskUser) { // All the tasks where the user was responsible are now unassigned
-                 $taskUser->idProprietaire = null;
-                 TableRegistry::getTableLocator()->get('Tache')->save($taskUser);
-             }
-         }
-         if(!empty($projectsUser)) {
-             foreach ($projectsUser as $project) { // All the projects created by the user are deleted and all the tasks inside the project too
-                 $tasksProject = TableRegistry::getTableLocator()->get('Tache')->find()->where(['idProjet' => $project->idProjet])->all();
-                 foreach($tasksProject as $taskProject) {
-                     TableRegistry::getTableLocator()->get('Tache')->delete($taskProject);
-                 }
-                 TableRegistry::getTableLocator()->get('Projet')->delete($project);
-             }
-         }
-         // TODO : END OF THE TEMPORARY CODE
+      // TODO : THIS SHOULDN'T BE DONE LIKE THAT (TEMPORARY CODE) , THE PROPER WAY IS TO FIX THE MODELS BEHAVIOUR !!!!!!!!!!
+      $projectsUser = TableRegistry::getTableLocator()->get('Projet')->find()->where(['idProprietaire' => $utilisateur->idUtilisateur])->all();
+      $tasksUsers = TableRegistry::getTableLocator()->get('Tache')->find()->where(['idResponsable' => $utilisateur->idUtilisateur])->all();
+      if(!empty($tasksUsers)) {
+        foreach($tasksUsers as $taskUser) { // All the tasks where the user was responsible are now unassigned
+          $taskUser->idProprietaire = null;
+          TableRegistry::getTableLocator()->get('Tache')->save($taskUser);
+        }
+      }
+      if(!empty($projectsUser)) {
+        foreach ($projectsUser as $project) { // All the projects created by the user are deleted and all the tasks inside the project too
+          $tasksProject = TableRegistry::getTableLocator()->get('Tache')->find()->where(['idProjet' => $project->idProjet])->all();
+          foreach($tasksProject as $taskProject) {
+            TableRegistry::getTableLocator()->get('Tache')->delete($taskProject);
+          }
+          TableRegistry::getTableLocator()->get('Projet')->delete($project);
+        }
+      }
+      // TODO : END OF THE TEMPORARY CODE
 
-         $success = $this->Utilisateur->delete($utilisateur);
-         if($success) {
-             $this->Auth->logout();
-             $this->Flash->success(__('Vous avez supprimé votre compte avec succès'));
-             $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
-         } else {
-             $this->Flash->error(__('Impossible de supprimer votre compte utilisateur.'));
-             $this->redirect(array('controller' => 'Utilisateur', 'action'=> 'edit'));
+      $success = $this->Utilisateur->delete($utilisateur);
+      if($success) {
+        $this->Auth->logout();
+        $this->Flash->success(__('Vous avez supprimé votre compte avec succès'));
+        $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
+      } else {
+        $this->Flash->error(__('Impossible de supprimer votre compte utilisateur.'));
+        $this->redirect(array('controller' => 'Utilisateur', 'action'=> 'edit'));
 
-         }
-     }
+      }
+    }
   }
 
 }
