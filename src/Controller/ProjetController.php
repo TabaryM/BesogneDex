@@ -116,5 +116,12 @@ class ProjetController extends AppController
         return $this->redirect(['action'=> 'index']);
       }
     }
+
+    /**
+    * Utilisée dans Template/Tache/index.ctp
+    */
+    public function edit($id){
+      return null;
+    }
 }
 ?>

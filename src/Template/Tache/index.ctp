@@ -59,9 +59,9 @@
                     <div class="text-center"><a class="btn btn-dark" data-toggle="collapse" aria-expanded="false" aria-controls="collapse-<?php echo $cpt; ?>" href="#collapse-<?php echo $cpt; ?>" role="button"></a>
                       <div class="collapse" id="collapse-<?php echo $cpt; $cpt++; ?>">
                         <?php
-                        echo $this->Html->link("Supprimer la tâche", array('controller' => 'Tache', 'action'=> 'index', $id), array( 'class' => 'btn btn-primary bg-dark border-dark'));?>
+                        echo $this->Html->link("Supprimer la tâche", array('controller' => 'Tache', 'action'=> 'delete', $id), array( 'class' => 'btn btn-primary bg-dark border-dark'));?>
                         <?php
-                        echo $this->Html->link("Modifier la tâche", array('controller' => 'Tache', 'action'=> 'index', $id), array( 'class' => 'btn btn-primary bg-dark border-dark'));?>
+                        echo $this->Html->link("Modifier la tâche", array('controller' => 'Tache', 'action'=> 'edit', $id), array( 'class' => 'btn btn-primary bg-dark border-dark'));?>
                         <?php
                         echo $this->Html->link("Se proposer pour la tâche", array('controller' => 'Tache', 'action'=> 'devenirResponsable', $id, $tache->idTache), array( 'class' => 'btn btn-primary bg-dark border-dark'));?>
                       </div>
@@ -119,10 +119,10 @@
               <?= $this->Html->image("icones/list.png", ['class' => 'image_icone']) ?>
               <?php
               if($estProprietaire){
-                echo $this->Html->link("Modifier", array('controller' => 'Tache', 'action'=> 'edit', $id), array( 'class' => 'btn btn-primary shadow'));
-                echo $this->Html->link("Supprimer", array('controller' => 'Tache', 'action'=> 'delete', $id), array( 'class' => 'btn btn-primary shadow'));
+                echo $this->Html->link("Modifier", array('controller' => 'Projet', 'action'=> 'edit', $id), array( 'class' => 'btn btn-primary shadow'));
+                echo $this->Html->link("Supprimer", array('controller' => 'Projet', 'action'=> 'delete', $id), array( 'class' => 'btn btn-primary shadow'));
               } else {
-                echo $this->Html->link("Quitter le projet", array('controller' => 'Tache', 'action'=> 'delete', $id), array( 'class' => 'btn btn-danger shadow'));
+                echo $this->Html->link("Quitter le projet", array('controller' => 'Projet', 'action'=> 'delete', $id), array( 'class' => 'btn btn-danger shadow'));
               }
               ?>
             </div>
