@@ -267,3 +267,29 @@ div.message.hidden {
   text-decoration: none;
   color: inherit;
 }
+
+.bell  {
+  background-image: url(../img/icones/bell.png);
+  background-size: contain;
+  cursor: pointer;
+  height: 40px;
+  width: 40px;
+}
+
+.user  {
+  background: url('../img/icones/user.png') no-repeat;
+  background-size: contain;
+  cursor: pointer;
+  height: 40px;
+  width: 40px;
+  margin-left: 20px;
+}
+
+.logout  {
+  background: url('../img/icones/exit.png') no-repeat;
+  margin-left: 20px;
+  background-size: contain;
+  cursor: pointer;
+  height: 40px;
+  width: 40px;
+}
