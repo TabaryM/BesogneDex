@@ -19,25 +19,7 @@ class Utilisateur extends Entity
     }
 
 
-     /**
-     * Constructeur permettant de définir les relations entre les entités
-     * (utile notamment pour la suppression en cascade ou les requêtes complexes)
-     * @param array $config
-     * @author : PALMIERI Adrien
-     */
-    public function initialize(array $config) {
 
-        $this->hasMany('Projet', [
-                       'className' => 'Projet',
-                       'dependent' => true,
-                       'cascadeCallbacks' => true,
-        ]);
-        $this->hasMany('Tache', [
-                        'className' => 'Tache',
-                        'dependent' => true,
-                        'cascadeCallbacks' => true
-        ]);
-    }
 
 
 }
