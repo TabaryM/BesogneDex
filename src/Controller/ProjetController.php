@@ -81,14 +81,23 @@ class ProjetController extends AppController
     */
     public function archives(){
       $projets = TableRegistry::getTableLocator()->get('Projet');
-      $archives = $projets->find()->select(['idProjet', 'titre', 'dateFin'])->where(['etat' => 'Archive'])->all();
+
+      $session = $this->request->getSession();
+      $archives = $projets->find()->distinct()->contain('Utilisateur')
+      ->leftJoinWith('Membre')
+      ->where(
+        ['etat' => 'Archive', 'OR' => [
+            'Membre.idUtilisateur' => $session->read('Auth.User.idUtilisateur'),
+            'Projet.idProprietaire' => $session->read('Auth.User.idUtilisateur')
+       ]]);
+
       $this->set(compact('archives'));
 
     }
 
     /**
     * Supprime un projet
-    *TODO: pour l'instant ça supprime le projet quoi qu'il arrive ( peut etre des problemes de securité(pas test))
+    *TODO: pour l'instant ça supprime le projet quoi qu'il arrive
     * Auteurs : WATELOT Paul-Emile
     */
     public function delete($id){
