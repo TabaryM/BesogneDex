@@ -65,25 +65,6 @@
                   </td>
                 </tr>
               <?php endforeach; ?>
-              <!-- Pour que la table ne soit pas vide. -->
-              <tr style="height: 50px;">
-                <td>  </td>
-                <td>  </td>
-                <td>  </td>
-                <td>  </td>
-              </tr>
-              <tr style="height: 50px;">
-                <td>  </td>
-                <td>  </td>
-                <td>  </td>
-                <td>  </td>
-              </tr>
-              <tr style="height: 50px;">
-                <td>  </td>
-                <td>  </td>
-                <td>  </td>
-                <td>  </td>
-              </tr>
             </tbody>
           </table>
         </div>
