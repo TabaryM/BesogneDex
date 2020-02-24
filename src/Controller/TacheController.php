@@ -93,6 +93,8 @@ class TacheController extends AppController
         }
         $this->Flash->error(__('Impossible d\'ajouter votre tâche.'));
       }
+
+      $this->set(compact('id'));
     }
 
     /**
