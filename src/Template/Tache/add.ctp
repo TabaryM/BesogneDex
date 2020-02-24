@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" style="margin-top: 50px;">
       <div class="row">
           <div class="col-xl-12 offset-xl-0"><h1><center>Ajouter une tâche</center></h1></div>
       </div>
@@ -16,7 +16,7 @@
         </div>
       </div>
       <div class="row">
-          <div class="col text-center" style="margin-top: 20px;"><?= $this->Html->link("Retour", array('controller' => 'Tache', 'action'=> 'index'), array( 'class' => 'btn btn-primary')); ?></div>
+          <div class="col text-center" style="margin-top: 20px;"><?= $this->Html->link("Retour", array('controller' => 'Tache', 'action'=> 'index', $id), array( 'class' => 'btn btn-primary')); ?></div>
 
           <div class="col text-center" style="margin-top: 20px;"><?= $this->Form->submit('Ajouter une tâche', array('class' => 'btn btn-primary')); ?></div>
       </div>

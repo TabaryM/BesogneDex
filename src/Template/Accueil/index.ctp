@@ -12,10 +12,10 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Cell 1</td>
-                                    <td>Cell 2</td>
-                                </tr>
+                              <tr>
+                                  <td> </td>
+                                  <td> </td>
+                              </tr>
                                 <tr>
                                     <td> </td>
                                     <td> </td>
@@ -65,10 +65,10 @@
                     <div class="table-responsive table-borderless table-green">
                         <table class="table table-striped table-green table-borderless">
                             <tbody>
-                                <tr>
-                                    <td>Cell 1</td>
-                                    <td>Cell 2</td>
-                                </tr>
+                              <tr>
+                                  <td> </td>
+                                  <td> </td>
+                              </tr>
                                 <tr>
                                     <td> </td>
                                     <td> </td>

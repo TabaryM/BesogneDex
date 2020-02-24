@@ -6,8 +6,8 @@ use Cake\ORM\Table;
 class TacheTable extends Table{
   /**
   * Initialisation base de données côté Table Tache
-  *
-  * Auteur : Thibault CHONÉ
+  * @author : Thibault CHONÉ
+  * @param $config : aucune idée
   */
   public function initialize(array $config){
     $this->belongsTo('Utilisateur', [

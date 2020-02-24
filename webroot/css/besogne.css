@@ -29,8 +29,8 @@ header {
 }
 
 .image_icone {
-  width:90px;
-  height:90px;
+  width:70px;
+  height:50px;
 }
 
 .div_mail_mdp_header {
@@ -152,6 +152,15 @@ a {
     background-color: #6fa8dc;
 }
 
+.table-orange td {
+  background-color: #b6d7a8;
+}
+
+.table-orange>tbody>tr:nth-child(odd)>td,
+.table-orange>tbody>tr:nth-child(odd)>th {
+   background-color: #f6b26b;
+}
+
 .card {
   border-radius: 20px;
 }
@@ -200,4 +209,87 @@ div.message.success {
 
 div.message.hidden {
   height: 0;
+}
+
+.boutonValider {
+  background-color: #b6d7a8;
+  margin-right: 150px;
+}
+
+.grosBouton {
+  width:250px;
+  height:60px;
+  text-align: center;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.boutonVert {
+  color: black;
+  border: none;
+  background-color: #b6d7a8;
+}
+
+.boutonVert:hover{
+  background-color: #a3c197;
+}
+
+#pMembres:hover{
+  background-color: red;
+}
+
+.selected {
+    background-color: brown;
+    color: #FFF;
+}
+
+.image_icone_header {
+  width:90px;
+  height:90px;
+}
+
+.color-card {
+  background-color: #b7d4fa;
+  border-radius: 20px;
+}
+
+.rond-croix {
+  border-radius: 500px;
+  width:60px;
+  height:60px;
+  background-image: url(../img/icones/add.png);
+  background-size: contain;
+}
+
+
+.test a:hover{
+  text-decoration: none;
+  color: inherit;
+}
+
+.bell  {
+  background-image: url(../img/icones/bell.png);
+  background-size: contain;
+  cursor: pointer;
+  height: 40px;
+  width: 40px;
+}
+
+.user  {
+  background: url('../img/icones/user.png') no-repeat;
+  background-size: contain;
+  cursor: pointer;
+  height: 40px;
+  width: 40px;
+  margin-left: 20px;
+}
+
+.logout  {
+  background: url('../img/icones/exit.png') no-repeat;
+  margin-left: 20px;
+  background-size: contain;
+  cursor: pointer;
+  height: 40px;
+  width: 40px;
 }

@@ -6,8 +6,23 @@ use Cake\Validation\Validator;
 
 class UtilisateurTable extends Table{
 
+    /**
+     * Constructeur permettant de définir les relations entre les entités
+     * (utile notamment pour la suppression en cascade ou les requêtes complexes)
+     * @param array $config
+     * @author : PALMIERI Adrien
+     */
   public function initialize(array $config){
-    $this->hasMany('Utilisateur');
+      $this->hasMany('Projet', [
+          'className' => 'Projet',
+          'dependent' => true,
+          'cascadeCallbacks' => true,
+      ]);
+      $this->hasMany('Tache', [
+          'className' => 'Tache',
+          'dependent' => true,
+          'cascadeCallbacks' => true
+      ]);
   }
 
 /**
@@ -86,7 +101,8 @@ class UtilisateurTable extends Table{
                   $val_prenom = $context['data']['prenom'];
                   return (bool)preg_match("/[A-Za-z]*[-]?[A-Za-z]*/", $val_prenom);
               },
-            'message' => 'Le prénom est incorrect.'
+            'message' => 'Le prénom est incorrect.',
+            'allowEmpty' => true
           )
       )// fin array 'prenom'
     )//fin add de prenom
@@ -96,11 +112,14 @@ class UtilisateurTable extends Table{
                 $val_nom = $context['data']['nom'];
                 return (bool)preg_match("/[A-Za-z]*[-]?[A-Za-z]*/", $val_nom);
               },
-            'message' => 'Le nom est incorrect.'
+            'message' => 'Le nom est incorrect.',
+            'allowEmpty' => true
           )
 
       )// fin array de 'nom'
     )//fin add de nom
+    ->allowEmptyString('prenom')
+    ->allowEmptyString('nom')
     ;// point-virgule vital
 
   }

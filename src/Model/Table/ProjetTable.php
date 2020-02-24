@@ -9,9 +9,17 @@ class ProjetTable extends Table{
       'foreignKey' => 'idProprietaire',
       'propertyName' => 'un_utilisateur'
     ]);
+
+    $this->hasMany('Membre', [
+      'bindingKey' => 'idProjet',
+      'foreignKey' => 'idProjet',
+      'propertyName' => 'un_membre'
+    ]);
+
     $this->hasMany('tache')
       ->setForeignKey('idProjet')
       ->setBindingKey('idProjet');
+
   }
 }
 
