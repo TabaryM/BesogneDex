@@ -13,6 +13,7 @@ class UtilisateurTable extends Table{
      * @author : PALMIERI Adrien
      */
   public function initialize(array $config){
+      $this->setPrimaryKey('idUtilisateur');
       $this->hasMany('Projet', [
           'className' => 'Projet',
           'dependent' => true,
@@ -23,6 +24,7 @@ class UtilisateurTable extends Table{
           'dependent' => true,
           'cascadeCallbacks' => true
       ]);
+
   }
 
 /**

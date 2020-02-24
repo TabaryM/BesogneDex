@@ -246,7 +246,7 @@ class UtilisateurController extends AppController
     } else {
 
       // TODO : THIS SHOULDN'T BE DONE LIKE THAT (TEMPORARY CODE) , THE PROPER WAY IS TO FIX THE MODELS BEHAVIOUR !!!!!!!!!!
-      $projectsUser = TableRegistry::getTableLocator()->get('Projet')->find()->where(['idProprietaire' => $utilisateur->idUtilisateur])->all();
+    /*  $projectsUser = TableRegistry::getTableLocator()->get('Projet')->find()->where(['idProprietaire' => $utilisateur->idUtilisateur])->all();
       $tasksUsers = TableRegistry::getTableLocator()->get('Tache')->find()->where(['idResponsable' => $utilisateur->idUtilisateur])->all();
       if(!empty($tasksUsers)) {
         foreach($tasksUsers as $taskUser) { // All the tasks where the user was responsible are now unassigned
@@ -262,7 +262,7 @@ class UtilisateurController extends AppController
           }
           TableRegistry::getTableLocator()->get('Projet')->delete($project);
         }
-      }
+      }*/
       // TODO : END OF THE TEMPORARY CODE
 
       $success = $this->Utilisateur->delete($utilisateur);

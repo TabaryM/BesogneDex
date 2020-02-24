@@ -21,6 +21,7 @@ class MembreTable extends Table{
       ->setForeignKey('idProjet')
       ->setBindingKey('idProjet');
       */
+      $this->setPrimaryKey(array('idUtilisateur', 'idProjet'));
       $this->belongsTo('Utilisateur', [
         'foreignKey' => 'idUtilisateur',
         'propertyName' => 'un_utilisateur'
@@ -30,7 +31,7 @@ class MembreTable extends Table{
         'foreignKey' => 'idProjet',
         'propertyName' => 'un_projet'
       ]);
-      
+
   }
 }
 
