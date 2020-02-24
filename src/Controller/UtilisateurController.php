@@ -245,25 +245,8 @@ class UtilisateurController extends AppController
       $this->Flash->error(__('Impossible de supprimer votre compte utilisateur : vérifiez qu\'il existe et que vous êtes bien connecté.'));
     } else {
 
-      // TODO : THIS SHOULDN'T BE DONE LIKE THAT (TEMPORARY CODE) , THE PROPER WAY IS TO FIX THE MODELS BEHAVIOUR !!!!!!!!!!
-    /*  $projectsUser = TableRegistry::getTableLocator()->get('Projet')->find()->where(['idProprietaire' => $utilisateur->idUtilisateur])->all();
-      $tasksUsers = TableRegistry::getTableLocator()->get('Tache')->find()->where(['idResponsable' => $utilisateur->idUtilisateur])->all();
-      if(!empty($tasksUsers)) {
-        foreach($tasksUsers as $taskUser) { // All the tasks where the user was responsible are now unassigned
-          $taskUser->idProprietaire = null;
-          TableRegistry::getTableLocator()->get('Tache')->save($taskUser);
-        }
-      }
-      if(!empty($projectsUser)) {
-        foreach ($projectsUser as $project) { // All the projects created by the user are deleted and all the tasks inside the project too
-          $tasksProject = TableRegistry::getTableLocator()->get('Tache')->find()->where(['idProjet' => $project->idProjet])->all();
-          foreach($tasksProject as $taskProject) {
-            TableRegistry::getTableLocator()->get('Tache')->delete($taskProject);
-          }
-          TableRegistry::getTableLocator()->get('Projet')->delete($project);
-        }
-      }*/
-      // TODO : END OF THE TEMPORARY CODE
+      /* Il faut enlever l'utilisateur en tant que responsable des tâches dont il est responsable */
+      
 
       $success = $this->Utilisateur->delete($utilisateur);
       if($success) {
