@@ -4,6 +4,10 @@ header {
     padding-bottom: 5px;
 }
 
+h1 {
+  text-align: center;
+}
+
 .home {
   background-color: #9fc5f8;
 }
@@ -292,4 +296,8 @@ div.message.hidden {
   cursor: pointer;
   height: 40px;
   width: 40px;
+}
+
+.form-addTache textarea, .form-addTache input[type=text], .form-addTache input[type=email], .form-addTache input[type=password] {
+  width: 100%;
 }

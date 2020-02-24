@@ -1,13 +1,15 @@
-<div class="container" style="margin-top: 50px;">
+<div class="container form-addTache" style="margin-top: 50px;">
       <div class="row">
-          <div class="col-xl-12 offset-xl-0"><h1><center>Ajouter une tâche</center></h1></div>
+          <div class="col-xl-12 offset-xl-0"><h1>Ajouter une tâche</h1></div>
       </div>
       <?= $this->Form->create('Tache'); ?>
-      <div class="row" style="margin-left: 20;">
-          <div class="col text-center" style="margin-bottom: 20px;margin-top: 20px;"><?= $this->Form->input('titre', array('label' => 'Titre de la tâche :')); ?></div>
-      </div>
       <div class="row">
-          <div class="col text-center" style="margin-bottom: 20px;margin-top: 20px;"><?= $this->Form->input('description', array('label' => 'Description :')); ?></div>
+          <div class="col-xl-2 text-center" style="margin-bottom: 20px;margin-top: 20px;"><?= $this->Form->label('titre', 'Titre de la tâche: '); ?></div>
+          <div class="col-xl-10 text-center" style="margin-bottom: 20px;margin-top: 20px;"><?= $this->Form->text('titre'); ?></div>
+      </div>
+      <div class="col text-center" style="margin-top: 20px;"><?= $this->Form->label('description', 'Description'); ?></div>
+      <div class="row">
+          <div class="col text-center" style="margin-bottom: 20px;"><?= $this->Form->textarea('description'); ?></div>
       </div>
       <div class="row">
         <div class="form-check">
