@@ -26,20 +26,9 @@ class MembreController extends AppController
         $user = $session->read('Auth.User.idUtilisateur');
         if($projetTab->idProprietaire == $user){
           $estProprietaire = true;
-
-        // S'il n'est pas propriétaire, est-il membre ?
-        // -> Vérifie en même temps si le projet existe.
       }else{
-        $membres = TableRegistry::get('Membre');
-        $query = $membres->find()
-            ->select(['idUtilisateur'])
-            ->where(['idUtilisateur' => $user])
-            ->count();
-            // S'il n'est pas membre non plus, on le redirige.
-        if ($query==0){
           $this->Flash->error(__('Ce projet n\'existe pas ou vous n\'y avez pas accès.'));
           $this->redirect(['controller'=>'Accueil', 'action'=>'index']);
-        }
       }
 
       $this->loadComponent('Paginator');
@@ -58,19 +47,36 @@ class MembreController extends AppController
     */
     public function add($id){
       if ($this->request->is('post')){
+
+      // Est-ce que l'utilisateur demandé existe ?
           $utilisateurs = TableRegistry::get('Utilisateur');
           $query = $utilisateurs->find()
               ->select(['idUtilisateur'])
               ->where(['pseudo' => $this->request->getData()['recherche_utilisateurs']])
               ->first();
           $id_utilisateur = $query['idUtilisateur'];
+
         if ($id_utilisateur===null){
           $this->Flash->error(__('Ce membre n\'existe pas.'));
           return $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id]);
         }
 
-        $membre = $this->Membre->newEntity();
+        // Est-ce que l'utilisateur est propriétaire du projet ?
+        $session = $this->request->getSession(); // Le check Session est vrai car on est passés par index de ce même controller
+        if ($id_utilisateur===$session->read('Auth.User.idUtilisateur')){
+          $this->Flash->error(__('Vous êtes le propriétaire de ce projet.'));
+          return $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id]);
+        }
 
+        // Est-ce que l'utilisateur demandé est déjà dans le projet ?
+        $count = $this->Membre->find()->where(['idUtilisateur'=>$id_utilisateur])->count();
+        if ($count>0){
+          $this->Flash->error(__('Ce membre est déjà dans le projet.'));
+          return $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id]);
+        }
+
+        // Bienvenue au nouveau membre dans le projet !
+        $membre = $this->Membre->newEntity();
 
         $membre->idProjet= $id;
         $membre->idUtilisateur= $id_utilisateur;
@@ -81,7 +87,7 @@ class MembreController extends AppController
           return $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id]);
         }
         $this->Flash->error(__('Impossible d\'ajouter ce membre.'));
-      }
+      } // fin if post
     }
 
 }
