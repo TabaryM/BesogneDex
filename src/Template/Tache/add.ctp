@@ -13,7 +13,7 @@
       </div>
       <div class="row">
         <div class="form-check">
-          <input id="formCheck-2" class="form-check-input" type="checkbox" />
+          <?= $this->Form->checkbox('estResponsable'); ?>
           <label class="form-check-label" for="formCheck-2">Je suis responsable de cette tâche</label>
         </div>
       </div>

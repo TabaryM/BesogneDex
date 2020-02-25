@@ -77,23 +77,23 @@ class TacheController extends AppController
 
     /**
      * Ajoute une ligne dans la table tache
-     * @author Clément
+     * @author Clément COLNE
      */
     public function add($id){
       if ($this->request->is('post')){
         $tache = $this->Tache->newEntity($this->request->getData());
         $tache->finie = 0;
-
         $tache->idProjet = $id;
-
         if ($this->Tache->save($tache)) {
           $this->Flash->success(__('Votre tâche a été sauvegardée.'));
-
+          if($tache->estResponsable == 1) {
+            // l'utilisateur devient responsable de la tâche
+            $this->devenirResponsable($id, $tache->idTache);
+          }
           return $this->redirect(['action'=> 'index', $id]);
         }
         $this->Flash->error(__('Impossible d\'ajouter votre tâche.'));
       }
-
       $this->set(compact('id'));
     }
 

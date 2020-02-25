@@ -46,7 +46,7 @@
                     if(isset($tache->responsable->pseudo)){
                       echo $tache->responsable->pseudo;
                     }else{
-                      echo 'None';
+                      echo '--';
                     }
                     ?>
                   </td>
