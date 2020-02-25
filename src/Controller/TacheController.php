@@ -147,6 +147,10 @@ class TacheController extends AppController
     public function delete($id){
         $this->set(compact('id'));
     }
+
+    public function finie($idTache){
+      echo "Fonction pas terminée ..";
+    }
 }
 
 ?>

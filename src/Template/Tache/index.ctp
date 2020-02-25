@@ -51,7 +51,9 @@
                     ?>
                   </td>
                   <td class="text-center">
-                    <input type="checkbox" name="<?=$tache->idTache?>">
+                    <?= $this->Form->create('Tache' . $tache->idTache, ['url' => ['controller' => 'Tache', 'action' => 'finie', $tache->idTache], 'id' => 'Tache' . $tache->idTache]) ?>
+                    <input type="checkbox" onclick="che(<?=$tache->idTache?>)">
+                    <?= $this->Form->end(); ?>
                   </td>
                   <td class="text-center">
                     <div class="dropdown">
@@ -107,3 +109,5 @@
     </div>
     <div class="col-xl-5 d-flex justify-content-end align-items-center"><?php echo $this->Html->link("", array('controller' => 'Tache', 'action'=> 'add', $id), array( 'class' => 'btn btn-primary shadow rond-croix')); ?></div>
   </div>
+
+  <?= $this->Html->script('tacheTermine.js'); ?>
