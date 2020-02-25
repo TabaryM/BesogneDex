@@ -245,8 +245,14 @@ class UtilisateurController extends AppController
       $this->Flash->error(__('Impossible de supprimer votre compte utilisateur : vérifiez qu\'il existe et que vous êtes bien connecté.'));
     } else {
 
-      /* Il faut enlever l'utilisateur en tant que responsable des tâches dont il est responsable */
-      
+        // Unassign user from tasks where he was assigned
+        $tasksUsers = TableRegistry::getTableLocator()->get('Tache')->find()->where(['idResponsable' => $utilisateur->idUtilisateur])->all();
+        if(!empty($tasksUsers)) {
+            foreach($tasksUsers as $taskUser) { // All the tasks where the user was responsible are now unassigned
+                $taskUser->idProprietaire = null;
+                TableRegistry::getTableLocator()->get('Tache')->save($taskUser);
+            }
+        }
 
       $success = $this->Utilisateur->delete($utilisateur);
       if($success) {

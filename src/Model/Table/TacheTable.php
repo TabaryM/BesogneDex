@@ -10,11 +10,13 @@ class TacheTable extends Table{
   * @param $config : aucune idée
   */
   public function initialize(array $config){
-      $this->setPrimaryKey('idTache');
+    $this->setPrimaryKey('idTache');
+
     $this->belongsTo('Utilisateur', [
       'foreignKey' => 'idResponsable',
       'propertyName' => 'responsable'
     ]);
+
     $this->belongsTo('Projet', [
       'foreignKey' => 'idProjet',
       'propertyName' => 'leProjet'

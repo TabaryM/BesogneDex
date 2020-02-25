@@ -20,6 +20,4 @@ class Utilisateur extends Entity
 
 
 
-
-
 }
