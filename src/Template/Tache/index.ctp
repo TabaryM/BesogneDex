@@ -65,7 +65,7 @@
                         <?php
                         if (isset ($user) && isset($tache->responsable)) {
                             if($tache->idResponsable == $user) {
-                                echo $this->Html->link("Se déproposer pour la tâche", array('controller' => 'Tache', 'action'=> 'notSoResponsible', $id, $tache->idTache), array( 'class' => 'dropdown-item'));
+                                echo $this->Html->link("Se retirer de la tâche", array('controller' => 'Tache', 'action'=> 'notSoResponsible', $id, $tache->idTache), array( 'class' => 'dropdown-item'));
                             }
                         } else {
                            echo $this->Html->link("Se proposer pour la tâche", array('controller' => 'Tache', 'action'=> 'devenirResponsable', $id, $tache->idTache), array( 'class' => 'dropdown-item'));
