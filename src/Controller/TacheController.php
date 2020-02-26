@@ -17,6 +17,9 @@ class TacheController extends AppController
     {
 
       $estProprietaire = false;
+      $user = null;
+
+
       //Pour la couronne dans le header
       Configure::write('utilisateurProprietaire', false);
       $this->loadComponent('Paginator');
@@ -30,9 +33,13 @@ class TacheController extends AppController
         ->where(['idProjet' => $id])
         ->first();
 
+
+
       $session = $this->request->getSession();
       if ($session->check('Auth.User.idUtilisateur')) {
-        $user = $session->read('Auth.User.idUtilisateur');
+          $user = $session->read('Auth.User.idUtilisateur');
+
+
         if($projetTab->idProprietaire == $user){
           $estProprietaire = true;
           //Pour la couronne dans le header
@@ -54,7 +61,9 @@ class TacheController extends AppController
       }
 
     }// fin session check idUtilisateur
-      $this->set(compact('taches', 'id', 'projetTab', 'estProprietaire'));
+            $this->set(compact('taches', 'id', 'projetTab', 'estProprietaire', 'user'));
+
+
     }// fin fonction
 
     /**
@@ -148,6 +157,13 @@ class TacheController extends AppController
         $this->set(compact('id'));
     }
 
+    /**
+     * Permet a un membre du projet de se dé-responsabiliser d'une tâche (bouh le mauvais utilisateur)
+     * @author Adrien Palmieri
+     */
+    public function notSoResponsible($id, $idTache) {
+        return $this->redirect(['action' => 'index', $id]);
+    }
     public function finie($idTache){
       echo "Fonction pas terminée ..";
     }

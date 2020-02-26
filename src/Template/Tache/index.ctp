@@ -3,7 +3,7 @@
 
   Configure::write('titre_header_tache',$projetTab->titre);
  ?>
-<!-- Auteur : Thibault CHONÉ - Valérie MARISSENS -->
+<!-- Auteur : Thibault CHONÉ - Valérie MARISSENS - Adrien PALMIERI -->
     <div class="row d-flex align-items-start" style="margin-left:60px;margin-right:60px;margin-top:20px;">
       <div class="col-xl-12" style="height: 80%;">
         <div class="table-responsive">
@@ -34,7 +34,10 @@
             </thead>
             <tbody>
               <?php
-                foreach ($taches as $tache): ?>
+              $i = 0;
+                foreach ($taches as $tache):
+                    $i += 1;
+                 ?>
 
                 <tr style="height: 50px;">
                   <td>
@@ -61,12 +64,20 @@
                       <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                         <?php echo $this->Html->link("Supprimer la tâche", array('controller' => 'Tache', 'action'=> 'delete', $id), array( 'class' => 'dropdown-item')); ?>
                         <?php echo $this->Html->link("Modifier la tâche", array('controller' => 'Tache', 'action'=> 'edit', $id), array( 'class' => 'dropdown-item'));?>
-                        <?php echo $this->Html->link("Se proposer pour la tâche", array('controller' => 'Tache', 'action'=> 'devenirResponsable', $id, $tache->idTache), array( 'class' => 'dropdown-item'));?>
-                      </div>
+                        <?php
+                        if (isset ($user) && isset($tache->responsable)) {
+                            if($tache->idResponsable == $user) {
+                                echo $this->Html->link("Se déproposer pour la tâche", array('controller' => 'Tache', 'action'=> 'notSoResponsible', $id, $tache->idTache), array( 'class' => 'dropdown-item'));
+                            }
+                        } else {
+                           echo $this->Html->link("Se proposer pour la tâche", array('controller' => 'Tache', 'action'=> 'devenirResponsable', $id, $tache->idTache), array( 'class' => 'dropdown-item'));
+                        }
+                        ?>
+                         </div>
                     </div>
                   </td>
                 </tr>
-              <?php endforeach; ?>
+              <?php endforeach;   debug($i); ?>
             </tbody>
           </table>
         </div>
