@@ -34,9 +34,7 @@
             </thead>
             <tbody>
               <?php
-              $i = 0;
                 foreach ($taches as $tache):
-                    $i += 1;
                  ?>
 
                 <tr style="height: 50px;">
@@ -77,7 +75,7 @@
                     </div>
                   </td>
                 </tr>
-              <?php endforeach;   debug($i); ?>
+              <?php endforeach;  ?>
             </tbody>
           </table>
         </div>
