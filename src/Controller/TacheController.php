@@ -162,6 +162,12 @@ class TacheController extends AppController
      * @author Adrien Palmieri
      */
     public function notSoResponsible($id, $idTache) {
+        $session = $this->request->getSession();
+
+        $tache = $this->Tache->get($idTache);
+        $tache->idResponsable = NULL;
+        $this->Tache->save($tache);
+
         return $this->redirect(['action' => 'index', $id]);
     }
     public function finie($idTache){
