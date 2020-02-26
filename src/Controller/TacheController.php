@@ -122,7 +122,7 @@ class TacheController extends AppController
         $this->set(compact('taches'));
       } else {
         $this->Flash->error(_('Une erreur est survenue lors de la récupérations des tâches.'));
-        $this->redirect($this->referer);
+        $this->redirect($this->referer());
       }
     }
 

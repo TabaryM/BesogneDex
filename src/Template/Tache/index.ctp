@@ -90,33 +90,30 @@
         <div class="card color-card">
             <div class="card-body shadow d-flex justify-content-between align-items-center color-card">
               <?= $this->Html->image("icones/membres.png", ['class' => 'image_icone']) ?>
-              <?php
-              echo $this->Html->link("Détails du projet", array('controller' => 'Tache', 'action'=> 'details', $id), array( 'class' => 'btn btn-primary shadow'));
-              ?>
-              <?php
-              if($estProprietaire){
-                echo $this->Html->link("Gérer les membres", array('controller' => 'Membre', 'action'=> 'index', $id), array( 'class' => 'btn btn-primary shadow'));
-              }
-              ?>
+              <?= $this->Html->link("Détails du projet", array('controller' => 'Tache', 'action'=> 'details', $id), array( 'class' => 'btn btn-primary shadow')); ?>
+              <?php if($estProprietaire): ?>
+                <?= $this->Html->link("Gérer les membres", array('controller' => 'Membre', 'action'=> 'index', $id), array( 'class' => 'btn btn-primary shadow')); ?>
+              <?php endif; ?>
             </div>
         </div>
     </div>
-    <div class="col-xl-3">
+    <div class="col-xl-4">
         <div class="card color-card">
             <div class="card-body shadow d-flex justify-content-between align-items-center color-card">
               <?= $this->Html->image("icones/list.png", ['class' => 'image_icone']) ?>
-              <?php
-              if($estProprietaire){
-                echo $this->Html->link("Modifier", array('controller' => 'Projet', 'action'=> 'edit', $id), array( 'class' => 'btn btn-primary shadow'));
-                echo $this->Html->link("Supprimer", array('controller' => 'Projet', 'action'=> 'delete', $id), array( 'class' => 'btn btn-danger shadow'));
-              } else {
-                echo $this->Html->link("Quitter le projet", array('controller' => 'Projet', 'action'=> 'delete', $id), array( 'class' => 'btn btn-danger shadow'));
-              }
-              ?>
+              <?php if($estProprietaire): ?>
+                <?= $this->Html->link("Archiver", ['controller' => 'Projet', 'action' => 'archive', $id], ['class' => 'btn btn-primary shadow']); ?>
+                <?= $this->Html->link("Modifier", ['controller' => 'Projet', 'action' => 'edit', $id], ['class' => 'btn btn-primary shadow']); ?>
+                <?= $this->Html->link("Supprimer", ['controller' => 'Projet', 'action' => 'delete', $id], ['class' => 'btn btn-danger shadow']); ?>
+              <?php else: ?>
+                <?= $this->Html->link("Quitter le projet", ['controller' => 'Projet', 'action'=> 'delete', $id], ['class' => 'btn btn-danger shadow']); ?>
+              <?php endif; ?>
             </div>
         </div>
     </div>
-    <div class="col-xl-5 d-flex justify-content-end align-items-center"><?php echo $this->Html->link("", array('controller' => 'Tache', 'action'=> 'add', $id), array( 'class' => 'btn btn-primary shadow rond-croix')); ?></div>
+    <div class="col-xl-4 d-flex justify-content-end align-items-center">
+      <?= $this->Html->link("", ['controller' => 'Tache', 'action'=> 'add', $id], ['class' => 'btn btn-primary shadow rond-croix']); ?>
+    </div>
   </div>
 
   <?= $this->Html->script('tacheTermine.js'); ?>
