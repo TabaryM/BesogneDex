@@ -10,7 +10,7 @@
       <p>Membres du projet :</p>
       <div class="card">
         <div class="card-body">
-          <p>A remplir avec les membres du projets</p>
+          <p><?= $mbs ?></p>
         </div>
       </div>
     </div>

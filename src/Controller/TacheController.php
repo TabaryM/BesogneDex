@@ -74,14 +74,19 @@ class TacheController extends AppController
     public function details($id)
     {
         $projets = TableRegistry::getTableLocator()->get('Projet');
-
         $projet = $projets->find()->where(['idProjet' => $id])->first();
-
         $desc = $projet->description;
 
-        //TODO:Liste membre à afficher
+        $membres = TableRegistry::getTableLocator()->get('Membre');
+        $membres = $membres->find()->contain('Utilisateur')
+        ->where(['idProjet' => $id]);
 
-        $this->set(compact('desc', 'id'));
+        $mbs = "";
+        foreach ($membres as $m) {
+          $mbs .= $m->un_utilisateur->pseudo . "<br>";
+        }
+
+        $this->set(compact('desc', 'id', 'mbs'));
     }
 
     /**
@@ -170,7 +175,7 @@ class TacheController extends AppController
     }
 
 
-    
+
     public function finie($idTache){
       echo "Fonction pas terminée ..";
     }
