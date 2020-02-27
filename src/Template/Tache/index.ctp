@@ -53,7 +53,7 @@
                   </td>
                   <td class="text-center">
                     <?= $this->Form->create('Tache' . $tache->idTache, ['url' => ['controller' => 'Tache', 'action' => 'finie', $tache->idTache], 'id' => 'Tache' . $tache->idTache]) ?>
-                    <input type="checkbox" class="checkFait" value="<?= $tache->idTache ?>">
+                    <input type="checkbox" onclick="che(<?=$tache->idTache?>)">
                     <?= $this->Form->end(); ?>
                   </td>
                   <td class="text-center">
