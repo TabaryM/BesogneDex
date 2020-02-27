@@ -1,5 +1,5 @@
 <?php
-	//Il faut l'extension mysqli dans php.ini
+  //Il faut l'extension mysqli dans php.ini
   function query($link,$requete)
   {
     $resultat=mysqli_query($link,$requete) or die("$requete : ".mysqli_error($link));
@@ -31,7 +31,7 @@ $Sql="
 		description VARCHAR(500),
 		dateDebut DATE DEFAULT NOW(),
 		dateFin DATE,
-		etat VARCHAR(10),
+		etat VARCHAR(10) DEFAULT 'En cours',
 		idProprietaire INT NOT NULL,
 		PRIMARY KEY (idProjet),
 		FOREIGN KEY (idProprietaire) REFERENCES Utilisateur(idUtilisateur)
@@ -45,7 +45,7 @@ $Sql="
 		idResponsable INT DEFAULT NULL,
 		idProjet INT NOT NULL,
 		PRIMARY KEY (idTache),
-		FOREIGN KEY (idResponsable) REFERENCES Membre(idUtilisateur),
+		FOREIGN KEY (idResponsable) REFERENCES Utilisateur(idUtilisateur),
 		FOREIGN KEY (idProjet) REFERENCES Projet(idProjet)
     );
 
@@ -60,6 +60,7 @@ $Sql="
 	CREATE TABLE NotificationProjet (
 		idNotificationProjet INT NOT NULL AUTO_INCREMENT,
 		a_valider BOOLEAN NOT NULL,
+		contenu VARCHAR(500),
 		date DATE DEFAULT NOW(),
 		idProjet INT NOT NULL,
 		PRIMARY KEY (idNotificationProjet),
@@ -69,11 +70,12 @@ $Sql="
 	CREATE TABLE NotificationTache (
 		idNotificationTache INT NOT NULL AUTO_INCREMENT,
 		a_valider BOOLEAN NOT NULL,
+		contenu VARCHAR(500),
 		date DATE DEFAULT NOW(),
 		idTache INT NOT NULL,
 		PRIMARY KEY (idNotificationTache),
 		FOREIGN KEY (idTache) REFERENCES Tache(idTache)
-	);
+	);	
 
 	CREATE TABLE VueNotificationProjet (
 		idUtilisateur INT NOT NULL,
