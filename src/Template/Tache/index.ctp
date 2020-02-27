@@ -142,7 +142,7 @@
         </div>
     </div>
     <div class="col-xl-2 col-md-2 d-flex justify-content-end align-items-center">
-      <?= $this->Html->link("", ['controller' => 'Tache', 'action'=> 'add', $id], ['class' => 'btn btn-primary shadow rond-croix']); ?>
+      <?= $this->Html->link("", ['controller' => 'Tache', 'action'=> 'add', $idProjet], ['class' => 'btn btn-primary shadow rond-croix']); ?>
     </div>
   </div>
 
