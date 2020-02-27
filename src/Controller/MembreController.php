@@ -69,7 +69,7 @@ class MembreController extends AppController
         }
 
         // Est-ce que l'utilisateur demandé est déjà dans le projet ?
-        $count = $this->Membre->find()->where(['idUtilisateur'=>$id_utilisateur])->count();
+        $count = $this->Membre->find()->where(['idUtilisateur'=>$id_utilisateur, 'idProjet'=>$id])->count();
         if ($count>0){
           $this->Flash->error(__('Ce membre est déjà dans le projet.'));
           return $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id]);
@@ -90,6 +90,12 @@ class MembreController extends AppController
       } // fin if post
     }
 
+    public function delete($id){
+      if ($this->request->is('post')){
+        debug($id);
+          die();
+      }// fin if post
+    }
 }
 
 ?>

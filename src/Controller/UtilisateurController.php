@@ -88,7 +88,7 @@ class UtilisateurController extends AppController
   * Permet à l'utilisateur de s'inscrire.
   * La page qui appelle cette fonction est : Template/Pages/home.ctp.
   *
-  * @author POP Diana
+  * @author POP Diana, PALMIERI Adrien
   */
   public function add(){
     $utilisateur = $this->Utilisateur->newEntity();
@@ -96,12 +96,12 @@ class UtilisateurController extends AppController
       $utilisateur = $this->Utilisateur->patchEntity($utilisateur, $this->request->getData());
       if ($this->Utilisateur->save($utilisateur)) {
         $this->Flash->success(__('Votre compte est bien enregistré.'));
+        $this->Auth->setUser($utilisateur);
         return $this->redirect(['controller' => 'pages', 'action' => 'display','home']);
       }
       $this->affichage_erreurs($utilisateur->errors());
       return $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
     }
-    $this->set('utilisateur', $utilisateur);
   }
 
   /**

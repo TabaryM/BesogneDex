@@ -60,7 +60,7 @@
                     <div class="dropdown">
                       <a class="test" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">●●●</a>
                       <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        <?php echo $this->Html->link("Supprimer la tâche", array('controller' => 'Tache', 'action'=> 'delete', $id), array( 'class' => 'dropdown-item')); ?>
+                        <?php echo $this->Html->link("Supprimer la tâche", array('controller' => 'Tache', 'action'=> 'index', $id), array('class' => 'dropdown-item', 'data-toggle' => 'modal', 'data-target' => '#deleteModal')); ?>
                         <?php echo $this->Html->link("Modifier la tâche", array('controller' => 'Tache', 'action'=> 'edit', $id), array( 'class' => 'dropdown-item'));?>
                         <?php
                         if (isset ($user) && isset($tache->responsable)) {
@@ -82,9 +82,33 @@
       </div>
     </div>
 
+<!-- Modal Supprimer une tâche : -->
+<div class="modal fade" id="deleteModal" role="dialog" tabindex="-1">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"></h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
+                <div class="modal-body">
+                    <p style="width: 477px;">Êtes-vous sûr de vouloir demander la suppression de cette tâche ?</p>
+                </div>
+                <div class="modal-footer text-center">
+                    <div class="row text-center" style="width: 484px;">
+                        <div class="col text-right">
+                          <?php echo $this->Html->link("Non", array('controller' => 'Tache', 'action'=> 'index', $id), array( 'button class' => 'btn btn-light', 'data-dismiss' => 'modal'));?>
+                        </div>
+                        <div class="col text-left">
+                          <?php echo $this->Html->link("Oui", array('controller' => 'Tache', 'action'=> 'index', $id), array( 'button class' => 'btn btn-danger', 'data-dismiss' => 'modal'));?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
       </div>
     </div>
+
+<!-- Boutons : -->
     <div class="row" style="margin-right: 60px;margin-left: 60px;">
     <div class="col-xl-4">
         <div class="card color-card">
@@ -117,3 +141,7 @@
   </div>
 
   <?= $this->Html->script('tacheTermine.js'); ?>
+
+
+  <script src="assets/js/jquery.min.js"></script>
+  <script src="assets/bootstrap/js/bootstrap.min.js"></script>

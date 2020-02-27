@@ -15,7 +15,7 @@
           <div class="col text-left" style="margin-bottom: 20px;margin-top: 20px;"><?= $this->Form->input('dateFin', array('label' => 'Date de fin :  ', 'type' => 'date')); ?></div>
       </div>
       <div class="row">
-          <div class="col text-center" style="margin-bottom: 20px;margin-top: 20px;"><?= $this->Form->input('description', array('label' => 'Description : ')); ?></div>
+          <div class="col text-center" style="margin-bottom: 20px;margin-top: 20px;">Description : <?= $this->Form->textarea('description', array('label' => 'Description : '), array('style' => 'width: 70%;height: 90%;resize: none;')); ?></div>
       </div>
 
       <!-- Boutons Retour et Créer un projet -->
