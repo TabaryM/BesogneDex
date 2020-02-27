@@ -37,7 +37,7 @@
 
     <?php   if($loggedIn):  ?>
     <div class="col d-flex flex-row-reverse justify-content-start align-items-center">
-    <?= $this->Html->link("", array('controller' => 'Utilisateur','action'=> '#'),  array( 'class' => 'btn logout', 'data-toggle' => 'modal', 'data-target' => '#logoutModal'))?>
+    <a class="btn logout" data-toggle="modal" data-target="#logoutModal"></a>
     <?= $this->Html->link("", array('controller' => 'Utilisateur','action'=> 'profil'), array( 'class' => 'btn user'))?>
     <?= $this->Html->link("", array('controller' => 'Utilisateur','action'=> '#'), array( 'class' => 'btn bell'))?>
   </div>

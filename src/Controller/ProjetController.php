@@ -53,9 +53,9 @@ class ProjetController extends AppController
                       $idUser = $session->read('Auth.User.idUtilisateur');
                       $projet->idProprietaire = $idUser;
 
-                      foreach($this->Projet->find('all')->where('idProprietaire' == $idUser) as $proj) {
+                      foreach($this->Projet->find('all', ['conditions'=>['idProprietaire'=>$idUser]]) as $proj) {
                           if($proj->titre == $receivedData['titre']) {
-                              $this->Flash->error(__("Impossible d'ajouter un projet avec un nom identique.."));
+                              $this->Flash->error(__("Impossible d'ajouter un projet avec un nom identique"));
                               return $this->redirect(['action'=> 'index']);
                           }
                       }

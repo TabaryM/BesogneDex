@@ -91,13 +91,21 @@ class TacheController extends AppController
 
     /**
      * Ajoute une ligne dans la table tache
-     * @author Clément COLNE
+     * @author Clément COLNE, Adrien Palmieri
      */
     public function add($idProjet){
       if ($this->request->is('post')){
         $tache = $this->Tache->newEntity($this->request->getData());
         $tache->finie = 0;
         $tache->idProjet = $idProjet;
+
+        // On verifie qu'il n'existe pas une tache du meme nom
+        foreach($this->Tache->find('all', ['conditions'=>['idProjet'=>$idProjet]]) as $task) {
+                if($task->titre == $tache->titre) {
+                    $this->Flash->error(__('Impossible d\'avoir plusieurs taches avec le meme nom'));
+                    return $this->redirect(['action'=> 'index', $idProjet]);
+                }
+          }
         if ($this->Tache->save($tache)) {
           $this->Flash->success(__('Votre tâche a été sauvegardée.'));
           if($tache->estResponsable == 1) {
@@ -162,24 +170,26 @@ class TacheController extends AppController
     public function delete($idProjet, $idTache){
         $this->set(compact('idProjet','idTache'));
 
-        $projetTab = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
-        ->get('Projet')->find()
-            ->where(['idProjet' => $idProjet])
-            ->first();
-
-        //permet de savoir si un utilisateur est propriétaire du projet
-        $session = $this->request->getSession();
-        if ($session->check('Auth.User.idUtilisateur')) {
-            $user = $session->read('Auth.User.idUtilisateur');
-            $tacheTab = TableRegistry::getTableLocator()->get('Tache');
-            $tache = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
-            ->get('Tache')->find()
-                ->where(['idTache' => $idTache])
+        if ($this->request->is('post')){
+            $projetTab = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
+            ->get('Projet')->find()
+                ->where(['idProjet' => $idProjet])
                 ->first();
-            //si il est propriétaire du projet ou que l'utilisateur est responsable de la tache il peut supprimer cette tache
-            if($projetTab->idProprietaire == $user || $tache->idResponsable == $user){
-                $query = $tacheTab->query();
-                $query->delete()->where(['idTache' => $idTache])->execute();
+
+            //permet de savoir si un utilisateur est propriétaire du projet
+            $session = $this->request->getSession();
+            if ($session->check('Auth.User.idUtilisateur')) {
+                $user = $session->read('Auth.User.idUtilisateur');
+                $tacheTab = TableRegistry::getTableLocator()->get('Tache');
+                $tache = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
+                ->get('Tache')->find()
+                    ->where(['idTache' => $idTache])
+                    ->first();
+                //si il est propriétaire du projet ou que l'utilisateur est responsable de la tache il peut supprimer cette tache
+                if($projetTab->idProprietaire == $user || $tache->idResponsable == $user){
+                    $query = $tacheTab->query();
+                    $query->delete()->where(['idTache' => $idTache])->execute();
+                }
             }
         }
         return $this->redirect(['action' => 'index', $idProjet]);
