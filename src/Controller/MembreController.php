@@ -96,13 +96,17 @@ class MembreController extends AppController
     * Auteur : POP Diana
     */
     public function delete($id_utilisateur, $id_projet){
-      $session = $this->request->getSession(); // Le check Session est vrai car on est passés par index de ce même controller
-      if ($id_utilisateur===$session->read('Auth.User.idUtilisateur')){
-        $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id_projet]);
-      }else {
+      // Comme session ne marche pas, on va aller chercher l'idPropriétaire du projet.
+      $projets = TableRegistry::get('Projet');
+      $projet = $projets->find()->where(['idProjet'=>$id_projet])->first();
+      $id_proprio = $projet->idProprietaire;
+
+      if ($id_utilisateur==$id_proprio){
+        return $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id_projet]);
+      }else{
         $membre = $this->Membre->find()->where(['idUtilisateur'=>$id_utilisateur, 'idProjet'=>$id_projet])->first();
         $success = $this->Membre->delete($membre);
-        $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id_projet]);
+        return $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id_projet]);
       }
     }
 
