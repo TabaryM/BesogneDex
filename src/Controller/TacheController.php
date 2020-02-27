@@ -176,8 +176,9 @@ class TacheController extends AppController
 
 
 
-    public function finie($idTache){
-      echo "Fonction pas terminée ..";
+    public function finie($id, $idTache){
+      
+      return $this->redirect(['action' => 'index', $id]);
     }
 }
 
