@@ -1,6 +1,8 @@
 <?php
 namespace App\Controller;
 
+require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'AffichageErreurs.php');
+use App\Controller\AppController;
 use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
 
@@ -144,8 +146,36 @@ class TacheController extends AppController
     */
     public function edit($idProjet)
     {
-        $this->set(compact('idProjet'));
-}
+      $data = $this->request->getData();
+      if(isset($data) && !empty($data)){
+        $tache = $this->Tache->find()
+        ->where(['idTache' => $idTache])
+        ->first();
+
+        $data = array_filter($data, function($value) { return !is_null($value) && $value !== '' && !empty($value); }); //On supprime les éléments vide
+
+        $data['idProjet'] = $idProjet;
+
+        $tache = $this->Tache->get($idTache); //On récupère les données tâches
+        $data2 = $this->Tache->patchEntity($tache, $data); //On "assemble" les données entre data et une tâche
+
+        if($this->Tache->save($data2)){ //On sauvegarde les données (Le vérificator passe avant)
+          $this->Flash->success(__('La Tâche a été modifié.'));
+        }else{
+          $errors = affichage_erreurs($tache->errors(), $this);
+          print_r($data2);
+          if(!empty($errors)){ //TODO: Factoriser ?
+            $this->Flash->error(
+              __("Veuillez modifier ce(s) champs : ".implode("\n \r", $errors))
+            );
+          }
+        }//TODO: redirect en casde succès
+      }
+
+      $id = $idProjet;
+
+      $this->set(compact('id'));
+    }
 
     /**
      * Permet à un membre de projet de devenir responsable d'une tache

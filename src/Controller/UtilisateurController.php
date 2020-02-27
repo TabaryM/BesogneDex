@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'AffichageErreurs.php');
 use App\Controller\AppController;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
@@ -15,33 +16,6 @@ class UtilisateurController extends AppController
   public function initialize()
   {
     parent::initialize();
-  }
-
-  /**
-  * Permet d'afficher les erreurs
-  *
-  * @author Diana POP, (Thibault CHONÉ)
-  * @param $ArrayError : Liste des erreurs à afficher (il est possible que cette variable contiennent également des tableaux d'erreurs)
-  */
-  private function affichage_erreurs($ArrayError){
-    if($ArrayError){
-      $error_msg = [];
-      foreach($ArrayError as $errors){
-        if(is_array($errors)){
-          foreach($errors as $error){
-            $error_msg[]    =   $error;
-          }
-        }else{
-          $error_msg[]    =   $errors;
-        }
-      }
-
-      if(!empty($error_msg)){
-        $this->Flash->error(
-          __("Veuillez modifier ce(s) champs : ".implode("\n \r", $error_msg))
-        );
-      }
-    }
   }
 
   public function index(){
@@ -98,7 +72,12 @@ class UtilisateurController extends AppController
         $this->Flash->success(__('Votre compte est bien enregistré.'));
         return $this->redirect(['controller' => 'pages', 'action' => 'display','home']);
       }
-      $this->affichage_erreurs($utilisateur->errors());
+      $errors = affichage_erreurs($utilisateur->errors());
+      if(!empty($errors)){ //TODO: Factoriser ?
+        $this->Flash->error(
+          __("Veuillez modifier ce(s) champs : ".implode("\n \r", $errors))
+        );
+      }
       return $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
     }
     $this->set('utilisateur', $utilisateur);
@@ -193,7 +172,13 @@ class UtilisateurController extends AppController
                 $this->Flash->success(__('Votre compte a été édité.'));
               }
 
-              $this->affichage_erreurs($utilisateur->errors()); //Affichage des erreurs si le vérificator n'as pas accepté
+              $errors = affichage_erreurs($utilisateur->errors()); //Affichage des erreurs si le vérificator n'as pas accepté
+
+              if(!empty($errors)){ //TODO: Factoriser ?
+                $this->Flash->error(
+                  __("Veuillez modifier ce(s) champs : ".implode("\n \r", $errors))
+                );
+              } //Affichage des erreurs si le vérificator n'as pas accepté
             }
           }else{
             $this->Flash->error(__('Le nouveau mot de passe ne correspond pas au mot de passe confirmé.'));
@@ -216,7 +201,13 @@ class UtilisateurController extends AppController
           ->where(['idUtilisateur' => $session->read('Auth.User.idUtilisateur')])
           ->first(); //TODO:Sûrement une meilleure méthode de retrouver les nouvelles infos de l'utilisateur
 
-          $this->affichage_erreurs($utilisateur->errors());
+          $errors = affichage_erreurs($utilisateur->errors()); //Affichage des erreurs si le vérificator n'as pas accepté
+
+              if(!empty($errors)){ //TODO: Factoriser ?
+                $this->Flash->error(
+                  __("Veuillez modifier ce(s) champs : ".implode("\n \r", $errors))
+                );
+              }
         }
       }
 
