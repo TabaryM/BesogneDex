@@ -31,6 +31,7 @@ class ProjetController extends AppController
 
     /**
     * Crée un projet dont l'utilisateur connecté sera le propriétaire.
+    * Une ligne dans Membre est donc créée.
     *
     * @authors : POP Diana, TABARY Mathieu
     */
@@ -51,11 +52,21 @@ class ProjetController extends AppController
                       $projet->idProprietaire = $session->read('Auth.User.idUtilisateur');
 
                       if ($this->Projet->save($projet)) {
-                          $this->Flash->success(__('Votre projet a été sauvegardé.'));
+                          $membres = TableRegistry::getTableLocator()->get('Membre');
+                          $membre = $membres->newEntity();
+                          $membre->set('idUtilisateur', $session->read('Auth.User.idUtilisateur'));
+                          $membre->set('idProjet', $projet->idProjet);
 
-                          return $this->redirect(['action'=> 'index']);
+                          if ($membres->save($membre)) {
+                            $this->Flash->success(__('Votre projet a été sauvegardé.'));
+                            return $this->redirect(['action'=> 'index']);
+                          }else {
+                            // Si il y a eu une erreur lors de l'ajout du membre dans la database
+                            $this->Flash->error(__("Impossible d'ajouter votre projet."));
+                            return $this->redirect(['action'=> 'index']);
+                          }
                       }
-                      // Si il y a eu une erreur lors de l'ajout dans la database
+                      // Si il y a eu une erreur lors de l'ajout du projet dans la database
                       $this->Flash->error(__("Impossible d'ajouter votre projet."));
 
                   } else {
@@ -166,7 +177,7 @@ class ProjetController extends AppController
           if ($user === $projet->idProprietaire) {
             $projet->etat = "Archive";
             $this->Projet->save($projet);
-            
+
             // Projet archivé
             $this->Flash->success(__("Projet achivé avec succès"));
             $this->redirect(['action' => 'archives']);

@@ -11,8 +11,8 @@
     <div class="col-xl-8"><label>Liste des membres :</label>
         <div class="card shadow">
             <div class="card-body">
-                <?php foreach ($membres as $membre): ?>
 
+                <?php foreach ($membres as $membre): ?>
                     <p onClick="afficherGris(<?php echo $membre->idUtilisateur ?>)" id=<?php echo $membre->idUtilisateur ?> class='ligne_membre'>
                       <?= $membre->un_utilisateur->pseudo ?>
                     </p>
@@ -22,8 +22,13 @@
         </div>
     </div>
 </div>
+<?php $goto = Router::url(array('controller'=>'Membre', 'action'=> 'delete'));
+?>
 <div class="row" style="margin-right: 60px;margin-left: 60px;margin-top: 50px;">
-    <div class="col-xl-10 d-flex flex-row justify-content-between align-items-xl-center"><button class="btn btn-primary shadow grosBouton" type="button">Changer de propriétaire</button><button class="btn btn-danger shadow grosBouton" type="button">Supprimer</button><button class="btn btn-primary shadow grosBouton boutonRouge" type="button">Retour</button></div>
+    <div class="col-xl-10 d-flex flex-row justify-content-between align-items-xl-center">
+      <button class="btn btn-primary shadow grosBouton" type="button">Changer de propriétaire</button>
+      <button class="btn btn-danger shadow grosBouton" type="button" onClick="supprimer()">Supprimer</button>
+      <button class="btn btn-primary shadow grosBouton boutonRouge" type="button">Retour</button></div>
 </div>
 
 <script>
