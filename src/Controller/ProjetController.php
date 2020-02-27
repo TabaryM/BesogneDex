@@ -131,9 +131,9 @@ class ProjetController extends AppController
         //permet de savoir si un utilisateur est propriétaire
         $session = $this->request->getSession();
         if ($session->check('Auth.User.idUtilisateur')) {
-          $user = $session->read('Auth.User.idUtilisateur');
+          $idUser = $session->read('Auth.User.idUtilisateur');
           $membres = TableRegistry::getTableLocator()->get('Membre');
-          if($projetTab->idProprietaire == $user){
+          if($projetTab->idProprietaire == $idUser){
 
             //degage tout les membres du projet
             $query = $membres->query();
@@ -152,8 +152,15 @@ class ProjetController extends AppController
           }
           //sinon si c'est un invité on le degage dans la table membre
           else{
+            $tachesSousResponsabilite = TableRegistry::getTableLocator()
+                ->get('Tache')->find()
+                ->where(['AND' => ['idProjet' => $idProjet, 'idResponsable' => $idUser]])
+                ->all();
+            foreach($tachesSousResponsabilite as $tache):
+                (new TacheController)->notSoResponsible($idProjet, $tache->idTache);
+            endforeach;
             $query = $membres->query();
-            $query->delete()->where(['idProjet' => $idProjet, 'idUtilisateur' => $user])->execute();
+            $query->delete()->where(['idProjet' => $idProjet, 'idUtilisateur' => $idUser])->execute();
           }
         }
 
