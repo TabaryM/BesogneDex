@@ -214,7 +214,7 @@ class ProjetController extends AppController
 
     /**
     * @author Théo Roton
-    * @TODO ajouter les erreurs
+    * @TODO ajouter les commentaires
     */
     public function modifierInfos(){
       $receivedData = $this->request->getData();
@@ -238,13 +238,12 @@ class ProjetController extends AppController
             if ($existe_deja == 0){
               $projet->titre = filter_var($receivedData['titre'],FILTER_SANITIZE_STRING);
             } else {
-              //titre déja pris
-                echo "titre déjà pris\n";
+
+              $this->Flash->error(__("Vous avez déjà un projet avec ce titre"));
               $erreur = true;
             }
           } else {
-            //titre incorrect
-              echo "titre incorrect\n";
+            $this->Flash->error(__("La taille du titre est incorrecte"));
             $erreur = true;
           }
       }
@@ -267,8 +266,7 @@ class ProjetController extends AppController
 
           } else {
 
-            //date de début après fin
-              echo "date de début après fin\n";
+            $this->Flash->error(__("La date de début du projet ne peut pas être après celle de fin"));
             $erreur = true;
           }
         } else if (strlen($dF['year']) == 0 && strlen($dF['month']) == 0 && strlen($dF['day']) == 0) {
@@ -279,13 +277,13 @@ class ProjetController extends AppController
           }
 
         } else {
-          //date de fin mal formée
-            echo "date de fin mal formée\n";
+
+          $this->Flash->error(__("La date de fin du projet est mal formée"));
           $erreur = true;
         }
       } else {
-        //date de debut avant aujourd'hui
-          echo "date de debut avant hoy\n";
+
+        $this->Flash->error(__("La date de début du projet ne peut pas être avant aujourd'hui"));
         $erreur = true;
       }
 
@@ -293,8 +291,8 @@ class ProjetController extends AppController
         if (verification_description($receivedData['descr'])){
           $projet->description = filter_var($receivedData['descr'],FILTER_SANITIZE_STRING);
         } else {
-          //description incorrect
-          echo "description incorrecte\n";
+
+          $this->Flash->error(__("La description dépasse 500 caractères"));
           $erreur = true;
         }
       }
