@@ -135,14 +135,6 @@ class UtilisateurController extends AppController
     return $this->redirect($this->Auth->logout());
   }
 
-  /**
-  * Utilisée dans la page : Template/Element/header.ctp
-  *
-  * @author MARISSENS Valérie
-  */
-  public function logoutConfirmation(){
-    return null;
-  }
 
   /**
   * Affiche le profil utilisateur
