@@ -1,6 +1,8 @@
 <?php
 namespace App\Controller;
 
+require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'AffichageErreurs.php');
+use App\Controller\AppController;
 use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
 
@@ -67,9 +69,9 @@ class TacheController extends AppController
     }// fin fonction
 
     /**
-     * Permet d'afficher les détails d'un projet (Description + liste membres)
-     * @author Thibault Choné
-     * @param $idProjet : id du projet cliqué ou affiché
+     * Permet d'afficher les détails d'un projet (Description + liste des membres)
+     * @author Thibault Choné, Théo Roton
+     * @param $id : id du projet cliqué ou affiché
      */
     public function details($idProjet)
     {
@@ -144,8 +146,36 @@ class TacheController extends AppController
     */
     public function edit($idProjet)
     {
-        $this->set(compact('idProjet'));
-}
+      $data = $this->request->getData();
+      if(isset($data) && !empty($data)){
+        $tache = $this->Tache->find()
+        ->where(['idTache' => $idTache])
+        ->first();
+
+        $data = array_filter($data, function($value) { return !is_null($value) && $value !== '' && !empty($value); }); //On supprime les éléments vide
+
+        $data['idProjet'] = $idProjet;
+
+        $tache = $this->Tache->get($idTache); //On récupère les données tâches
+        $data2 = $this->Tache->patchEntity($tache, $data); //On "assemble" les données entre data et une tâche
+
+        if($this->Tache->save($data2)){ //On sauvegarde les données (Le vérificator passe avant)
+          $this->Flash->success(__('La Tâche a été modifié.'));
+        }else{
+          $errors = affichage_erreurs($tache->errors(), $this);
+          print_r($data2);
+          if(!empty($errors)){ //TODO: Factoriser ?
+            $this->Flash->error(
+              __("Veuillez modifier ce(s) champs : ".implode("\n \r", $errors))
+            );
+          }
+        }//TODO: redirect en casde succès
+      }
+
+      $id = $idProjet;
+
+      $this->set(compact('id'));
+    }
 
     /**
      * Permet à un membre de projet de devenir responsable d'une tache
@@ -153,11 +183,9 @@ class TacheController extends AppController
      */
     public function devenirResponsable($idProjet, $idTache) {
         $session = $this->request->getSession();
-
-        $this->Tache->updateAll(
-            ['idResponsable' => $session->read('Auth.User.idUtilisateur')],
-            ['idTache' => $idTache]
-        );
+        $tache = $this->Tache->get($idTache);
+        $tache->idResponsable = $session->read('Auth.User.idUtilisateur');
+        $this->Tache->save($tache);
         // TODO: Envoyer notification aux autres membres du projet
         return $this->redirect(['action' => 'index', $idProjet]);
     }
@@ -199,19 +227,42 @@ class TacheController extends AppController
      * @author Adrien Palmieri
      */
     public function notSoResponsible($idProjet, $idTache) {
-        $session = $this->request->getSession();
         $tache = $this->Tache->get($idTache);
         $tache->idResponsable = NULL;
         $this->Tache->save($tache);
         return $this->redirect(['action' => 'index', $idProjet]);
     }
 
+  /**
+  * Permet de changer l'état d'une tache de "fait" a "non fait" et vis versa
+  * @param int $id ID de la tache dont l'etat est a changer
+  * @param boolean $fait Booleen indiquant si la tache est faite ou non
+  * @author Pedro Sousa Ribeiro
+  */
+  public function changerEtat($id, $fait) {
+    // Desactive le rendu de la vue (pas besoin de la vue)
+    $this->autoRender = false;
+    $this->render(false);
 
-
-    public function finie($idProjet, $idTache){
-
-      return $this->redirect(['action' => 'index', $idProjet]);
+    $tache = $this->Tache->get($id);
+    $session = $this->request->getSession();
+    if ($session->check('Auth.User.idUtilisateur')) {
+      $user = $session->read('Auth.User.idUtilisateur');
+      if ($tache->idResponsable === $user) {
+        if ($fait) {
+          $tache->finie = 1;
+        } else {
+          $tache->finie = 0;
+        }
+        $this->Tache->save($tache);
+      } else {
+        $this->Flash->error(__('Seul le responsable de la tâche peut changer l\'état de celui-ci.'));
+      }
+    } else {
+      $this->Flash->error(__('Vous devez être connecté pour changer l\'état d\'une tâche.'));
     }
+
+  }
 }
 
 ?>

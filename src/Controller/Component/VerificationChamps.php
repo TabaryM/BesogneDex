@@ -7,7 +7,7 @@
 function verification_titre($titre){
     $res = false;
     // Vérification de la taille
-    if(!(strlen($titre) < 1  || strlen($titre) > 128)){
+    if(strlen($titre) >= 1  && strlen($titre) <= 128){
         $res = true;
     }
 
@@ -22,7 +22,7 @@ function verification_titre($titre){
 function verification_description($description){
     $res = false;
     // Vérification de la taille
-    if(!(strlen($description) > 512)){
+    if(strlen($description) <= 500){
         $res = true;
     }
 
@@ -36,7 +36,7 @@ function verification_dates($dateDebut, $dateFin){
     $dateFin = strtotime(implode($dateFin));
 
     // Si la date de début est infèrieur à la date de fin, on dit que les dates sont valides
-    if(!($dateDebut > $dateFin)){
+    if($dateDebut <= $dateFin){
         $res = true;
     }
     return $res;

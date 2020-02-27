@@ -13,7 +13,7 @@
               <div class="d-flex flex-column mail_div_header">
                   <div>
                     <?= $this->Form->create(null, ['url' => ['controller' => 'Utilisateur', 'action' => 'login']] ); ?>
-                    <?= $this->Form->control('email', array('label' => 'E-mail : ', 'class' => 'label')); ?>
+                    <?= $this->Form->control('email', array('label' => 'E-mail :', 'class' => 'label')); ?>
                   </div>
                   <div class="form-check">
 
@@ -23,7 +23,7 @@
               </div>
               <div class="d-flex flex-column mdp_div_header">
                   <div>
-                    <?= $this->Form->control('mdp', array('label' => 'Mot de passe : ', 'class' => 'label', 'type'=>'password')); ?>
+                    <?= $this->Form->control('mdp', array('label' => 'Mot de passe :', 'class' => 'label', 'type'=>'password')); ?>
                   </div>
                   <a href="#">Mot de passe oublié ?</a>
               </div>
@@ -37,34 +37,10 @@
 
     <?php   if($loggedIn):  ?>
     <div class="col d-flex flex-row-reverse justify-content-start align-items-center">
-    <a class="btn logout" data-toggle="modal" data-target="#logoutModal"></a>
+    <?= $this->Html->link("", array('controller' => 'Utilisateur','action'=> 'logout_confirmation'), array( 'class' => 'btn logout'))?>
     <?= $this->Html->link("", array('controller' => 'Utilisateur','action'=> 'profil'), array( 'class' => 'btn user'))?>
     <?= $this->Html->link("", array('controller' => 'Utilisateur','action'=> '#'), array( 'class' => 'btn bell'))?>
   </div>
     <?php  endif;   ?>
-
-    <!-- Modal déconnexion : -->
-    <div class="modal fade" id="logoutModal" role="dialog" tabindex="-1">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title"></h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
-                    <div class="modal-body">
-                        <p style="width: 477px;text-align:center;">Êtes-vous sûr de vouloir vous déconnecter ?</p>
-                    </div>
-                    <div class="modal-footer text-center">
-                        <div class="row text-center" style="width: 484px;">
-                            <div class="col text-left">
-                              <?php echo $this->Html->link("Oui", array('controller' => 'Utilisateur', 'action'=> 'logout'), array('button class' => 'btn btn-danger'));?>
-                            </div>
-                            <div class="col text-right">
-                              <?php echo $this->Html->link("Non", array('controller' => 'Utilisateur', 'action'=> '#'), array('button class' => 'btn btn-primary', 'data-dismiss' => 'modal'));?>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-      </div>
-
 </header>
 <?= $this->Flash->render() ?>

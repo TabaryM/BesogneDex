@@ -1,7 +1,10 @@
-function che(idTache) {
-  jQuery("#Tache" + idTache).submit();
-
-  var xhttp = new XMLHttpRequest();
-  xhttp.open("GET", "ajax_info.txt", true);
-  xhttp.send();
-}
+$(document).ready(function() {
+  $('.checkFait').change(function() {
+    var id = $(this).val()
+    if (this.checked) {
+      $.get("/tache/changerEtat/" + id + "/1", null);
+    } else {
+      $.get("/tache/changerEtat/" + id + "/0", null);
+    }
+  });
+});

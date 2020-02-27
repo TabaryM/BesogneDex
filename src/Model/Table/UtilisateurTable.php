@@ -33,7 +33,7 @@ class UtilisateurTable extends Table{
 /**
 * Vérifications du formulaire d'inscription avec messsages d'erreurs.
 *
-* @author : POP Diana
+* Auteur : POP Diana
 */
   public function validationDefault(Validator $validator)
   {
