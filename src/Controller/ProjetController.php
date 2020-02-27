@@ -11,12 +11,13 @@ class ProjetController extends AppController
   *  Affiche la liste des projets dont l'utilisateur est membre.
   *
   * TODO: Il faut afficher les listes dont l'utilisateur est membre et non celles pour lesquelles il est propriétaire.
-  * @author : POP Diana
+  * Auteur : POP Diana
   */
     public function index()
     {
         $this->loadComponent('Paginator');
         $session = $this->request->getSession();
+        // $projets = $this->Paginator->paginate($this->Projet->find()->contain(['Membre'])->where(['idUtilisateur' => $session->read('Auth.User.idUtilisateur')]));
         $projets = $this->Paginator->paginate($this->Projet->find()->distinct()->contain('Utilisateur')
         ->leftJoinWith('Membre')
         ->where(
@@ -24,6 +25,7 @@ class ProjetController extends AppController
               'Membre.idUtilisateur' => $session->read('Auth.User.idUtilisateur'),
               'Projet.idProprietaire' => $session->read('Auth.User.idUtilisateur')
          ]]));
+
         $this->set(compact('projets'));
     }
 
@@ -31,7 +33,7 @@ class ProjetController extends AppController
     * Crée un projet dont l'utilisateur connecté sera le propriétaire.
     * Une ligne dans Membre est donc créée.
     *
-    * @authors : POP Diana, TABARY Mathieu, PALMIERI Adrien
+    * @authors : POP Diana, TABARY Mathieu
     */
     public function add(){
       if ($this->request->is('post')){
@@ -45,24 +47,14 @@ class ProjetController extends AppController
                       if($receivedData['dateDebut'] == $receivedData['dateFin']){
 
                       }
-
-
-
                       $projet = $this->Projet->newEntity($receivedData);
                       $session = $this->request->getSession();
-                      $idUser = $session->read('Auth.User.idUtilisateur');
-                      $projet->idProprietaire = $idUser;
+                      $projet->idProprietaire = $session->read('Auth.User.idUtilisateur');
 
-                      foreach($this->Projet->find('all', ['conditions'=>['idProprietaire'=>$idUser]]) as $proj) {
-                          if($proj->titre == $receivedData['titre']) {
-                              $this->Flash->error(__("Impossible d'ajouter un projet avec un nom identique"));
-                              return $this->redirect(['action'=> 'index']);
-                          }
-                      }
                       if ($this->Projet->save($projet)) {
                           $membres = TableRegistry::getTableLocator()->get('Membre');
                           $membre = $membres->newEntity();
-                          $membre->set('idUtilisateur', $idUser);
+                          $membre->set('idUtilisateur', $session->read('Auth.User.idUtilisateur'));
                           $membre->set('idProjet', $projet->idProjet);
 
                           if ($membres->save($membre)) {
@@ -120,40 +112,41 @@ class ProjetController extends AppController
     *
     * Auteurs : WATELOT Paul-Emile
     */
-    public function delete($idProjet){
+    public function delete($id){
       if ($this->request->is('post')){
 
         $projetTab = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
           ->get('Projet')->find()
-          ->where(['idProjet' => $idProjet])
+          ->where(['idProjet' => $id])
           ->first();
 
         //permet de savoir si un utilisateur est propriétaire
         $session = $this->request->getSession();
         if ($session->check('Auth.User.idUtilisateur')) {
           $user = $session->read('Auth.User.idUtilisateur');
-          $membres = TableRegistry::getTableLocator()->get('Membre');
           if($projetTab->idProprietaire == $user){
 
             //degage tout les membres du projet
+            $membres = TableRegistry::getTableLocator()->get('Membre');
             $query = $membres->query();
-            $query->delete()->where(['idProjet' => $idProjet])->execute();
+            $query->delete()->where(['idProjet' => $id])->execute();
 
             //supprime les taches du projet
             $taches = TableRegistry::getTableLocator()->get('Tache');
             $query = $taches->query();
-            $query->delete()->where(['idProjet' => $idProjet])->execute();
+            $query->delete()->where(['idProjet' => $id])->execute();
 
             //supprime le projet
             $projets = TableRegistry::getTableLocator()->get('Projet');
             $query = $projets->query();
-            $query->delete()->where(['idProjet' => $idProjet])->execute();
+            $query->delete()->where(['idProjet' => $id])->execute();
 
           }
           //sinon si c'est un invité on le degage dans la table membre
           else{
+            $membres = TableRegistry::getTableLocator()->get('Membre');
             $query = $membres->query();
-            $query->delete()->where(['idProjet' => $idProjet, 'idUtilisateur' => $user])->execute();
+            $query->delete()->where(['idProjet' => $id, 'idUtilisateur' => $user])->execute();
           }
         }
 
@@ -164,17 +157,17 @@ class ProjetController extends AppController
     /**
     * Utilisée dans Template/Tache/index.ctp
     */
-    public function edit($idProjet){
+    public function edit($id){
       return null;
     }
 
     /**
      * Permet d'archiver un projet uniquement si il est expiré et si l'utilisateur en est le propriétaire
-     * @param int $idProjet ID du projet a archiver
+     * @param int $id ID du projet a archiver
      * @author Pedro Sousa Ribeiro
      */
-    public function archive($idProjet) {
-      $projet = $this->Projet->get($idProjet);
+    public function archive($id) {
+      $projet = $this->Projet->get($id);
       $now = Time::now();
 
       $session = $this->request->getSession();

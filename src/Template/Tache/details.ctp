@@ -18,7 +18,7 @@
   <div class="row d-flex align-items-start" style="margin-top:20px;" >
     <div class="col-xl-12">
       <?php
-      echo $this->Html->link("Retour", array('controller' => 'Tache', 'action'=> 'index', $idProjet), array( 'class' => 'btn btn-primary'));
+      echo $this->Html->link("Retour", array('controller' => 'Tache', 'action'=> 'index', $id), array( 'class' => 'btn btn-primary'));
       ?>
       <?php
       echo $this->Html->link("Projets", array('controller' => 'Projet', 'action'=> 'index'), array( 'class' => 'btn btn-primary'));
