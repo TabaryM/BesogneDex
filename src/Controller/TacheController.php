@@ -91,13 +91,21 @@ class TacheController extends AppController
 
     /**
      * Ajoute une ligne dans la table tache
-     * @author Clément COLNE
+     * @author Clément COLNE, Adrien Palmieri
      */
     public function add($idProjet){
       if ($this->request->is('post')){
         $tache = $this->Tache->newEntity($this->request->getData());
         $tache->finie = 0;
         $tache->idProjet = $idProjet;
+
+        // On verifie qu'il n'existe pas une tache du meme nom
+        foreach($this->Tache->find('all', ['conditions'=>['idProjet'=>$idProjet]]) as $task) {
+                if($task->titre == $tache->titre) {
+                    $this->Flash->error(__('Impossible d\'avoir plusieurs taches avec le meme nom'));
+                    return $this->redirect(['action'=> 'index', $idProjet]);
+                }
+          }
         if ($this->Tache->save($tache)) {
           $this->Flash->success(__('Votre tâche a été sauvegardée.'));
           if($tache->estResponsable == 1) {
