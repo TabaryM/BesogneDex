@@ -144,13 +144,14 @@ class TacheController extends AppController
      * @author Mathieu TABARY
      */
     public function devenirResponsable($id, $idTache) {
-        // TODO demander au front-end de griser si c'est déjà pris
         $session = $this->request->getSession();
 
         $this->Tache->updateAll(
-            array('idResponsable' => $session->read('Auth.User.idUtilisateur')),
-            array('idTache' => $idTache)
+            ['idResponsable' => $session->read('Auth.User.idUtilisateur')],
+            ['idTache' => $idTache]
         );
+
+        // TODO: Envoyer notification aux autres membres du projet 
         return $this->redirect(['action' => 'index', $id]);
     }
 
@@ -198,8 +199,9 @@ class TacheController extends AppController
 
 
 
-    public function finie($idTache){
-      echo "Fonction pas terminée ..";
+    public function finie($id, $idTache){
+      
+      return $this->redirect(['action' => 'index', $id]);
     }
 }
 

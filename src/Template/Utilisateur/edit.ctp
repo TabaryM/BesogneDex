@@ -18,8 +18,8 @@
         <div class="col text-right" style="margin-bottom: 5px;margin-top: 5px;"><?= $this->Form->input('nom', array('label' => 'Nouveau nom :', 'class' => 'label')); ?></div>
         <div class="col text-right" style="margin-bottom: 5px;margin-top: 5px;"><?= $this->Form->input('prenom', array('label' => 'Nouveau prénom :', 'class' => 'label')); ?></div>
         <div class="col text-right" style="margin-bottom: 5px;margin-top: 5px;"><label class="pr-2" for="mdp_actu">Mot de passe actuel :</label><?= $this->Form->password('mdp_actu'); ?></div>
-        <div class="col text-right" style="margin-bottom: 5px;margin-top: 5px;"><label class="pr-2" for="mdp-new">Nouveau mot de passe :</label><?= $this->Form->password('mdp_new'); ?></div>
-        <div class="col text-right" style="margin-bottom: 5px;margin-top: 5px;"><label class="pr-2" for="mdp_new_conf">Confirmer le nouveau mot de passe :</label><?= $this->Form->password('mdp_new_conf'); ?></div>
+        <div class="col text-right" style="margin-bottom: 5px;margin-top: 5px;"><label class="pr-2" for="mdp-new">Nouveau mot de passe :</label><?= $this->Form->password('mdp'); ?></div>
+        <div class="col text-right" style="margin-bottom: 5px;margin-top: 5px;"><label class="pr-2" for="mdp_new_conf">Confirmer le nouveau mot de passe :</label><?= $this->Form->password('mdpp'); ?></div>
       </div>
     </div>
     <div class="row" style="margin-top: 40px;">

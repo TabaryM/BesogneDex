@@ -4,7 +4,7 @@ namespace App\Controller;
 use App\Controller\AppController;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
-use Cake\Utility\Security;
+use Cake\Auth\DefaultPasswordHasher;
 
 /**
 * @author Diana
@@ -88,7 +88,7 @@ class UtilisateurController extends AppController
   * Permet à l'utilisateur de s'inscrire.
   * La page qui appelle cette fonction est : Template/Pages/home.ctp.
   *
-  * @author POP Diana
+  * @author POP Diana, PALMIERI Adrien
   */
   public function add(){
     $utilisateur = $this->Utilisateur->newEntity();
@@ -96,12 +96,12 @@ class UtilisateurController extends AppController
       $utilisateur = $this->Utilisateur->patchEntity($utilisateur, $this->request->getData());
       if ($this->Utilisateur->save($utilisateur)) {
         $this->Flash->success(__('Votre compte est bien enregistré.'));
+        $this->Auth->setUser($utilisateur);
         return $this->redirect(['controller' => 'pages', 'action' => 'display','home']);
       }
       $this->affichage_erreurs($utilisateur->errors());
       return $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
     }
-    $this->set('utilisateur', $utilisateur);
   }
 
   /**
@@ -181,16 +181,14 @@ class UtilisateurController extends AppController
       if(empty($data['mdp_actu'])) {
         $this->Flash->error(__('Veuillez saisir votre mot de passe pour modifier vos informations.'));
       }else{
-        if(Security::hash($data['mdp_actu'], null, true) == $utilisateur['mdp']) {
-          if($data['mdp_new'] == $data['mdp_new_conf']) {
+        if((new DefaultPasswordHasher)->check($data['mdp_actu'], $utilisateur['mdp'])) {
+          if($data['mdp'] == $data['mdpp']) {
 
             $data = array_filter($data, function($value) { return !is_null($value) && $value !== '' && !empty($value); }); //On supprime les éléments vide
 
             if(!empty($data)){
-              $utilisateur['mdp'] = $data['mdp_new']; //TODO:Il est possible que cette ligne soit inutile
               $utilisateur = $this->Utilisateur->get($session->read('Auth.User.idUtilisateur')); //On récupère les données utilisateurs
               $data2 = $this->Utilisateur->patchEntity($utilisateur, $data); //On "assemble" les données entre data et utilisateur
-
               if($this->Utilisateur->save($data2)){ //On sauvegarde les données (Le vérificator passe avant)
                 $this->Flash->success(__('Votre compte a été édité.'));
               }
