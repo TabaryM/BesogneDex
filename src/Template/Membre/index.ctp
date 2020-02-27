@@ -35,7 +35,8 @@
 ?>
 <div class="row" style="margin-right: 60px;margin-left: 60px;margin-top: 50px;">
     <div class="col-xl-10 d-flex flex-row justify-content-between align-items-xl-center">
-      <button class="btn btn-primary shadow grosBouton" type="button">Changer de propriétaire</button>
+      <?= $this->Html->link("Changer de propriétaire", array('controller' => 'Membre', 'action'=> 'edit', $id), array( 'class' => 'btn btn-primary shadow grosBouton boutonRouge')); ?>
       <button id="bouton_supprimer_membre" class="btn btn-danger shadow grosBouton" onClick="<?= 'supprimer('.$id.')' ?>" type="button" >Supprimer</button>
-      <button class="btn btn-primary shadow grosBouton boutonRouge" type="button">Retour</button></div>
+      <?= $this->Html->link("Retour", array('controller' => 'Tache', 'action'=> 'index', $id), array( 'class' => 'btn btn-primary shadow grosBouton boutonRouge')); ?>
+      </div>
 </div>
