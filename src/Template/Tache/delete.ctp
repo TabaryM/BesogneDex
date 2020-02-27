@@ -14,7 +14,7 @@
             echo $this->Html->link("Non", array('controller' => 'Tache', 'action'=> 'index', $idProjet), array( 'class' => 'btn btn-lg btn-success'));
             ?>
             <?php
-            echo $this->Html->link("Oui", array('controller' => 'Tache', 'action'=> 'index', $idProjet, $idTach), array( 'class' => 'btn btn-lg btn-danger'));
+            echo $this->Html->link("Oui", array('controller' => 'Tache', 'action'=> 'index', $idProjet, $idTache), array( 'class' => 'btn btn-lg btn-danger'));
 
             ?>
         </div>

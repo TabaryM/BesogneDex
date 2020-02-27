@@ -159,12 +159,12 @@ class TacheController extends AppController
     * lors de la suppression d'une tâche.
      * @author WATELOT Paul-Emile
     */
-    public function delete($idProj, $idTach){
-        $this->set(compact('idTach'));
+    public function delete($idProjet, $idTache){
+        $this->set(compact('idProjet','idTache'));
 
         $projetTab = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
         ->get('Projet')->find()
-            ->where(['idProjet' => $idProj])
+            ->where(['idProjet' => $idProjet])
             ->first();
 
         //permet de savoir si un utilisateur est propriétaire du projet
@@ -174,12 +174,12 @@ class TacheController extends AppController
             $tacheTab = TableRegistry::getTableLocator()->get('Tache');
             $tache = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
             ->get('Tache')->find()
-                ->where(['idTache' => $idTach])
+                ->where(['idTache' => $idTache])
                 ->first();
             //si il est propriétaire du projet ou que l'utilisateur est responsable de la tache il peut supprimer cette tache
             if($projetTab->idProprietaire == $user || $tache->idResponsable == $user){
                 $query = $tacheTab->query();
-                $query->delete()->where(['idTache' => $idTach])->execute();
+                $query->delete()->where(['idTache' => $idTache])->execute();
             }
         }
     }
