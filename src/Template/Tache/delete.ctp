@@ -10,10 +10,10 @@
         <!-- Boutons Oui et Non -->
         <div class="col text-center" style="margin-top: 60px;">
             <?php
-            echo $this->Html->link("Non", array('controller' => 'Tache', 'action'=> 'index', $id), array( 'class' => 'btn btn-lg btn-success'));
+            echo $this->Html->link("Non", array('controller' => 'Tache', 'action'=> 'index', $idProj), array( 'class' => 'btn btn-lg btn-success'));
             ?>
             <?php
-            echo $this->Html->link("Oui", array('controller' => 'Tache', 'action'=> 'index', $id), array( 'class' => 'btn btn-lg btn-danger'));
+            echo $this->Html->link("Oui", array('controller' => 'Tache', 'action'=> 'index', $idProj, $idTach), array( 'class' => 'btn btn-lg btn-danger'));
             ?>
         </div>
     </div>

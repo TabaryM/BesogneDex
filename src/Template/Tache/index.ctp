@@ -60,7 +60,13 @@
                     <div class="dropdown">
                       <a class="test" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">●●●</a>
                       <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        <?php echo $this->Html->link("Supprimer la tâche", array('controller' => 'Tache', 'action'=> 'delete', $id), array( 'class' => 'dropdown-item')); ?>
+                        <?php
+                        if (isset ($user) && isset($tache->responsable) && isset($estProprietaire)) {
+                            if($tache->idResponsable == $user || $estProprietaire) {
+                                echo $this->Html->link("Supprimer la tâche", array('controller' => 'Tache', 'action'=> 'delete',$id, $tache->idTache), array( 'class' => 'dropdown-item'));
+                            }
+                        }
+                        ?>
                         <?php echo $this->Html->link("Modifier la tâche", array('controller' => 'Tache', 'action'=> 'edit', $id), array( 'class' => 'dropdown-item'));?>
                         <?php
                         if (isset ($user) && isset($tache->responsable)) {
@@ -117,3 +123,5 @@
   </div>
 
   <?= $this->Html->script('tacheTermine.js'); ?>
+
+}

@@ -113,10 +113,10 @@ class ProjetController extends AppController
         $session = $this->request->getSession();
         if ($session->check('Auth.User.idUtilisateur')) {
           $user = $session->read('Auth.User.idUtilisateur');
+          $membres = TableRegistry::getTableLocator()->get('Membre');
           if($projetTab->idProprietaire == $user){
 
             //degage tout les membres du projet
-            $membres = TableRegistry::getTableLocator()->get('Membre');
             $query = $membres->query();
             $query->delete()->where(['idProjet' => $id])->execute();
 
@@ -133,7 +133,6 @@ class ProjetController extends AppController
           }
           //sinon si c'est un invité on le degage dans la table membre
           else{
-            $membres = TableRegistry::getTableLocator()->get('Membre');
             $query = $membres->query();
             $query->delete()->where(['idProjet' => $id, 'idUtilisateur' => $user])->execute();
           }
@@ -166,7 +165,7 @@ class ProjetController extends AppController
           if ($user === $projet->idProprietaire) {
             $projet->etat = "Archive";
             $this->Projet->save($projet);
-            
+
             // Projet archivé
             $this->Flash->success(__("Projet achivé avec succès"));
             $this->redirect(['action' => 'archives']);
