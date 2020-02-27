@@ -91,7 +91,7 @@
                                 <div class="modal-header">
                                     <h4 class="modal-title"></h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
                                 <div class="modal-body">
-                                    <p style="width: 477px;">Êtes-vous sûr de suppresser cette tâche ? <?php echo $tache->idTache; ?></p>
+                                    <p style="width: 477px;">Êtes-vous sûr de vouloir supprimer cette tâche ?</p>
                                 </div>
                                 <div class="modal-footer text-center">
                                     <div class="row text-center" style="width: 484px;">
@@ -129,7 +129,7 @@
             </div>
         </div>
     </div>
-    <div class="col-xl-5 col-md-4">
+    <div class="col-xl-5 col-md-5">
         <div class="card color-card">
             <div class="card-body shadow d-flex justify-content-between align-items-center color-card">
               <?= $this->Html->image("icones/list.png", ['class' => 'image_icone']) ?>
