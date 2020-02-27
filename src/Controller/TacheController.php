@@ -17,6 +17,9 @@ class TacheController extends AppController
     {
 
       $estProprietaire = false;
+      $user = null;
+
+
       //Pour la couronne dans le header
       Configure::write('utilisateurProprietaire', false);
       $this->loadComponent('Paginator');
@@ -30,9 +33,13 @@ class TacheController extends AppController
         ->where(['idProjet' => $id])
         ->first();
 
+
+
       $session = $this->request->getSession();
       if ($session->check('Auth.User.idUtilisateur')) {
-        $user = $session->read('Auth.User.idUtilisateur');
+          $user = $session->read('Auth.User.idUtilisateur');
+
+
         if($projetTab->idProprietaire == $user){
           $estProprietaire = true;
           //Pour la couronne dans le header
@@ -54,7 +61,9 @@ class TacheController extends AppController
       }
 
     }// fin session check idUtilisateur
-      $this->set(compact('taches', 'id', 'projetTab', 'estProprietaire'));
+            $this->set(compact('taches', 'id', 'projetTab', 'estProprietaire', 'user'));
+
+
     }// fin fonction
 
     /**
@@ -65,14 +74,19 @@ class TacheController extends AppController
     public function details($id)
     {
         $projets = TableRegistry::getTableLocator()->get('Projet');
-
         $projet = $projets->find()->where(['idProjet' => $id])->first();
-
         $desc = $projet->description;
 
-        //TODO:Liste membre à afficher
+        $membres = TableRegistry::getTableLocator()->get('Membre');
+        $membres = $membres->find()->contain('Utilisateur')
+        ->where(['idProjet' => $id]);
 
-        $this->set(compact('desc', 'id'));
+        $mbs = "";
+        foreach ($membres as $m) {
+          $mbs .= $m->un_utilisateur->pseudo . "<br>";
+        }
+
+        $this->set(compact('desc', 'id', 'mbs'));
     }
 
     /**
@@ -113,7 +127,7 @@ class TacheController extends AppController
         $this->set(compact('taches'));
       } else {
         $this->Flash->error(_('Une erreur est survenue lors de la récupérations des tâches.'));
-        $this->redirect($this->referer);
+        $this->redirect($this->referer());
       }
     }
 
@@ -146,6 +160,24 @@ class TacheController extends AppController
     */
     public function delete($id){
         $this->set(compact('id'));
+    }
+
+    /**
+     * Permet a un membre du projet de se retirer d'une tâche
+     * @author Adrien Palmieri
+     */
+    public function notSoResponsible($id, $idTache) {
+        $session = $this->request->getSession();
+        $tache = $this->Tache->get($idTache);
+        $tache->idResponsable = NULL;
+        $this->Tache->save($tache);
+        return $this->redirect(['action' => 'index', $id]);
+    }
+
+
+
+    public function finie($idTache){
+      echo "Fonction pas terminée ..";
     }
 }
 

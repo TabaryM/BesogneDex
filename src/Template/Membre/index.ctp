@@ -1,8 +1,7 @@
-<!-- Pour faire l'auto-complétion plus tard : http://www.naidim.org/cakephp-3-tutorial-18-autocomplete -->
 <?php use Cake\Routing\Router; ?>
 
 <?php // TODO: Ajouter une icône de recherche avec la ligne en dessous ?>
-<!-- <i class="fas fa-search" style="margin-right: 10px;"></i> -->
+<?= $this->Html->script('membres.js') ?>
 
  <?= $this->Form->create(null, ['url' => ['controller' => 'Membre', 'action' => 'add', $id]] ); ?>
 <div class="row" style="margin-right: 60px;margin-left: 60px;margin-top: 50px;">
@@ -12,15 +11,12 @@
     <div class="col-xl-8"><label>Liste des membres :</label>
         <div class="card shadow">
             <div class="card-body">
-                <table id="table">
                 <?php foreach ($membres as $membre): ?>
-                  <tr>
-                    <td>
+
+                    <p onClick="afficherGris(<?php echo $membre->idUtilisateur ?>)" id=<?php echo $membre->idUtilisateur ?> class='ligne_membre'>
                       <?= $membre->un_utilisateur->pseudo ?>
-                    </td>
-                  </tr>
+                    </p>
                 <?php endforeach; ?>
-                </table>
 
             </div>
         </div>
@@ -37,5 +33,3 @@
     minLength: 1
 });
 </script>
-
-<?= $this->Html->script('membres.js') ?>

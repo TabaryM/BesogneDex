@@ -3,6 +3,7 @@ namespace App\Controller;
 
 require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'VerificationChamps.php');
 use Cake\ORM\TableRegistry;
+use Cake\I18n\Time;
 
 class ProjetController extends AppController
 {
@@ -147,6 +148,37 @@ class ProjetController extends AppController
     */
     public function edit($id){
       return null;
+    }
+
+    /**
+     * Permet d'archiver un projet uniquement si il est expiré et si l'utilisateur en est le propriétaire
+     * @param int $id ID du projet a archiver
+     * @author Pedro Sousa Ribeiro
+     */
+    public function archive($id) {
+      $projet = $this->Projet->get($id);
+      $now = Time::now();
+
+      $session = $this->request->getSession();
+      if ($session->check('Auth.User.idUtilisateur')) {
+        $user = $session->read('Auth.User.idUtilisateur');
+        if ($projet->dateFin < $now) {
+          if ($user === $projet->idProprietaire) {
+            $projet->etat = "Archive";
+            $this->Projet->save($projet);
+            
+            // Projet archivé
+            $this->Flash->success(__("Projet achivé avec succès"));
+            $this->redirect(['action' => 'archives']);
+          } else { // Pas le propriétaire
+            $this->Flash->error(__("Seul le propriétaire est en mesure d'archiver le projet."));
+            $this->redirect($this->referer());
+          }
+        } else { // Projet non expiré
+          $this->Flash->error(__("Le projet doit être expiré pour pouvoir l'archiver."));
+          $this->redirect($this->referer());
+        }
+      }
     }
 }
 ?>
