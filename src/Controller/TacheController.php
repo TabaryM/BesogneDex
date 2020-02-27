@@ -175,11 +175,36 @@ class TacheController extends AppController
         return $this->redirect(['action' => 'index', $id]);
     }
 
-
-
-    public function finie($idTache){
-      echo "Fonction pas terminée ..";
+  /**
+  * Permet de changer l'état d'une tache de "fait" a "non fait" et vis versa
+  * @param int $id ID de la tache dont l'etat est a changer
+  * @param boolean $fait Booleen indiquant si la tache est faite ou non
+  * @author Pedro Sousa Ribeiro
+  */
+  public function changerEtat($id, $fait) {
+    // Desactive le rendu de la vue (pas besoin de la vue)
+    $this->autoRender = false;
+    $this->render(false);
+    
+    $tache = $this->Tache->get($id);
+    $session = $this->request->getSession();
+    if ($session->check('Auth.User.idUtilisateur')) {
+      $user = $session->read('Auth.User.idUtilisateur');
+      if ($tache->idResponsable === $user) {
+        if ($fait) {
+          $tache->finie = 1;
+        } else {
+          $tache->finie = 0;
+        }
+        $this->Tache->save($tache);
+      } else {
+        $this->Flash->error(__('Seul le responsable de la tâche peut changer l\'état de celui-ci.'));
+      }
+    } else {
+      $this->Flash->error(__('Vous devez être connecté pour changer l\'état d\'une tâche.'));
     }
+    
+  }
 }
 
 ?>
