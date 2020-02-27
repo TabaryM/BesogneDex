@@ -17,6 +17,7 @@ class ProjetController extends AppController
     {
         $this->loadComponent('Paginator');
         $session = $this->request->getSession();
+        // $projets = $this->Paginator->paginate($this->Projet->find()->contain(['Membre'])->where(['idUtilisateur' => $session->read('Auth.User.idUtilisateur')]));
         $projets = $this->Paginator->paginate($this->Projet->find()->distinct()->contain('Utilisateur')
         ->leftJoinWith('Membre')
         ->where(
@@ -24,6 +25,7 @@ class ProjetController extends AppController
               'Membre.idUtilisateur' => $session->read('Auth.User.idUtilisateur'),
               'Projet.idProprietaire' => $session->read('Auth.User.idUtilisateur')
          ]]));
+
         $this->set(compact('projets'));
     }
 
@@ -45,24 +47,14 @@ class ProjetController extends AppController
                       if($receivedData['dateDebut'] == $receivedData['dateFin']){
 
                       }
-
-
-
                       $projet = $this->Projet->newEntity($receivedData);
                       $session = $this->request->getSession();
-                      $idUser = $session->read('Auth.User.idUtilisateur');
-                      $projet->idProprietaire = $idUser;
+                      $projet->idProprietaire = $session->read('Auth.User.idUtilisateur');
 
-                      foreach($this->Projet->find('all', ['conditions'=>['idProprietaire'=>$idUser]]) as $proj) {
-                          if($proj->titre == $receivedData['titre']) {
-                              $this->Flash->error(__("Impossible d'ajouter un projet avec un nom identique"));
-                              return $this->redirect(['action'=> 'index']);
-                          }
-                      }
                       if ($this->Projet->save($projet)) {
                           $membres = TableRegistry::getTableLocator()->get('Membre');
                           $membre = $membres->newEntity();
-                          $membre->set('idUtilisateur', $idUser);
+                          $membre->set('idUtilisateur', $session->read('Auth.User.idUtilisateur'));
                           $membre->set('idProjet', $projet->idProjet);
 
                           if ($membres->save($membre)) {

@@ -45,7 +45,7 @@ $Sql="
 		idResponsable INT DEFAULT NULL,
 		idProjet INT NOT NULL,
 		PRIMARY KEY (idTache),
-		FOREIGN KEY (idResponsable) REFERENCES Membre(idUtilisateur),
+		FOREIGN KEY (idResponsable) REFERENCES Utilisateur(idUtilisateur),
 		FOREIGN KEY (idProjet) REFERENCES Projet(idProjet)
     );
 
@@ -75,7 +75,7 @@ $Sql="
 		idTache INT NOT NULL,
 		PRIMARY KEY (idNotificationTache),
 		FOREIGN KEY (idTache) REFERENCES Tache(idTache)
-	);
+	);	
 
 	CREATE TABLE VueNotificationProjet (
 		idUtilisateur INT NOT NULL,

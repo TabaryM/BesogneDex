@@ -9,7 +9,7 @@ class MembreTable extends Table{
 /**
 * Permet de lier les tables Projet et Utilisateur pour les queries.
 *
-* @author : POP Diana
+* Auteur : POP Diana
 */
   public function initialize(array $config){
     /*
