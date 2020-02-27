@@ -3,7 +3,7 @@
 <?php // TODO: Ajouter une icône de recherche avec la ligne en dessous ?>
 <?= $this->Html->script('membres.js') ?>
 
- <?= $this->Form->create(null, ['url' => ['controller' => 'Membre', 'action' => 'add', $id]] ); ?>
+ <?= $this->Form->create(null, ['url' => ['controller' => 'Membre', 'action' => 'add', $idProjet]] ); ?>
 <div class="row" style="margin-right: 60px;margin-left: 60px;margin-top: 50px;">
     <div class="col-xl-3 d-flex justify-content-start align-items-center align-content-center"><?= $this->Form->control('recherche_utilisateurs', ['placeholder' => 'Rechercher un membre...', 'label'=> '', 'type'=>'text']) ?> <?= $this->Form->submit('Inviter', array('class'=>'btn btn-primary shadow boutonVert', 'style' => 'width:200px;margin-left:20px;'));?></div>
 </div>
