@@ -36,7 +36,7 @@ class MembreController extends AppController
       $membres = $this->Paginator->paginate($this->Membre->find()
           ->contain(['Utilisateur'])
           ->where(['idProjet' => $idProjet]));
-      $this->set(compact('membres', 'id'));
+      $this->set(compact('membres', 'idProjet'));
     }
   }
 
