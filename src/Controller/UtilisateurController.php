@@ -107,7 +107,7 @@ class UtilisateurController extends AppController
   /**
   * Fonction pour auto-complétion de Membre/index
   *
-  * Auteur : POP Diana (c'est un presque c/c de ce site : http://www.naidim.org/cakephp-3-tutorial-18-autocomplete)
+  * @author : POP Diana (c'est un presque c/c de ce site : http://www.naidim.org/cakephp-3-tutorial-18-autocomplete)
   */
   function complete(){
     $this->autoRender = false;
@@ -135,14 +135,6 @@ class UtilisateurController extends AppController
     return $this->redirect($this->Auth->logout());
   }
 
-  /**
-  * Utilisée dans la page : Template/Element/header.ctp
-  *
-  * @author MARISSENS Valérie
-  */
-  public function logoutConfirmation(){
-    return null;
-  }
 
   /**
   * Affiche le profil utilisateur
