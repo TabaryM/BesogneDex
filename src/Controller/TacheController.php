@@ -11,9 +11,9 @@ class TacheController extends AppController
      * Redirige vers l'accueil si le projet n'existe pas ou si la personne n'en est pas membre.
      *
      * @author Thibault Choné, POP Diana
-     * @param $id : id du projet cliqué ou affiché
+     * @param $idProjet : id du projet cliqué ou affiché
      */
-    public function index($id)
+    public function index($idProjet)
     {
 
       $estProprietaire = false;
@@ -26,11 +26,11 @@ class TacheController extends AppController
 
       $taches = $this->Paginator->paginate($this->Tache->find()
       ->contain('Utilisateur')
-      ->where(['idProjet' => $id]));
+      ->where(['idProjet' => $idProjet]));
 
       $projetTab = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
         ->get('Projet')->find()
-        ->where(['idProjet' => $id])
+        ->where(['idProjet' => $idProjet])
         ->first();
 
 
@@ -61,7 +61,7 @@ class TacheController extends AppController
       }
 
     }// fin session check idUtilisateur
-            $this->set(compact('taches', 'id', 'projetTab', 'estProprietaire', 'user'));
+            $this->set(compact('taches', 'idProjet', 'projetTab', 'estProprietaire', 'user'));
 
 
     }// fin fonction
@@ -69,46 +69,46 @@ class TacheController extends AppController
     /**
      * Permet d'afficher les détails d'un projet (Description + liste membres)
      * @author Thibault Choné
-     * @param $id : id du projet cliqué ou affiché
+     * @param $idProjet : id du projet cliqué ou affiché
      */
-    public function details($id)
+    public function details($idProjet)
     {
         $projets = TableRegistry::getTableLocator()->get('Projet');
-        $projet = $projets->find()->where(['idProjet' => $id])->first();
+        $projet = $projets->find()->where(['idProjet' => $idProjet])->first();
         $desc = $projet->description;
 
         $membres = TableRegistry::getTableLocator()->get('Membre');
         $membres = $membres->find()->contain('Utilisateur')
-        ->where(['idProjet' => $id]);
+        ->where(['idProjet' => $idProjet]);
 
         $mbs = "";
         foreach ($membres as $m) {
           $mbs .= $m->un_utilisateur->pseudo . "<br>";
         }
 
-        $this->set(compact('desc', 'id', 'mbs'));
+        $this->set(compact('desc', 'idProjet', 'mbs'));
     }
 
     /**
      * Ajoute une ligne dans la table tache
      * @author Clément COLNE
      */
-    public function add($id){
+    public function add($idProjet){
       if ($this->request->is('post')){
         $tache = $this->Tache->newEntity($this->request->getData());
         $tache->finie = 0;
-        $tache->idProjet = $id;
+        $tache->idProjet = $idProjet;
         if ($this->Tache->save($tache)) {
           $this->Flash->success(__('Votre tâche a été sauvegardée.'));
           if($tache->estResponsable == 1) {
             // l'utilisateur devient responsable de la tâche
-            $this->devenirResponsable($id, $tache->idTache);
+            $this->devenirResponsable($idProjet, $tache->idTache);
           }
-          return $this->redirect(['action'=> 'index', $id]);
+          return $this->redirect(['action'=> 'index', $idProjet]);
         }
         $this->Flash->error(__('Impossible d\'ajouter votre tâche.'));
       }
-      $this->set(compact('id'));
+      $this->set(compact('idProjet'));
     }
 
     /**
@@ -134,25 +134,24 @@ class TacheController extends AppController
     /**
     * Utilisée dans : Template/Tache/index.ctp
     */
-    public function edit($id)
+    public function edit($idProjet)
     {
-        $this->set(compact('id'));
-    }
+        $this->set(compact('idProjet'));
+}
 
     /**
      * Permet à un membre de projet de devenir responsable d'une tache
      * @author Mathieu TABARY
      */
-    public function devenirResponsable($id, $idTache) {
+    public function devenirResponsable($idProjet, $idTache) {
         $session = $this->request->getSession();
 
         $this->Tache->updateAll(
             ['idResponsable' => $session->read('Auth.User.idUtilisateur')],
             ['idTache' => $idTache]
         );
-
-        // TODO: Envoyer notification aux autres membres du projet 
-        return $this->redirect(['action' => 'index', $id]);
+        // TODO: Envoyer notification aux autres membres du projet
+        return $this->redirect(['action' => 'index', $idProjet]);
     }
 
     /**
@@ -161,7 +160,7 @@ class TacheController extends AppController
      * @author WATELOT Paul-Emile
     */
     public function delete($idProj, $idTach){
-        $this->set(compact('idProj','idTach'));
+        $this->set(compact('idTach'));
 
         $projetTab = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
         ->get('Projet')->find()
@@ -189,19 +188,19 @@ class TacheController extends AppController
      * Permet a un membre du projet de se retirer d'une tâche
      * @author Adrien Palmieri
      */
-    public function notSoResponsible($id, $idTache) {
+    public function notSoResponsible($idProjet, $idTache) {
         $session = $this->request->getSession();
         $tache = $this->Tache->get($idTache);
         $tache->idResponsable = NULL;
         $this->Tache->save($tache);
-        return $this->redirect(['action' => 'index', $id]);
+        return $this->redirect(['action' => 'index', $idProjet]);
     }
 
 
 
-    public function finie($id, $idTache){
-      
-      return $this->redirect(['action' => 'index', $id]);
+    public function finie($idProjet, $idTache){
+
+      return $this->redirect(['action' => 'index', $idProjet]);
     }
 }
 

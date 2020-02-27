@@ -110,12 +110,12 @@ class ProjetController extends AppController
     *
     * Auteurs : WATELOT Paul-Emile
     */
-    public function delete($id){
+    public function delete($idProjet){
       if ($this->request->is('post')){
 
         $projetTab = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
           ->get('Projet')->find()
-          ->where(['idProjet' => $id])
+          ->where(['idProjet' => $idProjet])
           ->first();
 
         //permet de savoir si un utilisateur est propriétaire
@@ -127,23 +127,23 @@ class ProjetController extends AppController
 
             //degage tout les membres du projet
             $query = $membres->query();
-            $query->delete()->where(['idProjet' => $id])->execute();
+            $query->delete()->where(['idProjet' => $idProjet])->execute();
 
             //supprime les taches du projet
             $taches = TableRegistry::getTableLocator()->get('Tache');
             $query = $taches->query();
-            $query->delete()->where(['idProjet' => $id])->execute();
+            $query->delete()->where(['idProjet' => $idProjet])->execute();
 
             //supprime le projet
             $projets = TableRegistry::getTableLocator()->get('Projet');
             $query = $projets->query();
-            $query->delete()->where(['idProjet' => $id])->execute();
+            $query->delete()->where(['idProjet' => $idProjet])->execute();
 
           }
           //sinon si c'est un invité on le degage dans la table membre
           else{
             $query = $membres->query();
-            $query->delete()->where(['idProjet' => $id, 'idUtilisateur' => $user])->execute();
+            $query->delete()->where(['idProjet' => $idProjet, 'idUtilisateur' => $user])->execute();
           }
         }
 
@@ -154,17 +154,17 @@ class ProjetController extends AppController
     /**
     * Utilisée dans Template/Tache/index.ctp
     */
-    public function edit($id){
+    public function edit($idProjet){
       return null;
     }
 
     /**
      * Permet d'archiver un projet uniquement si il est expiré et si l'utilisateur en est le propriétaire
-     * @param int $id ID du projet a archiver
+     * @param int $idProjet ID du projet a archiver
      * @author Pedro Sousa Ribeiro
      */
-    public function archive($id) {
-      $projet = $this->Projet->get($id);
+    public function archive($idProjet) {
+      $projet = $this->Projet->get($idProjet);
       $now = Time::now();
 
       $session = $this->request->getSession();
