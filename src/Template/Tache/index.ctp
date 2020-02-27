@@ -53,7 +53,10 @@
                   </td>
                   <td class="text-center">
                     <?= $this->Form->create('Tache' . $tache->idTache, ['url' => ['controller' => 'Tache', 'action' => 'finie', $tache->idTache], 'id' => 'Tache' . $tache->idTache]) ?>
-                    <input type="checkbox" class="checkFait" value="<?= $tache->idTache ?>">
+                    <input type="checkbox" class="checkFait" value="<?= $tache->idTache ?>" 
+                      <?php if ($tache->finie) echo "checked"; ?>
+                      <?php if ($tache->idResponsable !== $user) echo "disabled"; ?>
+                    >
                     <?= $this->Form->end(); ?>
                   </td>
                   <td class="text-center">
