@@ -10,7 +10,7 @@ class MembreController extends AppController
     /**
     * Affiche les membres d'un projet.
     *
-    * Auteur : POP Diana
+    * @author : POP Diana
     */
     public function index($idProjet){
       $estProprietaire = false;

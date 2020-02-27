@@ -11,7 +11,7 @@ class ProjetController extends AppController
   *  Affiche la liste des projets dont l'utilisateur est membre.
   *
   * TODO: Il faut afficher les listes dont l'utilisateur est membre et non celles pour lesquelles il est propriétaire.
-  * Auteur : POP Diana
+  * @author : POP Diana
   */
     public function index()
     {

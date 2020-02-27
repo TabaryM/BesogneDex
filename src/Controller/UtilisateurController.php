@@ -107,7 +107,7 @@ class UtilisateurController extends AppController
   /**
   * Fonction pour auto-complétion de Membre/index
   *
-  * Auteur : POP Diana (c'est un presque c/c de ce site : http://www.naidim.org/cakephp-3-tutorial-18-autocomplete)
+  * @author : POP Diana (c'est un presque c/c de ce site : http://www.naidim.org/cakephp-3-tutorial-18-autocomplete)
   */
   function complete(){
     $this->autoRender = false;
