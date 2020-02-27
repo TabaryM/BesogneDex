@@ -55,7 +55,7 @@
                     <div class="modal-footer text-center">
                         <div class="row text-center" style="width: 484px;">
                             <div class="col text-left">
-                              <?php echo $this->Html->link("Oui", array('controller' => 'Utilisateur', 'action'=> 'logout'), array('button class' => 'btn btn-primary', 'data-dismiss' => 'modal'));?>
+                              <?php echo $this->Html->link("Oui", array('controller' => 'Utilisateur', 'action'=> 'logout'), array('button class' => 'btn btn-primary'));?>
                             </div>
                             <div class="col text-right">
                               <?php echo $this->Html->link("Non", array('controller' => 'Utilisateur', 'action'=> '#'), array('button class' => 'btn btn-primary', 'data-dismiss' => 'modal'));?>
