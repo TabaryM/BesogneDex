@@ -153,11 +153,9 @@ class TacheController extends AppController
      */
     public function devenirResponsable($idProjet, $idTache) {
         $session = $this->request->getSession();
-
-        $this->Tache->updateAll(
-            ['idResponsable' => $session->read('Auth.User.idUtilisateur')],
-            ['idTache' => $idTache]
-        );
+        $tache = $this->Tache->get($idTache);
+        $tache->idResponsable = $session->read('Auth.User.idUtilisateur');
+        $this->Tache->save($tache);
         // TODO: Envoyer notification aux autres membres du projet
         return $this->redirect(['action' => 'index', $idProjet]);
     }
@@ -199,7 +197,6 @@ class TacheController extends AppController
      * @author Adrien Palmieri
      */
     public function notSoResponsible($idProjet, $idTache) {
-        $session = $this->request->getSession();
         $tache = $this->Tache->get($idTache);
         $tache->idResponsable = NULL;
         $this->Tache->save($tache);
