@@ -162,24 +162,26 @@ class TacheController extends AppController
     public function delete($idProjet, $idTache){
         $this->set(compact('idProjet','idTache'));
 
-        $projetTab = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
-        ->get('Projet')->find()
-            ->where(['idProjet' => $idProjet])
-            ->first();
-
-        //permet de savoir si un utilisateur est propriétaire du projet
-        $session = $this->request->getSession();
-        if ($session->check('Auth.User.idUtilisateur')) {
-            $user = $session->read('Auth.User.idUtilisateur');
-            $tacheTab = TableRegistry::getTableLocator()->get('Tache');
-            $tache = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
-            ->get('Tache')->find()
-                ->where(['idTache' => $idTache])
+        if ($this->request->is('post')){
+            $projetTab = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
+            ->get('Projet')->find()
+                ->where(['idProjet' => $idProjet])
                 ->first();
-            //si il est propriétaire du projet ou que l'utilisateur est responsable de la tache il peut supprimer cette tache
-            if($projetTab->idProprietaire == $user || $tache->idResponsable == $user){
-                $query = $tacheTab->query();
-                $query->delete()->where(['idTache' => $idTache])->execute();
+
+            //permet de savoir si un utilisateur est propriétaire du projet
+            $session = $this->request->getSession();
+            if ($session->check('Auth.User.idUtilisateur')) {
+                $user = $session->read('Auth.User.idUtilisateur');
+                $tacheTab = TableRegistry::getTableLocator()->get('Tache');
+                $tache = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
+                ->get('Tache')->find()
+                    ->where(['idTache' => $idTache])
+                    ->first();
+                //si il est propriétaire du projet ou que l'utilisateur est responsable de la tache il peut supprimer cette tache
+                if($projetTab->idProprietaire == $user || $tache->idResponsable == $user){
+                    $query = $tacheTab->query();
+                    $query->delete()->where(['idTache' => $idTache])->execute();
+                }
             }
         }
     }
