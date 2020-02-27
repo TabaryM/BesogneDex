@@ -6,17 +6,12 @@ function afficherGris(id){
   jeSuisIdSelectionne = id;
 }
 
-function supprimer(){
-  if (jeSuisIdSelectionne == null){
-    return;
-  }
-  var jsonString = JSON.stringify(jeSuisIdSelectionne);
+function supprimer(id_projet){
+  $('#bouton_supprimer_membre').prop('enabled', false);
+  $.get("/BesogneDex/membre/delete/"+jeSuisIdSelectionne+ "/" + id_projet,
+            function(){
+                document.location.reload(true);
+                $('#bouton_supprimer_membre').prop('enabled', true);
+                });
 
-  jQuery.ajax({
-   dataType: 'html',
-   type: 'POST',
-   url:"<?= Router::url(array('controller'=>'Membre', 'action'=> 'delete')); ?>" ,
-   data: {data : jsonString},
-   success: alert("success")
-  });
 }

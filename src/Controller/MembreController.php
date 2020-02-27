@@ -10,15 +10,15 @@ class MembreController extends AppController
     /**
     * Affiche les membres d'un projet.
     *
-    * Auteur : POP Diana
+    * @author : POP Diana
     */
-    public function index($id){
+    public function index($idProjet){
       $estProprietaire = false;
       $this->loadComponent('Paginator');
 
       $projetTab = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
         ->get('Projet')->find()
-        ->where(['idProjet' => $id])
+        ->where(['idProjet' => $idProjet])
         ->first();
 
       $session = $this->request->getSession();
@@ -35,8 +35,8 @@ class MembreController extends AppController
       $session = $this->request->getSession();
       $membres = $this->Paginator->paginate($this->Membre->find()
           ->contain(['Utilisateur'])
-          ->where(['idProjet' => $id]));
-      $this->set(compact('membres', 'id'));
+          ->where(['idProjet' => $idProjet]));
+      $this->set(compact('membres', 'idProjet'));
     }
   }
 
@@ -45,7 +45,7 @@ class MembreController extends AppController
     * TODO: sprint 5, envoi notif au membre invité
     * @author POP Diana
     */
-    public function add($id){
+    public function add($idProjet){
       if ($this->request->is('post')){
 
       // Est-ce que l'utilisateur demandé existe ?
@@ -58,44 +58,54 @@ class MembreController extends AppController
 
         if ($id_utilisateur===null){
           $this->Flash->error(__('Ce membre n\'existe pas.'));
-          return $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id]);
+          return $this->redirect(['controller'=>'Membre', 'action'=> 'index', $idProjet]);
         }
 
         // Est-ce que l'utilisateur est propriétaire du projet ?
         $session = $this->request->getSession(); // Le check Session est vrai car on est passés par index de ce même controller
         if ($id_utilisateur===$session->read('Auth.User.idUtilisateur')){
           $this->Flash->error(__('Vous êtes le propriétaire de ce projet.'));
-          return $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id]);
+          return $this->redirect(['controller'=>'Membre', 'action'=> 'index', $idProjet]);
         }
 
         // Est-ce que l'utilisateur demandé est déjà dans le projet ?
-        $count = $this->Membre->find()->where(['idUtilisateur'=>$id_utilisateur, 'idProjet'=>$id])->count();
+        $count = $this->Membre->find()->where(['idUtilisateur'=>$id_utilisateur, 'idProjet'=>$idProjet])->count();
         if ($count>0){
           $this->Flash->error(__('Ce membre est déjà dans le projet.'));
-          return $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id]);
+          return $this->redirect(['controller'=>'Membre', 'action'=> 'index', $idProjet]);
         }
 
         // Bienvenue au nouveau membre dans le projet !
         $membre = $this->Membre->newEntity();
 
-        $membre->idProjet= $id;
+        $membre->idProjet= $idProjet;
         $membre->idUtilisateur= $id_utilisateur;
 
         if ($this->Membre->save($membre)) {
           $this->Flash->success(__('Le membre a été ajouté à la liste.'));
 
-          return $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id]);
+          return $this->redirect(['controller'=>'Membre', 'action'=> 'index', $idProjet]);
         }
         $this->Flash->error(__('Impossible d\'ajouter ce membre.'));
       } // fin if post
     }
 
-    public function delete($id){
-      if ($this->request->is('post')){
-        debug($id);
-          die();
-      }// fin if post
+    /**
+    * TODO si proprio ne pas supprimer
+    *
+    * Auteur : POP Diana
+    */
+    public function delete($id_utilisateur, $id_projet){
+      $session = $this->request->getSession(); // Le check Session est vrai car on est passés par index de ce même controller
+      if ($id_utilisateur===$session->read('Auth.User.idUtilisateur')){
+        $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id_projet]);
+      }else {
+        $membre = $this->Membre->find()->where(['idUtilisateur'=>$id_utilisateur, 'idProjet'=>$id_projet])->first();
+        $success = $this->Membre->delete($membre);
+        $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id_projet]);
+      }
     }
+
 }
 
 ?>

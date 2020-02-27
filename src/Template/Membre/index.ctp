@@ -3,7 +3,7 @@
 <?php // TODO: Ajouter une icône de recherche avec la ligne en dessous ?>
 <?= $this->Html->script('membres.js') ?>
 
- <?= $this->Form->create(null, ['url' => ['controller' => 'Membre', 'action' => 'add', $id]] ); ?>
+ <?= $this->Form->create(null, ['url' => ['controller' => 'Membre', 'action' => 'add', $idProjet]] ); ?>
 <div class="row" style="margin-right: 60px;margin-left: 60px;margin-top: 50px;">
     <div class="col-xl-3 d-flex justify-content-start align-items-center align-content-center"><?= $this->Form->control('recherche_utilisateurs', ['placeholder' => 'Rechercher un membre...', 'label'=> '', 'type'=>'text']) ?> <?= $this->Form->submit('Inviter', array('class'=>'btn btn-primary shadow boutonVert', 'style' => 'width:200px;margin-left:20px;'));?></div>
 </div>
@@ -27,7 +27,7 @@
 <div class="row" style="margin-right: 60px;margin-left: 60px;margin-top: 50px;">
     <div class="col-xl-10 d-flex flex-row justify-content-between align-items-xl-center">
       <button class="btn btn-primary shadow grosBouton" type="button">Changer de propriétaire</button>
-      <button class="btn btn-danger shadow grosBouton" type="button" onClick="supprimer()">Supprimer</button>
+      <button id="bouton_supprimer_membre" class="btn btn-danger shadow grosBouton" onClick="<?= 'supprimer('.$idProjet.')' ?>" type="button" >Supprimer</button>
       <button class="btn btn-primary shadow grosBouton boutonRouge" type="button">Retour</button></div>
 </div>
 

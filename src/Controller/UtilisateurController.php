@@ -88,7 +88,7 @@ class UtilisateurController extends AppController
   * Permet à l'utilisateur de s'inscrire.
   * La page qui appelle cette fonction est : Template/Pages/home.ctp.
   *
-  * @author POP Diana
+  * @author POP Diana, PALMIERI Adrien
   */
   public function add(){
     $utilisateur = $this->Utilisateur->newEntity();
@@ -96,18 +96,18 @@ class UtilisateurController extends AppController
       $utilisateur = $this->Utilisateur->patchEntity($utilisateur, $this->request->getData());
       if ($this->Utilisateur->save($utilisateur)) {
         $this->Flash->success(__('Votre compte est bien enregistré.'));
+        $this->Auth->setUser($utilisateur);
         return $this->redirect(['controller' => 'pages', 'action' => 'display','home']);
       }
       $this->affichage_erreurs($utilisateur->errors());
       return $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
     }
-    $this->set('utilisateur', $utilisateur);
   }
 
   /**
   * Fonction pour auto-complétion de Membre/index
   *
-  * Auteur : POP Diana (c'est un presque c/c de ce site : http://www.naidim.org/cakephp-3-tutorial-18-autocomplete)
+  * @author : POP Diana (c'est un presque c/c de ce site : http://www.naidim.org/cakephp-3-tutorial-18-autocomplete)
   */
   function complete(){
     $this->autoRender = false;
@@ -135,14 +135,6 @@ class UtilisateurController extends AppController
     return $this->redirect($this->Auth->logout());
   }
 
-  /**
-  * Utilisée dans la page : Template/Element/header.ctp
-  *
-  * @author MARISSENS Valérie
-  */
-  public function logoutConfirmation(){
-    return null;
-  }
 
   /**
   * Affiche le profil utilisateur

@@ -33,7 +33,7 @@ use Cake\Event\Event;
  * On a utilisé des tables personnalisées plutôt que le modèle Users proposé par CakePhp donc de nombreuses modifications sont faites ;
  * pour préciser qu'on utilise notre propre modèle, il ne faut pas oublier de préciser userModel => Utilisateur.
  *
- * Auteur : POP Diana, ROSSI Djessy
+ * @author : POP Diana, ROSSI Djessy
  *
  */
 class AppController extends Controller
@@ -98,7 +98,7 @@ class AppController extends Controller
   /**
   * Pris de la doc officielle.
   *
-  * Auteur : POP Diana
+  * @author : POP Diana
   */
     public function beforeFilter(Event $event)
     {
@@ -108,7 +108,7 @@ class AppController extends Controller
     /**
     * Booléen permettant d'afficher le header différemment selon si l'utilisateur est connecté ou non.
     *
-    * Auteur : ROSSI Djessy
+    * @author : ROSSI Djessy
     */
     public function beforeRender(Event $event){
       if ($this->request->getSession()->read('Auth.User')){
