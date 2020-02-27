@@ -67,8 +67,8 @@ class TacheController extends AppController
     }// fin fonction
 
     /**
-     * Permet d'afficher les détails d'un projet (Description + liste membres)
-     * @author Thibault Choné
+     * Permet d'afficher les détails d'un projet (Description + liste des membres)
+     * @author Thibault Choné, Théo Roton
      * @param $id : id du projet cliqué ou affiché
      */
     public function details($id)

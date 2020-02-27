@@ -144,13 +144,6 @@ class ProjetController extends AppController
     }
 
     /**
-    * Utilisée dans Template/Tache/index.ctp
-    */
-    public function edit($id){
-      return null;
-    }
-
-    /**
      * Permet d'archiver un projet uniquement si il est expiré et si l'utilisateur en est le propriétaire
      * @param int $id ID du projet a archiver
      * @author Pedro Sousa Ribeiro
@@ -166,7 +159,7 @@ class ProjetController extends AppController
           if ($user === $projet->idProprietaire) {
             $projet->etat = "Archive";
             $this->Projet->save($projet);
-            
+
             // Projet archivé
             $this->Flash->success(__("Projet achivé avec succès"));
             $this->redirect(['action' => 'archives']);
@@ -178,6 +171,118 @@ class ProjetController extends AppController
           $this->Flash->error(__("Le projet doit être expiré pour pouvoir l'archiver."));
           $this->redirect($this->referer());
         }
+      }
+    }
+
+
+    /**
+    * @author Théo Roton
+    */
+    public function edit($id){
+      $projet = TableRegistry::getTableLocator()->get('projet');
+      $projet = $projet->find()
+      ->where(['idProjet' => $id])
+      ->first();
+
+      $today = Time::now();
+
+      $this->set(compact('projet','id','today'));
+    }
+
+    /**
+    * @author Théo Roton
+    * @TODO ajouter les erreurs
+    */
+    public function modifierInfos(){
+      $receivedData = $this->request->getData();
+      echo "<pre>" , var_dump($receivedData) , "</pre>";
+
+      $projets = TableRegistry::getTableLocator()->get('projet');
+      $projet = $projets->find()
+      ->where(['idProjet' => $receivedData['id']])
+      ->first();
+
+      $erreur = false;
+
+      if ($projet->titre != $receivedData['titre']){
+          if (verification_titre($receivedData['titre'])){
+            $session = $this->request->getSession();
+            $existe_deja = $projets->find()
+            ->where(['idProprietaire' => $session->read('Auth.User.idUtilisateur')])
+            ->where(['titre' => $receivedData['titre']])
+            ->count();
+
+            if ($existe_deja == 0){
+              $projet->titre = filter_var($receivedData['titre'],FILTER_SANITIZE_STRING);
+            } else {
+              //titre déja pris
+                echo "titre déjà pris\n";
+              $erreur = true;
+            }
+          } else {
+            //titre incorrect
+              echo "titre incorrect\n";
+            $erreur = true;
+          }
+      }
+
+      $today = date('Y-m-d');
+      $today = explode('-',$today);
+      if (verification_dates($today, $receivedData['dateDeb']) || $projet->etat = 'Archive'){
+
+        $dF = $receivedData['dateFin'];
+        if (strlen($dF['year']) > 0 && strlen($dF['month']) > 0 && strlen($dF['day']) > 0){
+
+          if (verification_dates($receivedData['dateDeb'],$receivedData['dateFin'])){
+
+            $projet->dateDebut = date('Y-m-d',strtotime(implode($receivedData['dateDeb'])));
+            $projet->dateFin = date('Y-m-d',strtotime(implode($receivedData['dateFin'])));
+
+            if ($projet->etat == 'Archive' && verification_dates($today, $receivedData['dateFin'])) {
+              $projet->etat = 'En cours';
+            }
+
+          } else {
+
+            //date de début après fin
+              echo "date de début après fin\n";
+            $erreur = true;
+          }
+        } else if (strlen($dF['year']) == 0 && strlen($dF['month']) == 0 && strlen($dF['day']) == 0) {
+          $projet->dateDebut = date('Y-m-d',strtotime(implode($receivedData['dateDeb'])));
+          $projet->dateFin = null;
+          if ($projet->etat == 'Archive') {
+            $projet->etat = 'En cours';
+          }
+
+        } else {
+          //date de fin mal formée
+            echo "date de fin mal formée\n";
+          $erreur = true;
+        }
+      } else {
+        //date de debut avant aujourd'hui
+          echo "date de debut avant hoy\n";
+        $erreur = true;
+      }
+
+      if ($projet->description != $receivedData['descr']){
+        if (verification_description($receivedData['descr'])){
+          $projet->description = filter_var($receivedData['descr'],FILTER_SANITIZE_STRING);
+        } else {
+          //description incorrect
+          echo "description incorrecte\n";
+          $erreur = true;
+        }
+      }
+
+      if (!$erreur){
+        $projets->save($projet);
+        return $this->redirect(
+            array('controller' => 'Tache', 'action' => 'index', $receivedData['id'])
+        );
+      } else {
+        $this->redirect($this->referer());
       }
     }
 }
