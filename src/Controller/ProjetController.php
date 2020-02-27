@@ -11,7 +11,7 @@ class ProjetController extends AppController
   *  Affiche la liste des projets dont l'utilisateur est membre.
   *
   * TODO: Il faut afficher les listes dont l'utilisateur est membre et non celles pour lesquelles il est propriétaire.
-  * Auteur : POP Diana
+  * @author : POP Diana
   */
     public function index()
     {
@@ -132,10 +132,10 @@ class ProjetController extends AppController
         $session = $this->request->getSession();
         if ($session->check('Auth.User.idUtilisateur')) {
           $user = $session->read('Auth.User.idUtilisateur');
+          $membres = TableRegistry::getTableLocator()->get('Membre');
           if($projetTab->idProprietaire == $user){
 
             //degage tout les membres du projet
-            $membres = TableRegistry::getTableLocator()->get('Membre');
             $query = $membres->query();
             $query->delete()->where(['idProjet' => $idProjet])->execute();
 
@@ -152,7 +152,6 @@ class ProjetController extends AppController
           }
           //sinon si c'est un invité on le degage dans la table membre
           else{
-            $membres = TableRegistry::getTableLocator()->get('Membre');
             $query = $membres->query();
             $query->delete()->where(['idProjet' => $idProjet, 'idUtilisateur' => $user])->execute();
           }
