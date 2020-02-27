@@ -50,12 +50,12 @@
                     <div class="modal-header">
                         <h4 class="modal-title"></h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
                     <div class="modal-body">
-                        <p style="width: 477px;">Êtes-vous sûr de vouloir vous déconnectez ?</p>
+                        <p style="width: 477px;text-align:center;">Êtes-vous sûr de vouloir vous déconnecter ?</p>
                     </div>
                     <div class="modal-footer text-center">
                         <div class="row text-center" style="width: 484px;">
                             <div class="col text-left">
-                              <?php echo $this->Html->link("Oui", array('controller' => 'Utilisateur', 'action'=> 'logout'), array('button class' => 'btn btn-primary'));?>
+                              <?php echo $this->Html->link("Oui", array('controller' => 'Utilisateur', 'action'=> 'logout'), array('button class' => 'btn btn-danger'));?>
                             </div>
                             <div class="col text-right">
                               <?php echo $this->Html->link("Non", array('controller' => 'Utilisateur', 'action'=> '#'), array('button class' => 'btn btn-primary', 'data-dismiss' => 'modal'));?>
