@@ -7,7 +7,7 @@
     <div class="row d-flex align-items-start" style="margin-left:60px;margin-right:60px;margin-top:20px;">
       <div class="col-xl-12" style="height: 80%;">
         <div class="table-responsive">
-          <table class="table table-borderless table-green">
+          <table class="table table-borderless table-striped table-green">
             <thead class="thead-light">
               <?php
               if($estProprietaire){
@@ -63,7 +63,7 @@
                         <?php
                         if (isset ($user) && isset($tache->responsable) || isset($estProprietaire)) {
                             if($tache->idResponsable == $user || $estProprietaire) {
-                                echo $this->Html->link("Supprimer la tâche", array('controller' => 'Tache', 'action'=> 'delete',$idProjet, $tache->idTache), array( 'class' => 'dropdown-item'));
+                                echo $this->Html->link("Supprimer la tâche", array('controller' => 'Tache', 'action'=> 'index', $idProjet), array('class' => 'dropdown-item', 'data-toggle' => 'modal', 'data-target' => '#deleteModal'));
                             }
                         }
                         ?>
@@ -95,15 +95,15 @@
                 <div class="modal-header">
                     <h4 class="modal-title"></h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
                 <div class="modal-body">
-                    <p style="width: 477px;">Êtes-vous sûr de vouloir demander la suppression de cette tâche ?</p>
+                    <p style="width: 477px;">Êtes-vous sûr de suppresser cette tâche ?</p>
                 </div>
                 <div class="modal-footer text-center">
                     <div class="row text-center" style="width: 484px;">
                         <div class="col text-right">
-                          <?php echo $this->Html->link("Non", array('controller' => 'Tache', 'action'=> 'index', $idProjet), array( 'button class' => 'btn btn-light', 'data-dismiss' => 'modal'));?>
+                          <?php echo $this->Html->link("Non", array('controller' => 'Tache', 'action'=> 'index', $idProjet), array( 'button class' => 'btn btn-primary', 'data-dismiss' => 'modal'));?>
                         </div>
                         <div class="col text-left">
-                          <?php echo $this->Html->link("Oui", array('controller' => 'Tache', 'action'=> 'index', $idProjet), array( 'button class' => 'btn btn-danger', 'data-dismiss' => 'modal'));?>
+                          <?php echo $this->Html->link("Oui", array('controller' => 'Tache', 'action'=> 'delete', $idProjet, $tache->idTache), array( 'button class' => 'btn btn-danger'));?>
                         </div>
                     </div>
                 </div>

@@ -182,6 +182,7 @@ class TacheController extends AppController
                 $query->delete()->where(['idTache' => $idTache])->execute();
             }
         }
+        return $this->redirect(['action' => 'index', $idProjet]);
     }
 
     /**
