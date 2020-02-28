@@ -97,7 +97,9 @@ class TacheController extends AppController
      */
     public function add($idProjet){
       if ($this->request->is('post')){
-        $tache = $this->Tache->newEntity($this->request->getData());
+        $data = $this->request->getData();
+        $data['idProjet'] = $idProjet;
+        $tache = $this->Tache->newEntity($data);
         $tache->finie = 0;
         $tache->idProjet = $idProjet;
 
