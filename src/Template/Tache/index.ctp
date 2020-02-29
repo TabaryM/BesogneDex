@@ -36,7 +36,6 @@
               <?php
                 foreach ($taches as $tache):
                  ?>
-
                 <tr style="height: 50px;">
                   <td>
                     <?= $this->Html->link($tache->titre, array('controller' => 'Tache', 'action'=> 'index', $idProjet));
@@ -74,32 +73,32 @@
                            echo $this->Html->link("Se proposer pour la tâche", array('controller' => 'Tache', 'action'=> 'devenirResponsable', $idProjet, $tache->idTache), array( 'class' => 'dropdown-item'));
                         }
                         ?>
-                         </div>
+                       </div>
                     </div>
                   </td>
                 </tr>
-              <!-- Modal Supprimer une tâche : -->
-              <div class="modal fade" id="deleteModal" role="dialog" tabindex="-1">
-                      <div class="modal-dialog" role="document">
-                          <div class="modal-content">
-                              <div class="modal-header">
-                                  <h4 class="modal-title"></h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
-                              <div class="modal-body">
-                                  <p style="width: 477px;">Êtes-vous sûr de suppresser cette tâche ? <?php echo $tache->idTache; ?></p>
-                              </div>
-                              <div class="modal-footer text-center">
-                                  <div class="row text-center" style="width: 484px;">
-                                      <div class="col text-right">
-                                        <?php echo $this->Html->link("Non", array('controller' => 'Tache', 'action'=> 'index', $idProjet), array( 'button class' => 'btn btn-primary', 'data-dismiss' => 'modal'));?>
-                                      </div>
-                                      <div class="col text-left">
-                                        <?php echo $this->Html->link("Oui", array('controller' => 'Tache', 'action'=> 'delete', $idProjet, $tache->idTache), array( 'button class' => 'btn btn-danger'));?>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-              </div>
+                <!-- Modal Supprimer une tâche : -->
+                <div class="modal fade" id="deleteModal" role="dialog" tabindex="-1">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title"></h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
+                                    <div class="modal-body" style="text-align:center;">
+                                    <p style="width: 477px;">Êtes-vous sûr de vouloir supprimer cette tâche ? <?php echo $tache->idTache; ?></p>
+                                    </div>
+                                <div class="modal-footer text-center">
+                                    <div class="row text-center" style="width: 484px;">
+                                        <div class="col text-right">
+                                          <?php echo $this->Html->link("Non", array('controller' => 'Tache', 'action'=> 'index', $idProjet), array( 'button class' => 'btn btn-primary', 'data-dismiss' => 'modal'));?>
+                                        </div>
+                                        <div class="col text-left">
+                                          <?php echo $this->Html->link("Oui", array('controller' => 'Tache', 'action'=> 'delete', $idProjet, $tache->idTache), array( 'button class' => 'btn btn-danger'));?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
               <?php endforeach;  ?>
             </tbody>
           </table>

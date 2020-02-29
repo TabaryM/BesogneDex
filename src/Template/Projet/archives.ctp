@@ -1,6 +1,5 @@
-<div class="container" style="margin-top: 20px">
-  <div class="row d-flex align-items-start" style="height: 100%;">
-    <div class="col-xl-12" style="height: 80%;">
+<div class="row d-flex align-items-start" style="margin-right: 60px;margin-left: 60px;">
+  <div class="col-xl-12" style="height: 80%;margin-top: 50px;">
       <div class="table-responsive">
         <table class="table table-bleu table-striped table-borderless">
           <thead class="thead-light">
@@ -31,8 +30,8 @@
       </div>
     </div>
   </div>
-  <div class="row d-flex align-items-start" >
-    <div class="col-xl-12">
+  <div class="row d-flex align-items-start" style="margin-right: 60px;margin-left: 60px;">
+    <div class="col-xl-12" style="height: 80%;">
         <?php
         echo $this->Html->link("Retour", array('controller' => 'Projet', 'action'=> 'index'), array( 'class' => 'btn btn-primary'));
         ?>
