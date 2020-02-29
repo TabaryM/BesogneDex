@@ -12,7 +12,7 @@ class Utilisateur extends Entity
     * Permet le hashage du mot de passe.
     * Le nom de la fonction est à l'origine _setPassword mais a été modifiée NÉCESSAIREMENT en _setMdp car 'mdp' est le champ du mdp dans notre BDD.
     *
-    * @author : POP Diana
+    * Auteur : POP Diana
     */
     protected function _setMdp($value){
       return (new DefaultPasswordHasher)->hash($value);

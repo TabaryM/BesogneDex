@@ -20,8 +20,6 @@
       <div class="row">
           <div class="col text-center" style="margin-top: 20px;"><?= $this->Html->link("Retour", array('controller' => 'Tache', 'action'=> 'index', $idProjet), array( 'class' => 'btn btn-primary')); ?></div>
 
-          <div class="col text-center" style="margin-top: 20px;"><?= $this->Form->submit('Ajouter une tâche', array('class' => 'btn btn-primary')); ?></div>
+          <div class="col text-center" style="margin-top: 20px;"><?= $this->Form->submit('Ajouter une tâche', array('value' => 'idProjet','class' => 'btn btn-primary'), $idProjet); ?></div>
       </div>
   </div>
-
-  <!-- TODO Changer en un formulaire pour submit -->

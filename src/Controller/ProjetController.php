@@ -17,6 +17,7 @@ class ProjetController extends AppController
     {
         $this->loadComponent('Paginator');
         $session = $this->request->getSession();
+        // $projets = $this->Paginator->paginate($this->Projet->find()->contain(['Membre'])->where(['idUtilisateur' => $session->read('Auth.User.idUtilisateur')]));
         $projets = $this->Paginator->paginate($this->Projet->find()->distinct()->contain('Utilisateur')
         ->leftJoinWith('Membre')
         ->where(
@@ -24,6 +25,7 @@ class ProjetController extends AppController
               'Membre.idUtilisateur' => $session->read('Auth.User.idUtilisateur'),
               'Projet.idProprietaire' => $session->read('Auth.User.idUtilisateur')
          ]]));
+
         $this->set(compact('projets'));
     }
 
@@ -45,14 +47,10 @@ class ProjetController extends AppController
                       if($receivedData['dateDebut'] == $receivedData['dateFin']){
 
                       }
-
-
-
                       $projet = $this->Projet->newEntity($receivedData);
                       $session = $this->request->getSession();
                       $idUser = $session->read('Auth.User.idUtilisateur');
                       $projet->idProprietaire = $idUser;
-
                       foreach($this->Projet->find('all', ['conditions'=>['idProprietaire'=>$idUser]]) as $proj) {
                           if($proj->titre == $receivedData['titre']) {
                               $this->Flash->error(__("Impossible d'ajouter un projet avec un nom identique"));
@@ -121,8 +119,6 @@ class ProjetController extends AppController
     * Auteurs : WATELOT Paul-Emile
     */
     public function delete($idProjet){
-      if ($this->request->is('post')){
-
         $projetTab = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
           ->get('Projet')->find()
           ->where(['idProjet' => $idProjet])
@@ -131,9 +127,9 @@ class ProjetController extends AppController
         //permet de savoir si un utilisateur est propriétaire
         $session = $this->request->getSession();
         if ($session->check('Auth.User.idUtilisateur')) {
-          $user = $session->read('Auth.User.idUtilisateur');
+          $idUser = $session->read('Auth.User.idUtilisateur');
           $membres = TableRegistry::getTableLocator()->get('Membre');
-          if($projetTab->idProprietaire == $user){
+          if($projetTab->idProprietaire == $idUser){
 
             //degage tout les membres du projet
             $query = $membres->query();
@@ -152,20 +148,19 @@ class ProjetController extends AppController
           }
           //sinon si c'est un invité on le degage dans la table membre
           else{
+            $tachesSousResponsabilite = TableRegistry::getTableLocator()
+                ->get('Tache')->find()
+                ->where(['AND' => ['idProjet' => $idProjet, 'idResponsable' => $idUser]])
+                ->all();
+            foreach($tachesSousResponsabilite as $tache):
+                (new TacheController)->notSoResponsible($idProjet, $tache->idTache);
+            endforeach;
             $query = $membres->query();
-            $query->delete()->where(['idProjet' => $idProjet, 'idUtilisateur' => $user])->execute();
+            $query->delete()->where(['idProjet' => $idProjet, 'idUtilisateur' => $idUser])->execute();
           }
         }
 
         return $this->redirect(['action'=> 'index']);
-      }
-    }
-
-    /**
-    * Utilisée dans Template/Tache/index.ctp
-    */
-    public function edit($idProjet){
-      return null;
     }
 
     /**
@@ -196,6 +191,116 @@ class ProjetController extends AppController
           $this->Flash->error(__("Le projet doit être expiré pour pouvoir l'archiver."));
           $this->redirect($this->referer());
         }
+      }
+    }
+
+
+    /**
+    * @author Théo Roton
+    */
+    public function edit($id){
+      $projet = TableRegistry::getTableLocator()->get('projet');
+      $projet = $projet->find()
+      ->where(['idProjet' => $id])
+      ->first();
+
+      $today = Time::now();
+
+      $this->set(compact('projet','id','today'));
+    }
+
+    /**
+    * @author Théo Roton
+    * @TODO ajouter les commentaires
+    */
+    public function modifierInfos(){
+      $receivedData = $this->request->getData();
+      echo "<pre>" , var_dump($receivedData) , "</pre>";
+
+      $projets = TableRegistry::getTableLocator()->get('projet');
+      $projet = $projets->find()
+      ->where(['idProjet' => $receivedData['id']])
+      ->first();
+
+      $erreur = false;
+
+      if ($projet->titre != $receivedData['titre']){
+          if (verification_titre($receivedData['titre'])){
+            $session = $this->request->getSession();
+            $existe_deja = $projets->find()
+            ->where(['idProprietaire' => $session->read('Auth.User.idUtilisateur')])
+            ->where(['titre' => $receivedData['titre']])
+            ->count();
+
+            if ($existe_deja == 0){
+              $projet->titre = filter_var($receivedData['titre'],FILTER_SANITIZE_STRING);
+            } else {
+
+              $this->Flash->error(__("Vous avez déjà un projet avec ce titre"));
+              $erreur = true;
+            }
+          } else {
+            $this->Flash->error(__("La taille du titre est incorrecte"));
+            $erreur = true;
+          }
+      }
+
+      $today = date('Y-m-d');
+      $today = explode('-',$today);
+      if (verification_dates($today, $receivedData['dateDeb']) || $projet->etat = 'Archive'){
+
+        $dF = $receivedData['dateFin'];
+        if (strlen($dF['year']) > 0 && strlen($dF['month']) > 0 && strlen($dF['day']) > 0){
+
+          if (verification_dates($receivedData['dateDeb'],$receivedData['dateFin'])){
+
+            $projet->dateDebut = date('Y-m-d',strtotime(implode($receivedData['dateDeb'])));
+            $projet->dateFin = date('Y-m-d',strtotime(implode($receivedData['dateFin'])));
+
+            if ($projet->etat == 'Archive' && verification_dates($today, $receivedData['dateFin'])) {
+              $projet->etat = 'En cours';
+            }
+
+          } else {
+
+            $this->Flash->error(__("La date de début du projet ne peut pas être après celle de fin"));
+            $erreur = true;
+          }
+        } else if (strlen($dF['year']) == 0 && strlen($dF['month']) == 0 && strlen($dF['day']) == 0) {
+          $projet->dateDebut = date('Y-m-d',strtotime(implode($receivedData['dateDeb'])));
+          $projet->dateFin = null;
+          if ($projet->etat == 'Archive') {
+            $projet->etat = 'En cours';
+          }
+
+        } else {
+
+          $this->Flash->error(__("La date de fin du projet est mal formée"));
+          $erreur = true;
+        }
+      } else {
+
+        $this->Flash->error(__("La date de début du projet ne peut pas être avant aujourd'hui"));
+        $erreur = true;
+      }
+
+      if ($projet->description != $receivedData['descr']){
+        if (verification_description($receivedData['descr'])){
+          $projet->description = filter_var($receivedData['descr'],FILTER_SANITIZE_STRING);
+        } else {
+
+          $this->Flash->error(__("La description dépasse 500 caractères"));
+          $erreur = true;
+        }
+      }
+
+      if (!$erreur){
+        $projets->save($projet);
+        return $this->redirect(
+            array('controller' => 'Tache', 'action' => 'index', $receivedData['id'])
+        );
+      } else {
+        $this->redirect($this->referer());
       }
     }
 }
