@@ -127,9 +127,9 @@
               <?php if($estProprietaire): ?>
                 <?= $this->Html->link("Archiver", ['controller' => 'Projet', 'action' => 'archive', $idProjet], ['class' => 'btn btn-primary shadow']); ?>
                 <?= $this->Html->link("Modifier", ['controller' => 'Projet', 'action' => 'edit', $idProjet], ['class' => 'btn btn-primary shadow']); ?>
-                <?= $this->Html->link("Supprimer", ['controller' => 'Projet', 'action' => 'delete', $idProjet], ['class' => 'btn btn-danger shadow']); ?>
+                <?= $this->Html->link("Supprimer", "", ['class' => 'btn btn-danger shadow', 'data-toggle' => 'modal', 'data-target' => '#leaveModal']); ?>
               <?php else: ?>
-                <?= $this->Html->link("Quitter le projet", ['controller' => 'Projet', 'action'=> 'delete', $idProjet], ['class' => 'btn btn-danger shadow']); ?>
+                <?= $this->Html->link("Quitter le projet", "", ['class' => 'btn btn-danger shadow', 'data-toggle' => 'modal', 'data-target' => '#leaveModal']); ?>
               <?php endif; ?>
             </div>
         </div>
@@ -137,6 +137,33 @@
     <div class="col-xl-4 d-flex justify-content-end align-items-center">
       <?= $this->Html->link("", ['controller' => 'Tache', 'action'=> 'add', $idProjet], ['class' => 'btn btn-primary shadow rond-croix']); ?>
     </div>
+  </div>
+
+  <!-- Modal Quitter/Supprimer le projet : -->
+  <div class="modal fade" id="leaveModal" role="dialog" tabindex="-1">
+          <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h4 class="modal-title"></h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
+                  <div class="modal-body" style="text-align:center;">
+                      <?php if($estProprietaire):?>
+                      <p style="width: 477px;">Voulez-vous vraiment supprimer le projet ?</p>
+                    <?php else: ?>
+                      <p style="width: 477px;">Voulez-vous vraiment quitter le projet ?</p>
+                    <?php endif; ?>
+                  </div>
+                  <div class="modal-footer text-center">
+                      <div class="row text-center" style="width: 484px;">
+                          <div class="col text-right">
+                            <?php echo $this->Html->link("Non", array('controller' => 'Tache', 'action'=> 'index', $idProjet), array( 'button class' => 'btn btn-primary', 'data-dismiss' => 'modal'));?>
+                          </div>
+                          <div class="col text-left">
+                            <?php echo $this->Html->link("Oui", array('controller' => 'Projet', 'action'=> 'delete', $idProjet), array( 'button class' => 'btn btn-danger'));?>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
   </div>
 
   <?= $this->Html->script('tacheTermine.js'); ?>

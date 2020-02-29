@@ -119,8 +119,6 @@ class ProjetController extends AppController
     * Auteurs : WATELOT Paul-Emile
     */
     public function delete($idProjet){
-      if ($this->request->is('post')){
-
         $projetTab = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
           ->get('Projet')->find()
           ->where(['idProjet' => $idProjet])
@@ -163,7 +161,6 @@ class ProjetController extends AppController
         }
 
         return $this->redirect(['action'=> 'index']);
-      }
     }
 
     /**
