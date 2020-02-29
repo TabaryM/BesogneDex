@@ -103,11 +103,15 @@ class TacheController extends AppController
         $tache->finie = 0;
         $tache->idProjet = $idProjet;
 
+        if(empty($tache->titre)){
+          $this->Flash->error(__('Impossible d\'ajouter une tâche avec un nom vide.'));
+          return $this->redirect(['action'=> 'add', $idProjet]);
+        }
         // On verifie qu'il n'existe pas une tache du meme nom
         foreach($this->Tache->find('all', ['conditions'=>['idProjet'=>$idProjet]]) as $task) {
                 if($task->titre == $tache->titre) {
-                    $this->Flash->error(__('Impossible d\'avoir plusieurs taches avec le meme nom'));
-                    return $this->redirect(['action'=> 'index', $idProjet]);
+                    $this->Flash->error(__('Impossible d\'avoir plusieurs taches avec le meme nom.'));
+                    return $this->redirect(['action'=> 'add', $idProjet]);
                 }
           }
         if ($this->Tache->save($tache)) {
