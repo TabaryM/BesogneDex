@@ -296,6 +296,7 @@ class ProjetController extends AppController
 
       if (!$erreur){
         $projets->save($projet);
+        $this->Flash->success(__('Votre projet a été modifé.'));
         return $this->redirect(
             array('controller' => 'Tache', 'action' => 'index', $receivedData['id'])
         );
