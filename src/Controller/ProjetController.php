@@ -236,11 +236,11 @@ class ProjetController extends AppController
               $projet->titre = filter_var($receivedData['titre'],FILTER_SANITIZE_STRING);
             } else {
 
-              $this->Flash->error(__("Vous avez déjà un projet avec ce titre"));
+              $this->Flash->error(__("Vous avez déjà un projet avec ce titre."));
               $erreur = true;
             }
           } else {
-            $this->Flash->error(__("La taille du titre est incorrecte"));
+            $this->Flash->error(__("La taille du titre est incorrecte (50 caractères max)."));
             $erreur = true;
           }
       }
@@ -263,7 +263,7 @@ class ProjetController extends AppController
 
           } else {
 
-            $this->Flash->error(__("La date de début du projet ne peut pas être après celle de fin"));
+            $this->Flash->error(__("La date de début du projet ne peut pas être après celle de fin."));
             $erreur = true;
           }
         } else if (strlen($dF['year']) == 0 && strlen($dF['month']) == 0 && strlen($dF['day']) == 0) {
@@ -275,12 +275,12 @@ class ProjetController extends AppController
 
         } else {
 
-          $this->Flash->error(__("La date de fin du projet est mal formée"));
+          $this->Flash->error(__("La date de fin du projet est mal formée."));
           $erreur = true;
         }
       } else {
 
-        $this->Flash->error(__("La date de début du projet ne peut pas être avant aujourd'hui"));
+        $this->Flash->error(__("La date de début du projet ne peut pas être avant aujourd'hui."));
         $erreur = true;
       }
 
@@ -289,7 +289,7 @@ class ProjetController extends AppController
           $projet->description = filter_var($receivedData['descr'],FILTER_SANITIZE_STRING);
         } else {
 
-          $this->Flash->error(__("La description dépasse 500 caractères"));
+          $this->Flash->error(__("La taille de la description est incorrecte (500 caractères)."));
           $erreur = true;
         }
       }

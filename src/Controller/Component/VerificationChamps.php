@@ -7,7 +7,7 @@
 function verification_titre($titre){
     $res = false;
     // Vérification de la taille
-    if(strlen($titre) >= 1  && strlen($titre) <= 128){
+    if(strlen($titre) >= 1  && strlen($titre) <= 50){
         $res = true;
     }
 
