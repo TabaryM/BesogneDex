@@ -19,7 +19,12 @@ class TacheController extends AppController
   {
 
     $estProprietaire = false;
-    $user = null;
+
+
+    $session = $this->request->getSession();
+    if ($session->check('Auth.User.idUtilisateur')) {
+          $user = $session->read('Auth.User.idUtilisateur');
+    }
 
     $projetTab = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
     ->get('Projet')->find()
