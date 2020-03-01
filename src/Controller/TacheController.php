@@ -36,7 +36,7 @@ class TacheController extends AppController
     ->where(['idProjet' => $idProjet]));
 
     //Regarde si l'utilisateur est autorisé à acceder au contenu
-    $this->autorisation($idProjet);
+    $estProprietaire = $this->autorisation($idProjet);
 
     // fin session check idUtilisateur
     $this->set(compact('taches', 'idProjet', 'projetTab', 'estProprietaire', 'user'));
@@ -259,7 +259,6 @@ class TacheController extends AppController
     if ($session->check('Auth.User.idUtilisateur')) {
       $user = $session->read('Auth.User.idUtilisateur');
       if($projetTab->idProprietaire == $user){
-        $estProprietaire = true;
         //Pour la couronne dans le header
         Configure::write('utilisateurProprietaire', true);
 

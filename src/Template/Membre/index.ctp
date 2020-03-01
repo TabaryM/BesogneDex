@@ -1,12 +1,5 @@
 <?php use Cake\Routing\Router; ?>
 
-<script>
-  var local_source= '<?php echo Router::url(array('controller' => 'Utilisateur', 'action' => 'complete')); ?>';
-  jQuery('#recherche-utilisateurs').autocomplete({
-    source:local_source,
-    minLength: 1
-});
-</script>
 
 
 <?php // TODO: Ajouter une icône de recherche avec la ligne en dessous ?>
@@ -40,3 +33,11 @@
       <?= $this->Html->link("Retour", array('controller' => 'Tache', 'action'=> 'index', $id), array( 'class' => 'btn btn-primary shadow grosBouton boutonRouge')); ?>
       </div>
 </div>
+
+<script>
+  var local_source= '<?php echo Router::url(array('controller' => 'Utilisateur', 'action' => 'complete')); ?>';
+  jQuery('#recherche-utilisateurs').autocomplete({
+    source:local_source,
+    minLength: 1
+});
+</script>
