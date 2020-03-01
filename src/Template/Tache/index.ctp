@@ -81,17 +81,13 @@
                 <div class="modal fade" id="deleteModal" role="dialog" tabindex="-1">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title"></h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
-<<<<<<< HEAD
-                                <div class="modal-body">
-                                    <p style="width: 477px;">Êtes-vous sûr de suppresser cette tâche ? </p>
-                                </div>
-=======
-                                    <div class="modal-body" style="text-align:center;">
-                                    <p style="width: 477px;">Êtes-vous sûr de vouloir supprimer cette tâche ? <?php echo $tache->idTache; ?></p>
+                                    <div class="modal-header">
+                                      <h4 class="modal-title"></h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                                     </div>
->>>>>>> eb6f15f1f896342af2033a4c1d600e1939467538
+                                    <div class="modal-body" style="text-align:center;">
+                                      <p style="width: 477px;">Êtes-vous sûr de vouloir supprimer cette tâche ? <?php echo $tache->idTache; ?></p>
+                                    </div>
+
                                 <div class="modal-footer text-center">
                                     <div class="row text-center" style="width: 484px;">
                                         <div class="col text-right">
