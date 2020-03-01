@@ -62,7 +62,7 @@
                     <div class="dropdown">
                       <a class="test" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">●●●</a>
                       <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        <?php echo $this->Html->link("Supprimer la tâche", array('controller' => 'Tache', 'action'=> 'index', $idProjet), array('class' => 'dropdown-item', 'data-toggle' => 'modal', 'data-target' => '#deleteModal')); ?>
+                        <?php echo $this->Html->link("Supprimer la tâche", array('controller' => 'Tache', 'action'=> 'index', $idProjet), array('class' => 'dropdown-item', 'data-toggle' => 'modal', 'data-target' => '#deleteModal' . $tache->idTache)); ?>
                         <?php echo $this->Html->link("Modifier la tâche", array('controller' => 'Tache', 'action'=> 'edit', $idProjet, $tache->idTache), array( 'class' => 'dropdown-item'));?>
                         <?php
                         if (isset ($user) && isset($tache->responsable)) {
@@ -78,14 +78,14 @@
                   </td>
                 </tr>
                 <!-- Modal Supprimer une tâche : -->
-                <div class="modal fade" id="deleteModal" role="dialog" tabindex="-1">
+                <div class="modal fade" id=<?php echo "deleteModal" . $tache->idTache ?> role="dialog" tabindex="-1">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
-                                    <div class="modal-header">
-                                      <h4 class="modal-title"></h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                <div class="modal-header">
+                                    <h4 class="modal-title"></h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                                     </div>
                                     <div class="modal-body" style="text-align:center;">
-                                      <p style="width: 477px;">Êtes-vous sûr de vouloir supprimer cette tâche ? <?php echo $tache->idTache; ?></p>
+                                    <p style="width: 477px;">Êtes-vous sûr de vouloir supprimer cette tâche ? <?php echo $tache->idTache; ?></p>
                                     </div>
 
                                 <div class="modal-footer text-center">
@@ -101,6 +101,7 @@
                             </div>
                         </div>
                 </div>
+                
               <?php endforeach;  ?>
             </tbody>
           </table>
