@@ -197,13 +197,22 @@ class ProjetController extends AppController
 
     /**
     * @author Théo Roton
+    * @param id : id du projet pour lequel on affiche l'écran de modification
+    *
+    * Cette fonction affiche l'écran de modification pour le projet identifié
+    * par l'id passé en paramètre. On récupère les informations du projet afin
+    * de remplir les champs du formulaire avec.
+    *
+    * Le fichier lié à l'affichage de cette page est 'Projet/edit.ctp'.
     */
     public function edit($id){
+      //On récupère le projet
       $projet = TableRegistry::getTableLocator()->get('projet');
       $projet = $projet->find()
       ->where(['idProjet' => $id])
       ->first();
 
+      //On récupère la date du jour pour avoir une année minimum dans les champs dates du formulaire
       $today = Time::now();
 
       $this->set(compact('projet','id','today'));
@@ -211,12 +220,19 @@ class ProjetController extends AppController
 
     /**
     * @author Théo Roton
-    * @TODO ajouter les commentaires
+    *
+    * Cette fonction permet de vérifier les informations modifiés pour
+    * le projet. On effectue plusieurs vérifications : s'il y a des erreurs,
+    * on renvoie l'utilisateur sur la page de modification en indiquant
+    * les champs qui présentent une erreur, sinon on renvoie l'utilisateur
+    * sur la page du projet qu'il a modifié avec les informations mises
+    * à jour (et avec un message de succès).
     */
     public function modifierInfos(){
       $receivedData = $this->request->getData();
       echo "<pre>" , var_dump($receivedData) , "</pre>";
 
+      //On récupère le projet pour avoir les anciennes informations
       $projets = TableRegistry::getTableLocator()->get('projet');
       $projet = $projets->find()
       ->where(['idProjet' => $receivedData['id']])
@@ -224,8 +240,12 @@ class ProjetController extends AppController
 
       $erreur = false;
 
+      //Si on a modifié le titre
       if ($projet->titre != $receivedData['titre']){
+          //On vérifie si le nouveau titre est bien formé
           if (verification_titre($receivedData['titre'])){
+
+            //On vérifie si le nouveau titre n'est pas pris par un autre projet de l'utilisateur
             $session = $this->request->getSession();
             $existe_deja = $projets->find()
             ->where(['idProprietaire' => $session->read('Auth.User.idUtilisateur')])
@@ -233,74 +253,100 @@ class ProjetController extends AppController
             ->count();
 
             if ($existe_deja == 0){
+              //Si le nouveau titre respecte les contraintes, on modifie le projet
               $projet->titre = filter_var($receivedData['titre'],FILTER_SANITIZE_STRING);
             } else {
-
+              //Si le titre est déjà pris, on affiche une erreur
               $this->Flash->error(__("Vous avez déjà un projet avec ce titre."));
               $erreur = true;
             }
           } else {
+            //Si le titre ne respecte pas la contrainte de taille, on affiche une erreur
             $this->Flash->error(__("La taille du titre est incorrecte (50 caractères max)."));
             $erreur = true;
           }
       }
 
+      //On récupère la date d'aujourd'hui
       $today = date('Y-m-d');
       $today = explode('-',$today);
+
+      /**
+      * Si la nouvelle date de début du projet n'est pas avant la date d'ajourd'hui,
+      * ou si le projet est archivé.
+      */
       if (verification_dates($today, $receivedData['dateDeb']) || $projet->etat = 'Archive'){
 
         $dF = $receivedData['dateFin'];
+        //Si on a une date de fin
         if (strlen($dF['year']) > 0 && strlen($dF['month']) > 0 && strlen($dF['day']) > 0){
 
+          //Si la date de début est avant celle de fin
           if (verification_dates($receivedData['dateDeb'],$receivedData['dateFin'])){
 
+            //On modifie le projet avec les nouvelles dates
             $projet->dateDebut = date('Y-m-d',strtotime(implode($receivedData['dateDeb'])));
             $projet->dateFin = date('Y-m-d',strtotime(implode($receivedData['dateFin'])));
 
+            //Si le projet était archivé, et que la nouvelle date de fin est après aujourd'hui, on met le projet en cours
             if ($projet->etat == 'Archive' && verification_dates($today, $receivedData['dateFin'])) {
               $projet->etat = 'En cours';
             }
 
           } else {
-
+            //Si la nouvelle date de début est après celle de fin, on affiche une erreur
             $this->Flash->error(__("La date de début du projet ne peut pas être après celle de fin."));
             $erreur = true;
           }
+          //Si on a pas de date de fin
         } else if (strlen($dF['year']) == 0 && strlen($dF['month']) == 0 && strlen($dF['day']) == 0) {
+
+          //On modifie le projet avec la nouvelle date de début et aucune date pour la date de fin
           $projet->dateDebut = date('Y-m-d',strtotime(implode($receivedData['dateDeb'])));
           $projet->dateFin = null;
+
+          //Si le projet était archivé, alors on le met en cours
           if ($projet->etat == 'Archive') {
             $projet->etat = 'En cours';
           }
 
         } else {
-
+          //Si la date de fin est mal formée, on affiche une erreur
           $this->Flash->error(__("La date de fin du projet est mal formée."));
           $erreur = true;
         }
       } else {
-
+        //Si la date du début du projet est avant aujourd'hui, on affiche une erreur
         $this->Flash->error(__("La date de début du projet ne peut pas être avant aujourd'hui."));
         $erreur = true;
       }
 
+      //Si on a modifié la description
       if ($projet->description != $receivedData['descr']){
+
+        //On vérifie si la nouvelle description est bien formée
         if (verification_description($receivedData['descr'])){
+          //Si la nouvelle description respecte les contraintes, alors on modifie le projet
           $projet->description = filter_var($receivedData['descr'],FILTER_SANITIZE_STRING);
         } else {
-
+          //Si la description ne respecte pas la contrainte de taille, on affiche une erreur
           $this->Flash->error(__("La taille de la description est incorrecte (500 caractères)."));
           $erreur = true;
         }
       }
 
+      //Si on n'a pas eu d'erreur alors
       if (!$erreur){
+        //On sauvegarde les nouvelles informations du projet
         $projets->save($projet);
+        //On indique que la modification a réussie
         $this->Flash->success(__('Votre projet a été modifé.'));
+        //On redirige l'utilisateur sur le projet avec les informations mises à jour
         return $this->redirect(
             array('controller' => 'Tache', 'action' => 'index', $receivedData['id'])
         );
       } else {
+        //Si il y a eu une erreur, on renvoie l'utilisateur sur la page de modification
         $this->redirect($this->referer());
       }
     }
