@@ -80,32 +80,44 @@ class TacheController extends AppController
   */
   public function add($idProjet){
     if ($this->request->is('post')){
+      echo 'hello';
       $data = $this->request->getData();
       $data['idProjet'] = $idProjet;
       $tache = $this->Tache->newEntity($data);
-      $tache->finie = 0;
-      $tache->idProjet = $idProjet;
 
-      if(empty($tache->titre)){
-        $this->Flash->error(__('Impossible d\'ajouter une tâche avec un nom vide.'));
-        return $this->redirect(['action'=> 'add', $idProjet]);
-      }
-      // On verifie qu'il n'existe pas une tache du meme nom
-      foreach($this->Tache->find('all', ['conditions'=>['idProjet'=>$idProjet]]) as $task) {
-        if($task->titre == $tache->titre) {
-          $this->Flash->error(__('Impossible d\'avoir plusieurs taches avec le meme nom.'));
-          return $this->redirect(['action'=> 'add', $idProjet]);
+      if(!empty($tache->errors()) && $tache->errors() != NULL){ //TODO: C'est pas propre
+        $errors = affichage_erreurs($tache->errors(), $this);
+        $this->Flash->error(
+          __("Erreurs : ".implode("\n \r", $errors))
+        );
+      }else{
+
+        $tache->finie = 0;
+        $tache->idProjet = $idProjet;
+        if(empty($tache->titre)){
+          $this->Flash->error(__('Impossible d\'ajouter une tâche avec un nom vide.'));
+          //return $this->redirect(['action'=> 'add', $idProjet]);
+        }else{
+          // On verifie qu'il n'existe pas une tache du meme nom
+          foreach($this->Tache->find('all', ['conditions'=>['idProjet'=>$idProjet]]) as $task) {
+            if($task->titre == $tache->titre) {
+              $this->Flash->error(__('Impossible d\'avoir plusieurs taches avec le meme nom.'));
+              return $this->redirect(['action'=> 'add', $idProjet]); //TODO: Pas propre
+            }
+          }
+          if ($this->Tache->save($tache)) {
+            $this->Flash->success(__('Votre tâche a été sauvegardée.'));
+            if($tache->estResponsable == 1) {
+              // l'utilisateur devient responsable de la tâche
+              $this->devenirResponsable($idProjet, $tache->idTache);
+            }
+
+            return $this->redirect(['action'=> 'index', $idProjet]); //TODO: Pas propre
+          }else{
+            $this->Flash->error(__('Impossible d\'ajouter votre tâche.'));
+          }
         }
       }
-      if ($this->Tache->save($tache)) {
-        $this->Flash->success(__('Votre tâche a été sauvegardée.'));
-        if($tache->estResponsable == 1) {
-          // l'utilisateur devient responsable de la tâche
-          $this->devenirResponsable($idProjet, $tache->idTache);
-        }
-        return $this->redirect(['action'=> 'index', $idProjet]);
-      }
-      $this->Flash->error(__('Impossible d\'ajouter votre tâche.'));
     }
     $this->set(compact('idProjet'));
   }
@@ -138,34 +150,36 @@ class TacheController extends AppController
     $data = $this->request->getData();
 
     if(!empty($data)){
-      $tache = $this->Tache->find()
-      ->where(['idTache' => $idTache])
-      ->first();
-
-      $data = array_filter($data, function($value) { return !is_null($value) && $value !== '' && !empty($value); }); //On supprime les éléments vide
-
-      $data['idProjet'] = $idProjet;
-
-      $tache = $this->Tache->get($idTache); //On récupère les données tâches
-      $data2 = $this->Tache->patchEntity($tache, $data); //On "assemble" les données entre data et une tâche
-
-      if($this->Tache->save($data2)){ //On sauvegarde les données (Le vérificator passe avant)
-        $this->Flash->success(__('La Tâche a été modifié.'));
-        return $this->redirect(['action'=> 'index', $idProjet]);
+      if(empty($data['titre'])){
+          $this->Flash->error(__("Le nom de la tâche ne peut pas être vide."));
       }else{
-        $errors = affichage_erreurs($tache->errors(), $this);
-        
-        if(!empty($errors)){ //TODO: Factoriser ?
-          $this->Flash->error(
-            __("Erreurs : ".implode("\n \r", $errors))
-          );
-        }
-      }//TODO: redirect en casde succès
+        $tache = $this->Tache->find()
+        ->where(['idTache' => $idTache])
+        ->first();
+
+        $data = array_filter($data, function($value) { return !is_null($value) && $value !== '' && !empty($value); }); //On supprime les éléments vide
+
+        $data['idProjet'] = $idProjet;
+
+        $tache = $this->Tache->get($idTache); //On récupère les données tâches
+        $data2 = $this->Tache->patchEntity($tache, $data); //On "assemble" les données entre data et une tâche
+
+        if($this->Tache->save($data2)){ //On sauvegarde les données (Le vérificator passe avant)
+          $this->Flash->success(__('La Tâche a été modifié.'));
+          return $this->redirect(['action'=> 'index', $idProjet]);
+        }else{
+          $errors = affichage_erreurs($tache->errors(), $this);
+
+          if(!empty($errors)){ //TODO: Factoriser ?
+            $this->Flash->error(
+              __("Erreurs : ".implode("\n \r", $errors))
+            );
+          }
+        }//TODO: redirect en casde succès
+      }
     }
 
-    $id = $idProjet;
-
-    $this->set(compact('id', 'idTache'));
+    $this->set(compact('idProjet', 'idTache'));
   }
 
   /**
