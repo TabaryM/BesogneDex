@@ -1,6 +1,6 @@
 <?php
 /**
- * @auth TABARY Mathieu, PALMIERI Adrien
+ * @author TABARY Mathieu, PALMIERI Adrien
  * @param $titre String : nom du champs à vérifier
  * @return bool retourne vrai si le titre correspond aux critères donné dans le cahier des chargess
  */
@@ -15,7 +15,7 @@ function verification_titre($titre){
 }
 
 /**
- * @auth TABARY Mathieu, PALMIERI Adrien
+ * @author TABARY Mathieu, PALMIERI Adrien
  * @param $description String : nom du champs à vérifier
  * @return bool retourne vrai si la description correspond aux critères donné dans le cahier des chargess
  */
@@ -29,6 +29,12 @@ function verification_description($description){
     return $res;
 }
 
+/**
+ * @author TABARY Mathieu
+ * @param $dateDebut array : Date de début du projet
+ * @param $dateFin array : Date de fin du projet
+ * @return bool retourne vrai si la date de début est plus ancienne que la date de fin
+ */
 function verification_dates($dateDebut, $dateFin){
     $res = false;
     // On convertis les dates en format comparable facilement

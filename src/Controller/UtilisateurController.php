@@ -124,8 +124,7 @@ class UtilisateurController extends AppController
   }
 
   /**
-  * Affiche le profil utilisateur
-  *
+  * Récupère les données d'un utilisateur pour les rendre disponible dans la page de profil utilisateur
   * @author Mathieu TABARY
   */
   public function profil(){
@@ -191,7 +190,7 @@ class UtilisateurController extends AppController
 
         if(!empty($data)){
           $utilisateur = $this->Utilisateur->get($session->read('Auth.User.idUtilisateur'));
-          $data2 = $this->Utilisateur->patchEntity($utilisateur, $data);  
+          $data2 = $this->Utilisateur->patchEntity($utilisateur, $data);
 
           if($this->Utilisateur->save($data2)){
             $this->Flash->success(__('Votre compte a été édité.'));

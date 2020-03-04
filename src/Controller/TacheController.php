@@ -166,10 +166,13 @@ class TacheController extends AppController
     $this->set(compact('id'));
   }
 
-  /**
-  * Permet à un membre de projet de devenir responsable d'une tache
-  * @author Mathieu TABARY
-  */
+    /**
+     * Permet à un membre de projet de devenir responsable d'une tache
+     * @param $idProjet int identifiant unique du projet
+     * @param $idTache int identifiant unique de la tâche
+     * @return \Cake\Http\Response|null Retourne sur la liste des tâches
+     * @author Mathieu TABARY
+     */
   public function devenirResponsable($idProjet, $idTache) {
     $session = $this->request->getSession();
     $tache = $this->Tache->get($idTache);
