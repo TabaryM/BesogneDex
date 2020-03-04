@@ -133,10 +133,11 @@ class TacheController extends AppController
   /**
   * Utilisée dans : Template/Tache/index.ctp
   */
-  public function edit($idProjet)
+  public function edit($idProjet, $idTache)
   {
     $data = $this->request->getData();
-    if(isset($data) && !empty($data)){
+
+    if(!empty($data)){
       $tache = $this->Tache->find()
       ->where(['idTache' => $idTache])
       ->first();
@@ -150,12 +151,13 @@ class TacheController extends AppController
 
       if($this->Tache->save($data2)){ //On sauvegarde les données (Le vérificator passe avant)
         $this->Flash->success(__('La Tâche a été modifié.'));
+        return $this->redirect(['action'=> 'index', $idProjet]);
       }else{
         $errors = affichage_erreurs($tache->errors(), $this);
-        print_r($data2);
+        
         if(!empty($errors)){ //TODO: Factoriser ?
           $this->Flash->error(
-            __("Veuillez modifier ce(s) champs : ".implode("\n \r", $errors))
+            __("Erreurs : ".implode("\n \r", $errors))
           );
         }
       }//TODO: redirect en casde succès
@@ -163,7 +165,7 @@ class TacheController extends AppController
 
     $id = $idProjet;
 
-    $this->set(compact('id'));
+    $this->set(compact('id', 'idTache'));
   }
 
   /**

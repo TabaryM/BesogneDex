@@ -31,7 +31,7 @@ class TacheTable extends Table{
 */
 public function validationDefault(Validator $validator){
   return $validator
-  ->requirePresence('titre')
+  ->requirePresence('titre', 'Un titre est nécessaire')
   ->notEmptyString('titre', 'Un titre est nécessaire')
   // Vérification de l'unicité du titre
   ->add('titre' , array(
