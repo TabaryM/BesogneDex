@@ -3,7 +3,7 @@ namespace App\Model\Table;
 
 use Cake\ORM\Table;
 
-class Vue_notification_tacheTable extends Table {
+class VueNotificationTacheTable extends Table {
 
   public function initialize(array $config){
     $this->setPrimaryKey(array('idUtilisateur','idNotifTache'));
@@ -13,7 +13,7 @@ class Vue_notification_tacheTable extends Table {
       'propertyName' => 'un_utilisateur'
     ]);
 
-    $this->belongsTo('Notification_tache', [
+    $this->belongsTo('NotificationTache', [
       'foreignKey' => 'idNotifTache',
       'propertyName' => 'une_notification'
     ]);

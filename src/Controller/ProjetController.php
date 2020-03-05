@@ -209,6 +209,7 @@ class ProjetController extends AppController
         if ($projet->dateFin < $now) {
           if ($user === $projet->idProprietaire) {
             $projet->etat = "Archive";
+            $projet->dateArchivage = Time::now();
             $this->Projet->save($projet);
 
             // Projet archivé
