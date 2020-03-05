@@ -7,8 +7,8 @@ use Cake\ORM\Table;
 class TacheTable extends Table{
   /**
   * Initialisation base de données côté Table Tache
-  * @author : Thibault CHONÉ
-  * @param $config : aucune idée
+  * @author Thibault CHONÉ
+  * @param $config : CakePhp gère ça
   */
   public function initialize(array $config){
     $this->setPrimaryKey('idTache');
@@ -25,10 +25,16 @@ class TacheTable extends Table{
   }
 
 
-  /**
+/**
 * Vérifications du formulaire de création/modif de tâche avec messsages d'erreurs.
-* @author : Thibault CHONÉ
+* @author  Thibault CHONÉ
 */
+/**
+ * Vérifications du formulaire de création/modif de tâche avec messsages d'erreurs.
+ * @author Thibault CHONÉ
+ * @param  Validator $validator Le validator a modifier
+ * @return Validator            Le validator modifié
+ */
 public function validationDefault(Validator $validator){
   return $validator
   //->requirePresence('titre', 'true')
