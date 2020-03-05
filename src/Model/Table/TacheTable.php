@@ -31,8 +31,9 @@ class TacheTable extends Table{
 */
 public function validationDefault(Validator $validator){
   return $validator
-  ->requirePresence('titre')
-  ->notEmptyString('titre', 'Un titre est nécessaire')
+  //->requirePresence('titre', 'true')
+  ->notEmptyString('titre', 'Le titre ne peut pas être vide.',  true)
+  ->lengthBetween('titre', [0, 64], 'Le titre de la tâche est trop long.')
   // Vérification de l'unicité du titre
   ->add('titre' , array(
       'unique' => array(
@@ -48,6 +49,7 @@ public function validationDefault(Validator $validator){
       )
     )// add titre
     ->allowEmptyString('description')
+    ->lengthBetween('description', [0, 512], 'La description de la tâche est trop longue.')
     //->add('description', 'string')
     ;
 

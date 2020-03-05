@@ -19,12 +19,6 @@ function affichage_erreurs($ArrayError){
     }
 
     return $error_msg;
-
-    if(!empty($error_msg)){
-      $this->Flash->error(
-        __("Veuillez modifier ce(s) champs : ".implode("\n \r", $error_msg))
-      );
-    }
   }
 }
 
