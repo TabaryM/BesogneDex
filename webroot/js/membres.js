@@ -26,7 +26,7 @@ function supprimer(id_projet){
       jQuery('#bouton_changer_proprietaire').prop('enabled', false);
       jQuery.get("/BesogneDex/projet/changerProprietaire/" + jeSuisIdSelectionne + "/" + idProjet,
                 function(){
-                    document.location.reload(true);
+                    document.location.reload(true) ;
                     jQuery('#bouton_changer_proprietaire').prop('enabled', true);
                   });
   }
