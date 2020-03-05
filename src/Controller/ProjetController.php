@@ -205,6 +205,7 @@ class ProjetController extends AppController
     * Le fichier lié à l'affichage de cette page est 'Projet/edit.ctp'.
     */
     public function edit($id){
+
       //On récupère le projet
       $projet = TableRegistry::getTableLocator()->get('projet');
       $projet = $projet->find()
@@ -340,6 +341,7 @@ class ProjetController extends AppController
         $projets->save($projet);
         //On indique que la modification a réussie
         $this->Flash->success(__('Votre projet a été modifé.'));
+
         //On redirige l'utilisateur sur le projet avec les informations mises à jour
         return $this->redirect(
             array('controller' => 'Tache', 'action' => 'index', $receivedData['id'])
