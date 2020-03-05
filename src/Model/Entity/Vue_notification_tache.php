@@ -3,7 +3,7 @@ namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
 
-class Vue_notification_tache extends Entity
+class VueNotificationTache extends Entity
 {
     protected $_accessible = [
         '*' => true,
