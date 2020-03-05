@@ -86,8 +86,8 @@ class ProjetController extends AppController
               }
 
           } else {
-              // Si le titre n'est pas correcte
-            $this->Flash->error(__("Titre incorrecte (doit avoir entre 1 et 128 caractères)"));
+              // Si le titre n'est pas correct
+            $this->Flash->error(__("Titre incorrect (doit avoir entre 1 et 128 caractères)"));
           }
       }
     }
@@ -262,7 +262,7 @@ class ProjetController extends AppController
             }
           } else {
             //Si le titre ne respecte pas la contrainte de taille, on affiche une erreur
-            $this->Flash->error(__("La taille du titre est incorrecte (50 caractères max)."));
+            $this->Flash->error(__("La taille du titre est incorrecte (128 caractères max)."));
             $erreur = true;
           }
       }
@@ -385,6 +385,6 @@ class ProjetController extends AppController
       $membre->idUtilisateur= $idUtilisateur;
       $this->Membre->save($membre);
     }
-    
+
 }
 ?>
