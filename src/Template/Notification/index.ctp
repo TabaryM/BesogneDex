@@ -13,7 +13,7 @@
               <td>
                 <?= $notif->une_notification->date->nice('Europe/Paris', 'fr-FR') ?>
               </td>
-              <td>
+              <td class="d-flex justify-content-center">
                 <?php if ($notif->une_notification->a_valider): ?>
                   <!-- TODO: Fonction accepter / refuser invitation -->
                   <?= $this->Html->link("Accepter", ['action'=> '#'], ['class' => 'btn btn-primary']); ?>
