@@ -129,7 +129,7 @@ $cakeDescription = 'BesogneDex';
                                    </div>
                               </div>
                               <div class="row">
-                                  <div class="col"><?= $this->Form->control('mdpp', ['label' => '', 'style'=>'height: 38px;','pattern'=>'.{6,}', 'type'=>'password']) ?></div>
+                                  <div class="col"><?= $this->Form->control('mdpConfirm', ['label' => '', 'style'=>'height: 38px;','pattern'=>'.{6,}', 'type'=>'password']) ?></div>
                               </div>
                               <div class="row">
                                   <div class="col"><?= $this->Form->control('pseudo', ['label' => '', 'style'=>'height: 38px;', 'pattern'=>'.{3,}', 'title'=>'Le pseudo doit comporter au moins 3 caractères.', 'required'=>'true']) ?></div>

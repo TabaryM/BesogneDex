@@ -144,22 +144,37 @@ class TacheController extends AppController
       $this->redirect($this->referer());
     }
   }
-
+  
   /**
-  * Utilisée dans : Template/Tache/index.ctp
-  */
+   * Utilisée dans : Template/Tache/index.ctp
+   *
+   * Affiche la page de modification de tâche et traite le formulaire de modification (et le push dans la bdd en cas de succès)
+   *
+   * Redirect vers la liste des projets si il y a eu une modification effective.
+   *
+   * @author Thibault Choné
+   * @param  int $idProjet id du projet dans lequel se trouve la tâche
+   * @param  int $idTache  id de la tâche à modifier
+   * @return redirect      Si la modification est effectuée sans erreur
+   */
   public function edit($idProjet, $idTache)
   {
     $data = $this->request->getData();
-      $data['titre'] = nettoyerTexte($data['titre']);
-      $data['description'] = nettoyerTexte($data['description']);
+
+
+    $tache = $this->Tache->find()
+    ->where(['idTache' => $idTache])
+    ->first();
+
+    $succes = false;
+
     if(!empty($data)){
       if(empty($data['titre'])){
           $this->Flash->error(__("Le nom de la tâche ne peut pas être vide."));
       }else{
-        $tache = $this->Tache->find()
-        ->where(['idTache' => $idTache])
-        ->first();
+
+        $data['titre'] = nettoyerTexte($data['titre']);
+        $data['description'] = nettoyerTexte($data['description']);
 
         $data = array_filter($data, function($value) { return !is_null($value) && $value !== '' && !empty($value); }); //On supprime les éléments vide
 
@@ -170,7 +185,7 @@ class TacheController extends AppController
 
         if($this->Tache->save($data2)){ //On sauvegarde les données (Le vérificator passe avant)
           $this->Flash->success(__('La Tâche a été modifié.'));
-          return $this->redirect(['action'=> 'index', $idProjet]);
+          $succes = true;
         }else{
           $errors = listeErreursVersString($tache->errors(), $this);
 
@@ -179,11 +194,17 @@ class TacheController extends AppController
               __("Erreurs : ".implode("\n \r", $errors))
             );
           }
-        }//TODO: redirect en casde succès
+        }
       }
     }
+    $titre = $tache['titre'];
+    $description = $tache['description'];
 
-    $this->set(compact('idProjet', 'idTache'));
+    if($succes){
+      return $this->redirect(['action'=> 'index', $idProjet]);
+    }
+
+    $this->set(compact('idProjet', 'idTache', 'titre', 'description'));
   }
 
     /**

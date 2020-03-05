@@ -10,8 +10,8 @@ class MembreController extends AppController
   /**
   * Si l'utilisateur n'a pas accès au projet sur lequel il veut effectuer une action, il sera redirigé vers l'accueil.
   *
-  * Paramètre : $id est l'idProjet.
-  * Retour : aucun.
+  * @param $id est l'idProjet.
+  * @return /
   * Redirection (si non accès) : index du controller Accueil.
   *
   * @author POP Diana
@@ -46,8 +46,8 @@ class MembreController extends AppController
   * La fonction vérifie si l'utilisateur a accès au projet à l'id donné en argument.
   * Si l'utilisateur n'y a pas accès, la fonction le redirige vers l'accueil.
   *
-  * Paramètres : $id correspond à l'idProjet.
-  * Retour : aucun.
+  * @param $id correspond à l'idProjet.
+  * @return /
   *
   * Redirection (si l'utilisateur n'a pas accès au projet): index de Accueil.
   *
@@ -77,8 +77,8 @@ class MembreController extends AppController
     *
     * Si l'un de ces critères est vrai, alors le membre n'est pas ajouté dans le projet.
     *
-    * Paramètres : $id correspond à l'idProjet (les autres informations nécessaires viennent d'un POST).
-    * Retour : redirection.
+    * @param $id correspond à l'idProjet (les autres informations nécessaires viennent d'un POST).
+    * @return redirection.
     * Redirection : index de ce controller.
     *
     * @author POP Diana
@@ -139,8 +139,8 @@ class MembreController extends AppController
     *
     * Si ce critère est vrai, alors le membre n'est pas supprimé du projet.
     *
-    * Paramètres : $id_utilisateur correspond à l'idUtilisateur et $id_projet correspond à l'idProjet.
-    * Retour : redirections.
+    * @param: $id_utilisateur correspond à l'idUtilisateur et $id_projet correspond à l'idProjet.
+    * @return /
     * Redirection : index de ce controller.
     *
     * @author POP Diana
@@ -155,16 +155,22 @@ class MembreController extends AppController
       // Si l'utilisateur sélectionné est le propriétaire du projet, il ne peut pas se supprimer
       if ($id_utilisateur==$id_proprio){
         $this->Flash->set('Vous êtes propriétaire de ce projet.', ['element' => 'error']);
+
         // Ne croyez pas StackOverflow, cette ligne est nécessaire
         $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id_projet]);
 
       // Si l'utilisateur sélectionné n'en est pas le propriétaire, il supprime
       }else{
         $taches = TableRegistry::get('Tache');
-        $tachesResponsable = $taches->updateAll(array('idResponsable' => NULL), ['idProjet'=>$projet->idProjet, 'idResponsable' => $id_utilisateur]);
 
+        // Le membre n'est plus responsable d'aucune tâche du projet.
+        $taches->updateAll(array('idResponsable' => NULL), ['idProjet'=>$projet->idProjet, 'idResponsable' => $id_utilisateur]);
+
+        // Maintenant, on peut supprimer le membre du projet.
         $membre = $this->Membre->find()->where(['idUtilisateur'=>$id_utilisateur, 'idProjet'=>$id_projet])->first();
         $success = $this->Membre->delete($membre);
+
+        // Tout est ok, message et redirection de l'utilisateur.
         $this->Flash->set('Le membre a été supprimé du projet.', ['element' => 'success']);
         $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id_projet]);
       }
