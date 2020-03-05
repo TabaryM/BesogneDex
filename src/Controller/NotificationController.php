@@ -28,7 +28,15 @@ class NotificationController extends AppController
   }
 
   /**
-   * Récupère les notifications de l'utilisateur connecté (affiche une erreur flash si l'utilisateur n'est pas connecté)
+   * Affiche les notifications de l'utilisateur et met à jour la BDD pour dire que les notifications ont été vues.
+   * La fonction est appelée au clic sur la cloche de notification depuis n'importe quelle page où l'utilisateur est connecté.
+   *
+   * Les notifications à valider sont affichées en premier, puis sont par date décroissante.
+   * Les notifications non vues par l'utilisateur (= sont apparues depuis la dernière fois qu'il a cliqué sur la cloche) sont affichées en gras.
+   *
+   * @param /
+   * @return /
+   * Redirection : si l'utilisateur n'est pas connecté, renvoie à la page d'inscription.
    *
    * @author POP Diana, SOUSA RIBIERO Pedro
    */

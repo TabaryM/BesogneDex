@@ -10,8 +10,8 @@ class MembreController extends AppController
   /**
   * Si l'utilisateur n'a pas accès au projet sur lequel il veut effectuer une action, il sera redirigé vers l'accueil.
   *
-  * Paramètre : $id est l'idProjet.
-  * Retour : aucun.
+  * @param $id est l'idProjet.
+  * @return /
   * Redirection (si non accès) : index du controller Accueil.
   *
   * @author POP Diana
@@ -46,8 +46,8 @@ class MembreController extends AppController
   * La fonction vérifie si l'utilisateur a accès au projet à l'id donné en argument.
   * Si l'utilisateur n'y a pas accès, la fonction le redirige vers l'accueil.
   *
-  * Paramètres : $id correspond à l'idProjet.
-  * Retour : aucun.
+  * @param $id correspond à l'idProjet.
+  * @return /
   *
   * Redirection (si l'utilisateur n'a pas accès au projet): index de Accueil.
   *
@@ -77,8 +77,8 @@ class MembreController extends AppController
     *
     * Si l'un de ces critères est vrai, alors le membre n'est pas ajouté dans le projet.
     *
-    * Paramètres : $id correspond à l'idProjet (les autres informations nécessaires viennent d'un POST).
-    * Retour : redirection.
+    * @param $id correspond à l'idProjet (les autres informations nécessaires viennent d'un POST).
+    * @return redirection.
     * Redirection : index de ce controller.
     *
     * @author POP Diana
@@ -139,8 +139,8 @@ class MembreController extends AppController
     *
     * Si ce critère est vrai, alors le membre n'est pas supprimé du projet.
     *
-    * Paramètres : $id_utilisateur correspond à l'idUtilisateur et $id_projet correspond à l'idProjet.
-    * Retour : redirections.
+    * @param: $id_utilisateur correspond à l'idUtilisateur et $id_projet correspond à l'idProjet.
+    * @return /
     * Redirection : index de ce controller.
     *
     * @author POP Diana
