@@ -33,7 +33,7 @@ class ProjetController extends AppController
     * Crée un projet dont l'utilisateur connecté sera le propriétaire.
     * Une ligne dans Membre est donc créée.
     *
-    * @authors : POP Diana, TABARY Mathieu, PALMIERI Adrien
+    * @author : POP Diana, TABARY Mathieu, PALMIERI Adrien
     */
     public function add(){
       if ($this->request->is('post')){
@@ -95,7 +95,7 @@ class ProjetController extends AppController
     /**
     * liste les projets archivés
     *
-    * Auteurs : WATELOT Paul-Emile
+    * @author WATELOT Paul-Emile
     */
     public function archives(){
       $projets = TableRegistry::getTableLocator()->get('Projet');
@@ -116,7 +116,7 @@ class ProjetController extends AppController
     /**
     * Supprime un projet si propriétaire et enleve un membre du groupe si il quitte
     *
-    * Auteurs : WATELOT Paul-Emile
+    * @author WATELOT Paul-Emile
     */
     public function delete($idProjet){
         $projetTab = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
@@ -370,7 +370,6 @@ class ProjetController extends AppController
         ->where(['idProjet' => $idProjet])->execute();
       // redirection vers la page d'accueil des projets
       return $this->redirect(['controller'=>'Tache', 'action'=> 'index', $idProjet]);
-
     }
 
     /**
