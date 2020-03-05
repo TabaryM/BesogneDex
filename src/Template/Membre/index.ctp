@@ -79,7 +79,7 @@ jQuery('#recherche-utilisateurs').autocomplete({
                 <?php echo $this->Html->link("Non", array('controller' => 'Membre', 'action'=> 'index', $id), array( 'button class' => 'btn btn-primary', 'data-dismiss' => 'modal'));?>
               </div>
               <div class="col text-left">
-                <button id="bouton_supprimer_membre_modal" class="btn btn-danger shadow grosBouton" onClick="<?= 'supprimer('.$id.')' ?>" type="button" >Oui</button>
+                <button id="bouton_supprimer_membre_modal" class="btn btn-danger" onClick="<?= 'supprimer('.$id.')' ?>" type="button" >Oui</button>
               </div>
             </div>
           </div>
