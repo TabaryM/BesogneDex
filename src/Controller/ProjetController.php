@@ -93,8 +93,8 @@ class ProjetController extends AppController
                   $this->Flash->error(__("La description est trop longue"));
                 }
             } else {
-                // Si le titre n'est pas correcte
-                $this->Flash->error(__("Titre incorrecte (doit avoir entre 1 et 128 caractères)"));
+                // Si le titre n'est pas correct
+                $this->Flash->error(__("Titre incorrect (doit avoir entre 1 et 128 caractères)"));
             }
         }
     }
@@ -102,7 +102,7 @@ class ProjetController extends AppController
     /**
     * liste les projets archivés
     *
-    * Auteurs : WATELOT Paul-Emile
+    * @author WATELOT Paul-Emile
     */
     public function archives(){
       $projets = TableRegistry::getTableLocator()->get('Projet');
@@ -123,7 +123,7 @@ class ProjetController extends AppController
     /**
     * Supprime un projet si propriétaire et enleve un membre du groupe si il quitte
     *
-    * Auteurs : WATELOT Paul-Emile
+    * @author WATELOT Paul-Emile
     */
     public function delete($idProjet){
         $projetTab = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
@@ -237,7 +237,6 @@ class ProjetController extends AppController
     */
     public function modifierInfos(){
       $receivedData = $this->request->getData();
-      echo "<pre>" , var_dump($receivedData) , "</pre>";
 
       //On récupère le projet pour avoir les anciennes informations
       $projets = TableRegistry::getTableLocator()->get('projet');
@@ -269,7 +268,7 @@ class ProjetController extends AppController
             }
           } else {
             //Si le titre ne respecte pas la contrainte de taille, on affiche une erreur
-            $this->Flash->error(__("La taille du titre est incorrecte (50 caractères max)."));
+            $this->Flash->error(__("La taille du titre est incorrecte (128 caractères max)."));
             $erreur = true;
           }
       }
@@ -349,6 +348,30 @@ class ProjetController extends AppController
         //On indique que la modification a réussie
         $this->Flash->success(__('Votre projet a été modifé.'));
 
+        $notifications = TableRegistry::getTableLocator()->get('Notification_projet');
+
+        $notification = $notifications->newEntity();
+        $notification->a_valider = 0;
+        $notification->contenu = "Le projet ".$projet->titre." a été modifié.";
+        $notification->idProjet = $receivedData['id'];
+        $notifications->save($notification);
+        $idNot = $notification->idNotificationProjet;
+
+        $vue_notifications = TableRegistry::getTableLocator()->get('Vue_notification_projet');
+
+        $membres = TableRegistry::getTableLocator()->get('Membre');
+        $membres = $membres->find()->contain('Utilisateur')
+        ->where(['idProjet' => $receivedData['id']]);
+
+        foreach ($membres as $m) {
+          $idUtil = $m->un_utilisateur->idUtilisateur;
+
+          $vue_not = $vue_notifications->newEntity();
+          $vue_not->idUtilisateur = $idUtil;
+          $vue_not->idNotifProjet = $idNot;
+          $vue_notifications->save($vue_not);
+        }
+
         //On redirige l'utilisateur sur le projet avec les informations mises à jour
         return $this->redirect(
             array('controller' => 'Tache', 'action' => 'index', $receivedData['id'])
@@ -377,7 +400,6 @@ class ProjetController extends AppController
         ->where(['idProjet' => $idProjet])->execute();
       // redirection vers la page d'accueil des projets
       return $this->redirect(['controller'=>'Tache', 'action'=> 'index', $idProjet]);
-
     }
 
     /**
