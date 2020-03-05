@@ -132,7 +132,7 @@ class TacheController extends AppController
       $user = $session->read('Auth.User.idUtilisateur');
       $taches = $this->Tache->find()
       ->contain(['Utilisateur', 'Projet'])
-      ->where(['idResponsable' => $session->read('Auth.User.idUtilisateur')])->toArray();
+      ->where(['idResponsable' => $user])->toArray();
 
       $this->set(compact('taches'));
     } else {
