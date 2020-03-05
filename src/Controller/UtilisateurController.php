@@ -126,6 +126,7 @@ class UtilisateurController extends AppController
 
   /**
   * Récupère les données d'un utilisateur pour les rendre disponible dans la page de profil utilisateur
+  * Charge la page Utilisateur/profil dans le fichier profil.ctp
   * @author Mathieu TABARY
   */
   public function profil(){
