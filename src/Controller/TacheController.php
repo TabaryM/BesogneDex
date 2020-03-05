@@ -151,7 +151,8 @@ class TacheController extends AppController
   public function edit($idProjet, $idTache)
   {
     $data = $this->request->getData();
-
+      $data['titre'] = nettoyer_texte($data['titre']);
+      $data['description'] = nettoyer_texte($data['description']);
     if(!empty($data)){
       if(empty($data['titre'])){
           $this->Flash->error(__("Le nom de la tâche ne peut pas être vide."));
