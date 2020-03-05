@@ -271,6 +271,8 @@ class ProjetController extends AppController
             $this->Flash->error(__("La taille du titre est incorrecte (128 caractères max)."));
             $erreur = true;
           }
+      } else {
+        $this->Flash->default("Le titre est le même que l'ancien est n'a pas été modifié");
       }
 
       //On récupère la date d'aujourd'hui
@@ -340,6 +342,8 @@ class ProjetController extends AppController
           $this->Flash->error(__("La taille de la description est incorrecte (500 caractères)."));
           $erreur = true;
         }
+      } else {
+        $this->Flash->default("La description est la même que l'ancienne est n'a pas été modifiée");
       }
 
       //Si on n'a pas eu d'erreur alors
