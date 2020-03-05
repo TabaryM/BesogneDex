@@ -348,8 +348,10 @@ class ProjetController extends AppController
         //On indique que la modification a réussie
         $this->Flash->success(__('Votre projet a été modifé.'));
 
+        //On récupère la table des notifications des projets
         $notifications = TableRegistry::getTableLocator()->get('Notification_projet');
 
+        //On crée une nouvelle notification pour le projet courant
         $notification = $notifications->newEntity();
         $notification->a_valider = 0;
         $notification->contenu = "Le projet ".$projet->titre." a été modifié.";
@@ -357,12 +359,15 @@ class ProjetController extends AppController
         $notifications->save($notification);
         $idNot = $notification->idNotificationProjet;
 
+        //On récupère la table de vue des notifications des projets
         $vue_notifications = TableRegistry::getTableLocator()->get('Vue_notification_projet');
 
+        //On récupère les membres du projet
         $membres = TableRegistry::getTableLocator()->get('Membre');
         $membres = $membres->find()->contain('Utilisateur')
         ->where(['idProjet' => $receivedData['id']]);
 
+        //Pour chaque membre du projet, on envoie une notification à celui-ci
         foreach ($membres as $m) {
           $idUtil = $m->un_utilisateur->idUtilisateur;
 
