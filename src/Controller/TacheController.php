@@ -1,6 +1,6 @@
 <?php
 namespace App\Controller;
-
+require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'VerificationChamps.php');
 require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'listeErreursVersString.php');
 use App\Controller\AppController;
 use Cake\ORM\TableRegistry;
@@ -82,7 +82,11 @@ class TacheController extends AppController
       echo 'hello';
       $data = $this->request->getData();
       $data['idProjet'] = $idProjet;
-      $tache = $this->Tache->newEntity($data);
+
+        $data['titre'] = nettoyerTexte($data['titre']);
+        $data['description'] = nettoyerTexte($data['description']);
+
+        $tache = $this->Tache->newEntity($data);
 
       if(!empty($tache->errors()) && $tache->errors() != NULL){ //TODO: C'est pas propre
         $errors = listeErreursVersString($tache->errors(), $this);
@@ -132,7 +136,7 @@ class TacheController extends AppController
       $user = $session->read('Auth.User.idUtilisateur');
       $taches = $this->Tache->find()
       ->contain(['Utilisateur', 'Projet'])
-      ->where(['idResponsable' => $session->read('Auth.User.idUtilisateur')])->toArray();
+      ->where(['idResponsable' => $user])->toArray();
 
       $this->set(compact('taches'));
     } else {
@@ -161,13 +165,14 @@ class TacheController extends AppController
   public function edit($idProjet, $idTache)
   {
     $data = $this->request->getData();
+    $data['titre'] = nettoyerTexte($data['titre']);
+    $data['description'] = nettoyerTexte($data['description']);
     $tache = $this->Tache->find()
     ->where(['idTache' => $idTache])
     ->first();
 
     $succes = false;
-
-
+    
     if(!empty($data)){
       if(empty($data['titre'])){
           $this->Flash->error(__("Le nom de la tâche ne peut pas être vide."));

@@ -33,69 +33,95 @@ class ProjetController extends AppController
     * Crée un projet dont l'utilisateur connecté sera le propriétaire.
     * Une ligne dans Membre est donc créée.
     *
-    * @authors : POP Diana, TABARY Mathieu, PALMIERI Adrien
+    * @author : POP Diana, TABARY Mathieu, PALMIERI Adrien
     */
     public function add(){
+        // Récuperation de données pour l'affichage de la page de création
         $today = Time::now();
         $this->set(compact('today'));
+
+        // Vérification des données envoyées pour la création
         if ($this->request->is('post')){
+            // Récupération de l'identité du créateur de projet
+            $session = $this->request->getSession();
+            $idUtilisateur = $session->read('Auth.User.idUtilisateur');
+
             $receivedData = $this->request->getData();
+            $receivedData['titre'] = nettoyerTexte($receivedData['titre']);
+            $receivedData['description'] = nettoyerTexte($receivedData['description']);
+            $existeErreur = false;
+
             // Vérification des saisies utilisateurs
-            if(verification_titre($receivedData['titre'])){
-                if(verification_description($receivedData['description'])){
-                    if(verification_dates($receivedData['dateDebut'], $receivedData['dateFin'])){
-                        // On considère que, si la date de fin est égale à la date du jour, la date de fin n'a pas été modifiée
-                        // Si la date de fin n'a pas été modifiée, on la supprime
-                        if($receivedData['dateDebut'] == $receivedData['dateFin']){
-                          $receivedData['dateFin'] = null;
-                        }
-
-                        // Tout les tests se sont bien déroulés, on commence à créer le projet
-                        $projet = $this->Projet->newEntity($receivedData);
-                        // Récupération de l'identité du créateur de projet
-                        $session = $this->request->getSession();
-                        $idUser = $session->read('Auth.User.idUtilisateur');
-                        $projet->idProprietaire = $idUser;
-
-                        // On vérifie s'il existe un projet créer par l'utilisateur courrant ayant le nom du projet en cours de création
-                        foreach($this->Projet->find('all', ['conditions'=>['idProprietaire'=>$idUser]]) as $proj) {
-                            if($proj->titre == $receivedData['titre']) {
-                                $this->Flash->error(__("Impossible d'ajouter un projet avec un nom identique"));
-                                return $this->redirect(['action'=> 'index']);
-                            }
-                        }
-
-                        // On enregistre le projet dans la base de données
-                        if ($this->Projet->save($projet)) {
-                            // On ajoute le créateur du projet en tant que membre de ce projet
-                            $membres = TableRegistry::getTableLocator()->get('Membre');
-                            $membre = $membres->newEntity();
-                            $membre->set('idUtilisateur', $idUser);
-                            $membre->set('idProjet', $projet->idProjet);
-                            if ($membres->save($membre)) {
-                                $this->Flash->success(__('Votre projet a été sauvegardé.'));
-                                return $this->redirect(['action'=> 'index']);
-                            }else {
-                                // Si il y a eu une erreur lors de l'ajout du membre dans la database
-                                $this->Flash->error(__("Impossible d'ajouter votre projet."));
-                                return $this->redirect(['action'=> 'index']);
-                            }
-                        }
-                        // Si il y a eu une erreur lors de l'ajout du projet dans la database
-                        $this->Flash->error(__("Impossible d'ajouter votre projet."));
-
-                    } else {
-                      // Si les dates ne sont pas cohérentes
-                      $this->Flash->error(__("La fin du projet ne peut pas se faire avant le début de ce projet"));
-                    }
-                } else {
-                  // Si la description n'est pas correcte
-                  $this->Flash->error(__("La description est trop longue"));
-                }
-            } else {
+            // Vérification du titre
+            if(!verificationTitre($receivedData['titre'])){
                 // Si le titre n'est pas correct
                 $this->Flash->error(__("Titre incorrect (doit avoir entre 1 et 128 caractères)"));
+                $existeErreur = true;
             }
+
+            // Vérification de la description
+            if(!verificationDescription($receivedData['description'])){
+                // Si la description n'est pas correcte
+                $this->Flash->error(__("La description est trop longue"));
+                $existeErreur = true;
+            }
+
+            $receivedData['dateFin'] = nettoyageDate($receivedData['dateFin']);
+            // Si la date était incorrecte on affiche un message pour l'utilisateur
+            if($receivedData['dateFin'] == null){
+                $this->Flash->error(__("Votre date de fin étant incorrecte, elle a été supprimée"));
+            }
+
+            // Vérification des dates
+            if(!verificationDates($receivedData['dateDebut'], $receivedData['dateFin'])){
+                // Si les dates ne sont pas cohérentes
+                $this->Flash->error(__("La fin du projet ne peut pas se faire avant le début de ce projet"));
+                $existeErreur = true;
+            }
+
+            // Vérification de la date de fin
+            if(!verificationDateFin($receivedData['dateFin'])){
+                // Si la date de fin est antérieur à la date du jour
+                $this->Flash->error(__("La fin du projet ne peut pas se faire avant la date du jour"));
+                $existeErreur = true;
+            }
+
+            // On vérifie s'il existe un projet créer par l'utilisateur courrant ayant le nom du projet en cours de création
+            $listeProjetsUtilisateur = $this->Projet->find('all', ['conditions'=>['idProprietaire'=>$idUtilisateur]]);
+            foreach($listeProjetsUtilisateur as $proj) {
+                if($proj->titre == $receivedData['titre']) {
+                    $this->Flash->error(__("Impossible d'ajouter un projet avec un nom identique"));
+                    $existeErreur = true;
+                }
+            }
+
+            if($existeErreur){
+                return $this->redirect(['action'=> 'index']);
+            }
+
+            // Tout les tests se sont bien déroulés, on commence à créer le projet
+            $projet = $this->Projet->newEntity($receivedData);
+            $projet->idProprietaire = $idUtilisateur;
+
+            // On enregistre le projet dans la base de données
+            if ($this->Projet->save($projet)) {
+                // TODO : utiliser la méthode d'ajout de membre à un projet
+                // On ajoute le créateur du projet en tant que membre de ce projet
+                $membres = TableRegistry::getTableLocator()->get('Membre');
+                $membre = $membres->newEntity();
+                $membre->set('idUtilisateur', $idUtilisateur);
+                $membre->set('idProjet', $projet->idProjet);
+                if ($membres->save($membre)) {
+                    $this->Flash->success(__('Votre projet a été sauvegardé.'));
+                    return $this->redirect(['action'=> 'index']);
+                }else {
+                    // Si il y a eu une erreur lors de l'ajout du membre dans la database
+                    $this->Flash->error(__("Impossible d'ajouter votre projet."));
+                    return $this->redirect(['action'=> 'index']);
+                }
+            }
+            // Si il y a eu une erreur lors de l'ajout du projet dans la database
+            $this->Flash->error(__("Impossible d'ajouter votre projet."));
         }
     }
 
@@ -185,6 +211,7 @@ class ProjetController extends AppController
         if ($projet->dateFin < $now) {
           if ($user === $projet->idProprietaire) {
             $projet->etat = "Archive";
+            $projet->dateArchivage = Time::now();
             $this->Projet->save($projet);
 
             // Projet archivé
@@ -237,6 +264,7 @@ class ProjetController extends AppController
     */
     public function modifierInfos(){
       $receivedData = $this->request->getData();
+      echo "<pre>" , var_dump($receivedData) , "</pre>";
 
       //On récupère le projet pour avoir les anciennes informations
       $projets = TableRegistry::getTableLocator()->get('projet');
@@ -249,7 +277,7 @@ class ProjetController extends AppController
       //Si on a modifié le titre
       if ($projet->titre != $receivedData['titre']){
           //On vérifie si le nouveau titre est bien formé
-          if (verification_titre($receivedData['titre'])){
+          if (verificationTitre($receivedData['titre'])){
 
             //On vérifie si le nouveau titre n'est pas pris par un autre projet de l'utilisateur
             $session = $this->request->getSession();
@@ -260,7 +288,8 @@ class ProjetController extends AppController
 
             if ($existe_deja == 0){
               //Si le nouveau titre respecte les contraintes, on modifie le projet
-              $projet->titre = filter_var($receivedData['titre'],FILTER_SANITIZE_STRING);
+             // $projet->titre = filter_var($receivedData['titre'],FILTER_SANITIZE_STRING);
+                $projet->titre = nettoyerTexte($receivedData['titre']);
             } else {
               //Si le titre est déjà pris, on affiche une erreur
               $this->Flash->error(__("Vous avez déjà un projet avec ce titre."));
@@ -271,8 +300,6 @@ class ProjetController extends AppController
             $this->Flash->error(__("La taille du titre est incorrecte (128 caractères max)."));
             $erreur = true;
           }
-      } else {
-        $this->Flash->default("Le titre est le même que l'ancien est n'a pas été modifié");
       }
 
       //On récupère la date d'aujourd'hui
@@ -283,21 +310,21 @@ class ProjetController extends AppController
       * Si la nouvelle date de début du projet n'est pas avant la date d'ajourd'hui,
       * ou si le projet est archivé.
       */
-      if (verification_dates($today, $receivedData['dateDeb']) || $projet->etat = 'Archive'){
+      if (verificationDates($today, $receivedData['dateDeb']) || $projet->etat = 'Archive'){
 
         $dF = $receivedData['dateFin'];
         //Si on a une date de fin
         if (strlen($dF['year']) > 0 && strlen($dF['month']) > 0 && strlen($dF['day']) > 0){
 
           //Si la date de début est avant celle de fin
-          if (verification_dates($receivedData['dateDeb'],$receivedData['dateFin'])){
+          if (verificationDates($receivedData['dateDeb'],$receivedData['dateFin'])){
 
             //On modifie le projet avec les nouvelles dates
             $projet->dateDebut = date('Y-m-d',strtotime(implode($receivedData['dateDeb'])));
             $projet->dateFin = date('Y-m-d',strtotime(implode($receivedData['dateFin'])));
 
             //Si le projet était archivé, et que la nouvelle date de fin est après aujourd'hui, on met le projet en cours
-            if ($projet->etat == 'Archive' && verification_dates($today, $receivedData['dateFin'])) {
+            if ($projet->etat == 'Archive' && verificationDates($today, $receivedData['dateFin'])) {
               $projet->etat = 'En cours';
             }
 
@@ -333,16 +360,14 @@ class ProjetController extends AppController
       if ($projet->description != $receivedData['descr']){
 
         //On vérifie si la nouvelle description est bien formée
-        if (verification_description($receivedData['descr'])){
+        if (verificationDescription($receivedData['descr'])){
           //Si la nouvelle description respecte les contraintes, alors on modifie le projet
-          $projet->description = filter_var($receivedData['descr'],FILTER_SANITIZE_STRING);
+          $projet->description = nettoyerTexte($receivedData['descr']);
         } else {
           //Si la description ne respecte pas la contrainte de taille, on affiche une erreur
           $this->Flash->error(__("La taille de la description est incorrecte (500 caractères)."));
           $erreur = true;
         }
-      } else {
-        $this->Flash->default("La description est la même que l'ancienne est n'a pas été modifiée");
       }
 
       //Si on n'a pas eu d'erreur alors
@@ -351,35 +376,6 @@ class ProjetController extends AppController
         $projets->save($projet);
         //On indique que la modification a réussie
         $this->Flash->success(__('Votre projet a été modifé.'));
-
-        //On récupère la table des notifications des projets
-        $notifications = TableRegistry::getTableLocator()->get('Notification_projet');
-
-        //On crée une nouvelle notification pour le projet courant
-        $notification = $notifications->newEntity();
-        $notification->a_valider = 0;
-        $notification->contenu = "Le projet ".$projet->titre." a été modifié.";
-        $notification->idProjet = $receivedData['id'];
-        $notifications->save($notification);
-        $idNot = $notification->idNotificationProjet;
-
-        //On récupère la table de vue des notifications des projets
-        $vue_notifications = TableRegistry::getTableLocator()->get('Vue_notification_projet');
-
-        //On récupère les membres du projet
-        $membres = TableRegistry::getTableLocator()->get('Membre');
-        $membres = $membres->find()->contain('Utilisateur')
-        ->where(['idProjet' => $receivedData['id']]);
-
-        //Pour chaque membre du projet, on envoie une notification à celui-ci
-        foreach ($membres as $m) {
-          $idUtil = $m->un_utilisateur->idUtilisateur;
-
-          $vue_not = $vue_notifications->newEntity();
-          $vue_not->idUtilisateur = $idUtil;
-          $vue_not->idNotifProjet = $idNot;
-          $vue_notifications->save($vue_not);
-        }
 
         //On redirige l'utilisateur sur le projet avec les informations mises à jour
         return $this->redirect(
