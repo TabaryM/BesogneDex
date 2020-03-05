@@ -160,6 +160,11 @@ class MembreController extends AppController
 
       // Si l'utilisateur sélectionné n'en est pas le propriétaire, il supprime
       }else{
+        $taches = TableRegistry::get('Tache');
+        $tachesResponsable = $taches->find()->where(['idProjet'=>$projet->idProjet]);
+
+        debug($tachesResponsable);
+
         $membre = $this->Membre->find()->where(['idUtilisateur'=>$id_utilisateur, 'idProjet'=>$id_projet])->first();
         $success = $this->Membre->delete($membre);
         $this->Flash->set('Le membre a été supprimé du projet.', ['element' => 'success']);
