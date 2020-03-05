@@ -1,0 +1,26 @@
+<?php
+namespace App\Model\Table;
+
+use Cake\ORM\Table;
+
+class Notification_tacheTable extends Table {
+
+  public function initialize(array $config){
+    $this->setPrimaryKey('idNotificationTache');
+
+    $this->belongsTo('Tache', [
+      'foreignKey' => 'idTache',
+      'propertyName' => 'tache_liee'
+    ]);
+
+    $this->hasMany('VueNotificationTache', [
+      'bindingKey' => 'idNotifTache',
+      'foreignKey' => 'idNotificationProjet',
+      'propertyName' => 'une_notification'
+    ]);
+
+  }
+
+}
+
+?>

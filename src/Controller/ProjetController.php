@@ -194,6 +194,7 @@ class ProjetController extends AppController
       }
     }
 
+
     /**
     * @author Théo Roton
     * @param id : id du projet pour lequel on affiche l'écran de modification
@@ -205,7 +206,6 @@ class ProjetController extends AppController
     * Le fichier lié à l'affichage de cette page est 'Projet/edit.ctp'.
     */
     public function edit($id){
-
       //On récupère le projet
       $projet = TableRegistry::getTableLocator()->get('projet');
       $projet = $projet->find()
@@ -385,6 +385,6 @@ class ProjetController extends AppController
       $membre->idUtilisateur= $idUtilisateur;
       $this->Membre->save($membre);
     }
-
+    
 }
 ?>

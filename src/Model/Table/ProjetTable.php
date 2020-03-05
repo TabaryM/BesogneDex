@@ -31,6 +31,14 @@ class ProjetTable extends Table{
         'cascadeCallbacks' => true
     ]);
 
+
+      $this->hasMany('Notification_projet', [
+          'className' => 'Notification_projet',
+          'foreignKey'=> 'idProjet',
+          'dependent' => true,
+          'cascadeCallbbacks' =>true
+      ]);
+
   }
 }
 
