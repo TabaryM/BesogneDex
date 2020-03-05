@@ -1,6 +1,6 @@
 <?php
 namespace App\Controller;
-
+require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'VerificationChamps.php');
 require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'listeErreursVersString.php');
 use App\Controller\AppController;
 use Cake\ORM\TableRegistry;
@@ -82,6 +82,10 @@ class TacheController extends AppController
       echo 'hello';
       $data = $this->request->getData();
       $data['idProjet'] = $idProjet;
+
+      $data['titre'] = nettoyer_texte($data['titre']);
+      $data['description'] = nettoyer_texte($data['description']);
+
       $tache = $this->Tache->newEntity($data);
 
       if(!empty($tache->errors()) && $tache->errors() != NULL){ //TODO: C'est pas propre
@@ -147,7 +151,8 @@ class TacheController extends AppController
   public function edit($idProjet, $idTache)
   {
     $data = $this->request->getData();
-
+      $data['titre'] = nettoyer_texte($data['titre']);
+      $data['description'] = nettoyer_texte($data['description']);
     if(!empty($data)){
       if(empty($data['titre'])){
           $this->Flash->error(__("Le nom de la tâche ne peut pas être vide."));
