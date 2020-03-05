@@ -1,7 +1,7 @@
 <?php
 
 /** Cette fonction permet d'empecher les injections HTML et SQL
- * @param $texte texte source a traiter
+ * @param $texte String source a traiter
  * @return string texte nettoyé
  * @author PALMIERI Adrien
  */
@@ -16,6 +16,7 @@ function nettoyerTexte($texte) {
  * @return bool retourne vrai si le titre correspond aux critères donné dans le cahier des chargess
  */
 function verificationTitre($titre){
+    $titre = nettoyerTexte($titre);
     // Par défaut le titre contient une erreur
     $res = false;
     // Si le titre correspond au critères du cahier des charges, on retire l'erreur
@@ -32,6 +33,7 @@ function verificationTitre($titre){
  * @return bool retourne vrai si la description correspond aux critères donné dans le cahier des chargess
  */
 function verificationDescription($description){
+    $description = nettoyerTexte($description);
     // Par défaut la description contient une erreur
     $res = false;
     // Si la description correspond au cahier des charges, on retire l'erreur
