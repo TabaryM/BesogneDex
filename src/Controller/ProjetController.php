@@ -30,10 +30,13 @@ class ProjetController extends AppController
     }
 
     /**
-    * Crée un projet dont l'utilisateur connecté sera le propriétaire.
+    * Créer un projet dont l'utilisateur connecté sera le propriétaire.
     * Une ligne dans Membre est donc créée.
     *
     * @author : POP Diana, TABARY Mathieu, PALMIERI Adrien
+    *
+    * Le fichier lié à cet affichage est 'Projet/add.ctp'
+    * La page chargé si une demande de création de projet est faite est la liste des projets de l'utilisateur.
     */
     public function add(){
         // Récuperation de données pour l'affichage de la page de création
@@ -225,7 +228,6 @@ class ProjetController extends AppController
         }
       }
     }
-
 
     /**
     * @author Théo Roton
