@@ -3,7 +3,7 @@ namespace App\Model\Table;
 
 use Cake\ORM\Table;
 
-class Notification_projetTable extends Table {
+class NotificationProjetTable extends Table {
 
   public function initialize(array $config){
     $this->setPrimaryKey('idNotificationProjet');
