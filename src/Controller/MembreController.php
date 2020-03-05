@@ -152,12 +152,18 @@ class MembreController extends AppController
       $projet = $projets->find()->where(['idProjet'=>$id_projet])->first();
       $id_proprio = $projet->idProprietaire;
 
+      // Si l'utilisateur sélectionné est le propriétaire du projet, il ne peut pas se supprimer
       if ($id_utilisateur==$id_proprio){
-        return $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id_projet]);
+        $this->Flash->set('Vous êtes propriétaire de ce projet.', ['element' => 'error']);
+        // Ne croyez pas StackOverflow, cette ligne est nécessaire
+        $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id_projet]);
+
+      // Si l'utilisateur sélectionné n'en est pas le propriétaire, il supprime
       }else{
         $membre = $this->Membre->find()->where(['idUtilisateur'=>$id_utilisateur, 'idProjet'=>$id_projet])->first();
         $success = $this->Membre->delete($membre);
-        return $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id_projet]);
+        $this->Flash->set('Le membre a été supprimé du projet.', ['element' => 'success']);
+        $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id_projet]);
       }
     }
 
