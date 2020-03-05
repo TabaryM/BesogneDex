@@ -10,6 +10,7 @@ class NotificationController extends AppController
   /**
    * Récupère les notifications de l'utilisateur connecté (affiche une erreur flash si l'utilisateur n'est pas connecté)
    * 
+   * @author Diana POP, Pedro Sousa Ribeiro
    */
   public function index(){
     $session = $this->request->getSession();
