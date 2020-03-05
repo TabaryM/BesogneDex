@@ -47,6 +47,8 @@ class ProjetController extends AppController
             $idUtilisateur = $session->read('Auth.User.idUtilisateur');
 
             $receivedData = $this->request->getData();
+            $receivedData['titre'] = nettoyerTexte($receivedData['titre']);
+            $receivedData['description'] = nettoyerTexte($receivedData['description']);
             $existeErreur = false;
 
             // Vérification des saisies utilisateurs
@@ -286,7 +288,8 @@ class ProjetController extends AppController
 
             if ($existe_deja == 0){
               //Si le nouveau titre respecte les contraintes, on modifie le projet
-              $projet->titre = filter_var($receivedData['titre'],FILTER_SANITIZE_STRING);
+             // $projet->titre = filter_var($receivedData['titre'],FILTER_SANITIZE_STRING);
+                $projet->titre = nettoyerTexte($receivedData['titre']);
             } else {
               //Si le titre est déjà pris, on affiche une erreur
               $this->Flash->error(__("Vous avez déjà un projet avec ce titre."));
@@ -359,7 +362,7 @@ class ProjetController extends AppController
         //On vérifie si la nouvelle description est bien formée
         if (verificationDescription($receivedData['descr'])){
           //Si la nouvelle description respecte les contraintes, alors on modifie le projet
-          $projet->description = filter_var($receivedData['descr'],FILTER_SANITIZE_STRING);
+          $projet->description = nettoyerTexte($receivedData['descr']);
         } else {
           //Si la description ne respecte pas la contrainte de taille, on affiche une erreur
           $this->Flash->error(__("La taille de la description est incorrecte (500 caractères)."));
