@@ -40,6 +40,8 @@ class ProjetController extends AppController
         $this->set(compact('today'));
         if ($this->request->is('post')){
             $receivedData = $this->request->getData();
+            $receivedData['titre'] = nettoyer_texte($receivedData['titre']);
+            $receivedData['description'] = nettoyer_texte($receivedData['description']);
             // Vérification des saisies utilisateurs
             if(verification_titre($receivedData['titre'])){
                 if(verification_description($receivedData['description'])){
@@ -226,7 +228,7 @@ class ProjetController extends AppController
     }
 
     /**
-    * @author Théo Roton
+    * @author Théo Roton, Adrien Palmieri
     *
     * Cette fonction permet de vérifier les informations modifiés pour
     * le projet. On effectue plusieurs vérifications : s'il y a des erreurs,
@@ -260,7 +262,7 @@ class ProjetController extends AppController
 
             if ($existe_deja == 0){
               //Si le nouveau titre respecte les contraintes, on modifie le projet
-              $projet->titre = filter_var($receivedData['titre'],FILTER_SANITIZE_STRING);
+                $projet->description = nettoyer_texte($receivedData['titre']);
             } else {
               //Si le titre est déjà pris, on affiche une erreur
               $this->Flash->error(__("Vous avez déjà un projet avec ce titre."));
@@ -334,10 +336,9 @@ class ProjetController extends AppController
 
         //On vérifie si la nouvelle description est bien formée
         if (verification_description($receivedData['descr'])){
-            $projet->description = nettoyer_texte($receivedData['descr']);
           //Si la nouvelle description respecte les contraintes, alors on modifie le projet
-         // $projet->description = filter_var($receivedData['descr'],FILTER_SANITIZE_STRING);
-        } else {
+            $projet->description = nettoyer_texte($receivedData['descr']);
+             } else {
           //Si la description ne respecte pas la contrainte de taille, on affiche une erreur
           $this->Flash->error(__("La taille de la description est incorrecte (500 caractères)."));
           $erreur = true;
