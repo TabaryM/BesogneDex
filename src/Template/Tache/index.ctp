@@ -38,7 +38,7 @@
                  ?>
                 <tr style="height: 50px;">
                   <td>
-                    <?= $this->Html->link($tache->titre, array('controller' => 'Tache', 'action'=> 'index', $idProjet));
+                    <?= $this->Html->link($tache->titre, array('controller' => 'Tache'), array('data-toggle' => 'modal', 'data-target' => '#descriptionModal' . $tache->idTache));
                     ?>
                   </td>
                   <td class="text-center">
@@ -85,7 +85,7 @@
                                     <h4 class="modal-title"></h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                                     </div>
                                     <div class="modal-body" style="text-align:center;">
-                                    <p style="width: 477px;">Êtes-vous sûr de vouloir supprimer cette tâche ? <?php echo $tache->idTache; ?></p>
+                                    <p style="width: 477px;">Êtes-vous sûr de vouloir supprimer cette tâche ?
                                     </div>
 
                                 <div class="modal-footer text-center">
@@ -95,6 +95,28 @@
                                         </div>
                                         <div class="col text-left">
                                           <?php echo $this->Html->link("Oui", array('controller' => 'Tache', 'action'=> 'delete', $idProjet, $tache->idTache), array( 'button class' => 'btn btn-danger'));?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+
+                <!-- Modal Description d'une tâche -->
+                <div class="modal fade" id=<?php echo "descriptionModal" . $tache->idTache ?> role="dialog" tabindex="-1">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">
+                                      <?php echo $tache->titre; ?>
+                                    </h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
+                                <div class="modal-body" style="text-align:center;">
+                                    <?php echo $tache->description; ?>
+                                </div>
+                                <div class="modal-footer text-center">
+                                    <div class="row text-center" style="width: 484px;">
+                                        <div class="col text-right">
+                                          <?php echo $this->Html->link("Ok", array('controller' => 'Tache', 'action'=> 'index', $idProjet), array( 'button class' => 'btn btn-primary', 'data-dismiss' => 'modal'));?>
                                         </div>
                                     </div>
                                 </div>
