@@ -15,14 +15,14 @@
               }
 
               if(isset($projetTab->dateDebut) && !empty($projetTab->dateDebut)){
-                echo 'Date debut : ';
-                echo date('Y-m-d H:i:s', strtotime($projetTab->dateDebut));
+                echo '<strong>Date debut : </strong>';
+                echo $projetTab->dateDebut->nice('Europe/Paris', 'fr-FR');
               }
               ?>
               <?php
               if(isset($projetTab->dateFin) && !empty($projetTab->dateFin)){
-                echo 'Date fin : ';
-                echo date('Y-m-d H:i:s', strtotime($projetTab->dateFin)); //TODO:changer format affichage heure
+                echo '<strong>Date fin : </strong>';
+                echo $projetTab->dateFin->nice('Europe/Paris', 'fr-FR');
               }
               ?>
               <tr>
