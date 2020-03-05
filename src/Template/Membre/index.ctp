@@ -24,12 +24,11 @@
         </div>
     </div>
 </div>
-<?php $goto = Router::url(array('controller'=>'Membre', 'action'=> 'delete'));
-?>
+<?php $goto = Router::url(array('controller'=>'Membre', 'action'=> 'delete')); ?>
 <div class="row" style="margin-right: 60px;margin-left: 60px;margin-top: 50px;">
     <div class="col-xl-10 d-flex flex-row justify-content-between align-items-xl-center">
       <?= $this->Html->link("Changer de propriétaire", "", ['class' => 'btn btn-primary shadow grosBouton boutonRouge', 'data-toggle' => 'modal', 'data-target' => '#promoteModal']); ?>
-      <button id="bouton_supprimer_membre" class="btn btn-danger shadow grosBouton" onClick="<?= 'supprimer('.$id.')' ?>" type="button" >Supprimer</button>
+      <button id="bouton_supprimer_membre" class="btn btn-danger shadow grosBouton" type="button" data-toggle="modal" data-target="#deleteMembreModal" >Supprimer</button>
       <?= $this->Html->link("Retour", array('controller' => 'Tache', 'action'=> 'index', $id), array( 'class' => 'btn btn-primary shadow grosBouton boutonRouge')); ?>
       </div>
 </div>
@@ -41,6 +40,7 @@
     minLength: 1
 });
 </script>
+
 <!-- Modal Passer ses droits sur le projet : -->
 <div class="modal fade" id="promoteModal" role="dialog" tabindex="-1">
         <div class="modal-dialog" role="document">
@@ -57,6 +57,29 @@
                         </div>
                         <div class="col text-left">
                           <?php echo $this->Html->link("Oui", array('controller' => 'Membre', 'action'=> 'edit', $id), array( 'button class' => 'btn btn-danger'));?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+
+<!-- Modal supprimer un membre : -->
+<div class="modal fade" id="deleteMembreModal" role="dialog" tabindex="-1">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"></h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
+                <div class="modal-body" style="text-align:center;">
+                    <p style="width: 477px;">Voulez-vous vraiment supprimer ce membre du projet ?</p>
+                </div>
+                <div class="modal-footer text-center">
+                    <div class="row text-center" style="width: 484px;">
+                        <div class="col text-right">
+                          <?php echo $this->Html->link("Non", array('controller' => 'Membre', 'action'=> 'index', $id), array( 'button class' => 'btn btn-primary', 'data-dismiss' => 'modal'));?>
+                        </div>
+                        <div class="col text-left">
+                          <button id="bouton_supprimer_membre_modal" class="btn btn-danger shadow grosBouton" onClick="<?= 'supprimer('.$id.')' ?>" type="button" >Oui</button>
                         </div>
                     </div>
                 </div>
