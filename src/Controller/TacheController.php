@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller;
 
-require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'AffichageErreurs.php');
+require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'listeErreursVersString.php');
 use App\Controller\AppController;
 use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
@@ -10,10 +10,9 @@ class TacheController extends AppController
 {
   /**
   * Affichage d'un projet avec sa liste de tâches (en fonction de l'id donnée).
-  * Redirige vers l'accueil si le projet n'existe pas ou si la personne n'en est pas membre.
-  *
+  * Redirige vers l'accueil si le projet n'existe pas ou si la personne n'en est pas membre sinon affiche la liste des tâches.
   * @author Thibault Choné, POP Diana
-  * @param $idProjet : id du projet cliqué ou affiché
+  * @param  int $idProjet id du projet à afficher
   */
   public function index($idProjet)
   {
@@ -86,7 +85,7 @@ class TacheController extends AppController
       $tache = $this->Tache->newEntity($data);
 
       if(!empty($tache->errors()) && $tache->errors() != NULL){ //TODO: C'est pas propre
-        $errors = affichage_erreurs($tache->errors(), $this);
+        $errors = listeErreursVersString($tache->errors(), $this);
         $this->Flash->error(
           __("Erreurs : ".implode("\n \r", $errors))
         );
@@ -168,7 +167,7 @@ class TacheController extends AppController
           $this->Flash->success(__('La Tâche a été modifié.'));
           return $this->redirect(['action'=> 'index', $idProjet]);
         }else{
-          $errors = affichage_erreurs($tache->errors(), $this);
+          $errors = listeErreursVersString($tache->errors(), $this);
 
           if(!empty($errors)){ //TODO: Factoriser ?
             $this->Flash->error(

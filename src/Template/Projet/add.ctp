@@ -11,11 +11,20 @@
           <div class="col text-center" style="margin-bottom: 20px;margin-top: 20px;"><?= $this->Form->input('titre', array('label' => 'Titre du projet : ')); ?></div>
       </div>
       <div class="row">
-          <div class="col text-center" style="margin-bottom: 20px;margin-top: 20px;"><?= $this->Form->input('dateDebut', array('type' => 'date', 'label' => 'Date de début :  ')); ?></div>
-          <div class="col text-left" style="margin-bottom: 20px;margin-top: 20px;"><?= $this->Form->input('dateFin', array('label' => 'Date de fin :  ', 'type' => 'date')); ?></div>
+          <div class="col d-flex justify-content-center align-items-center label">
+              <label>Date de début :&nbsp;</label>
+              <?= $this->Form->input('dateDebut', array('label' => false, 'type' => 'date', 'default' => $today, 'minYear' => $today->year)); ?>
+          </div>
+          <div class="col text-left" style="margin-bottom: 20px;margin-top: 20px;">
+              <label>Date de fin :&nbsp;</label>
+              <?= $this->Form->date('dateFin', array('label' => 'Date de fin :  ', 'minYear' => $today->year)); ?>
+          </div>
       </div>
       <div class="row">
-          <div class="col text-center" style="margin-bottom: 20px;margin-top: 20px;">Description : <?= $this->Form->textarea('description', array('label' => 'Description : '), array('style' => 'width: 70%;height: 90%;resize: none;')); ?></div>
+          <div class="col d-flex justify-content-center align-items-center">
+              <label class="label">Description :</label>
+              <?= $this->Form->textarea('description', array('label' => false, 'style'=>'width:70%; height:90%; resize:none;')); ?>
+          </div>
       </div>
 
       <!-- Boutons Retour et Créer un projet -->
