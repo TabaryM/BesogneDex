@@ -110,10 +110,10 @@ class MembreController extends AppController
       }
     }
 
-    public function edit($id_projet){
-
+    public function edit($id_utilisateur, $id_projet){
       return $this->redirect(['action'=> 'index', $id_projet]);
     }
+
 }
 
 ?>
