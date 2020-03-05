@@ -5,7 +5,7 @@
  * @return string texte nettoyé
  * @author PALMIERI Adrien
  */
-function nettoyer_texte($texte) {
+function nettoyerTexte($texte) {
     $texte = filter_var($texte, FILTER_SANITIZE_STRING);
     return htmlspecialchars($texte);
 }
