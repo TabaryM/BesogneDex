@@ -36,60 +36,67 @@ class ProjetController extends AppController
     * @authors : POP Diana, TABARY Mathieu, PALMIERI Adrien
     */
     public function add(){
-      if ($this->request->is('post')){
-        $receivedData = $this->request->getData();
+        $today = Time::now();
+        $this->set(compact('today'));
+        if ($this->request->is('post')){
+            $receivedData = $this->request->getData();
+            // Vérification des saisies utilisateurs
+            if(verification_titre($receivedData['titre'])){
+                if(verification_description($receivedData['description'])){
+                    if(verification_dates($receivedData['dateDebut'], $receivedData['dateFin'])){
+                        // On considère que, si la date de fin est égale à la date du jour, la date de fin n'a pas été modifiée
+                        // Si la date de fin n'a pas été modifiée, on la supprime
+                        if($receivedData['dateDebut'] == $receivedData['dateFin']){
+                          $receivedData['dateFin'] = null;
+                        }
 
-          // Vérification des saisies utilisateurs
-          if(verification_titre($receivedData['titre'])){
-              if(verification_description($receivedData['description'])){
-                  if(verification_dates($receivedData['dateDebut'], $receivedData['dateFin'])){
-                      $dateDuJour = getdate();
-                      if($receivedData['dateDebut'] == $receivedData['dateFin']){
+                        // Tout les tests se sont bien déroulés, on commence à créer le projet
+                        $projet = $this->Projet->newEntity($receivedData);
+                        // Récupération de l'identité du créateur de projet
+                        $session = $this->request->getSession();
+                        $idUser = $session->read('Auth.User.idUtilisateur');
+                        $projet->idProprietaire = $idUser;
 
-                      }
-                      $projet = $this->Projet->newEntity($receivedData);
-                      $session = $this->request->getSession();
-                      $idUser = $session->read('Auth.User.idUtilisateur');
-                      $projet->idProprietaire = $idUser;
-                      foreach($this->Projet->find('all', ['conditions'=>['idProprietaire'=>$idUser]]) as $proj) {
-                          if($proj->titre == $receivedData['titre']) {
-                              $this->Flash->error(__("Impossible d'ajouter un projet avec un nom identique"));
-                              return $this->redirect(['action'=> 'index']);
-                          }
-                      }
-                      if ($this->Projet->save($projet)) {
-                          $membres = TableRegistry::getTableLocator()->get('Membre');
-                          $membre = $membres->newEntity();
-                          $membre->set('idUtilisateur', $idUser);
-                          $membre->set('idProjet', $projet->idProjet);
+                        // On vérifie s'il existe un projet créer par l'utilisateur courrant ayant le nom du projet en cours de création
+                        foreach($this->Projet->find('all', ['conditions'=>['idProprietaire'=>$idUser]]) as $proj) {
+                            if($proj->titre == $receivedData['titre']) {
+                                $this->Flash->error(__("Impossible d'ajouter un projet avec un nom identique"));
+                                return $this->redirect(['action'=> 'index']);
+                            }
+                        }
 
-                          if ($membres->save($membre)) {
-                            $this->Flash->success(__('Votre projet a été sauvegardé.'));
-                            return $this->redirect(['action'=> 'index']);
-                          }else {
-                            // Si il y a eu une erreur lors de l'ajout du membre dans la database
-                            $this->Flash->error(__("Impossible d'ajouter votre projet."));
-                            return $this->redirect(['action'=> 'index']);
-                          }
-                      }
-                      // Si il y a eu une erreur lors de l'ajout du projet dans la database
-                      $this->Flash->error(__("Impossible d'ajouter votre projet."));
+                        // On enregistre le projet dans la base de données
+                        if ($this->Projet->save($projet)) {
+                            // On ajoute le créateur du projet en tant que membre de ce projet
+                            $membres = TableRegistry::getTableLocator()->get('Membre');
+                            $membre = $membres->newEntity();
+                            $membre->set('idUtilisateur', $idUser);
+                            $membre->set('idProjet', $projet->idProjet);
+                            if ($membres->save($membre)) {
+                                $this->Flash->success(__('Votre projet a été sauvegardé.'));
+                                return $this->redirect(['action'=> 'index']);
+                            }else {
+                                // Si il y a eu une erreur lors de l'ajout du membre dans la database
+                                $this->Flash->error(__("Impossible d'ajouter votre projet."));
+                                return $this->redirect(['action'=> 'index']);
+                            }
+                        }
+                        // Si il y a eu une erreur lors de l'ajout du projet dans la database
+                        $this->Flash->error(__("Impossible d'ajouter votre projet."));
 
-                  } else {
+                    } else {
                       // Si les dates ne sont pas cohérentes
                       $this->Flash->error(__("La fin du projet ne peut pas se faire avant le début de ce projet"));
-                  }
-
-              } else {
+                    }
+                } else {
                   // Si la description n'est pas correcte
                   $this->Flash->error(__("La description est trop longue"));
-              }
-
-          } else {
-              // Si le titre n'est pas correcte
-            $this->Flash->error(__("Titre incorrecte (doit avoir entre 1 et 128 caractères)"));
-          }
-      }
+                }
+            } else {
+                // Si le titre n'est pas correcte
+                $this->Flash->error(__("Titre incorrecte (doit avoir entre 1 et 128 caractères)"));
+            }
+        }
     }
 
     /**
@@ -386,6 +393,6 @@ class ProjetController extends AppController
       $membre->idUtilisateur= $idUtilisateur;
       $this->Membre->save($membre);
     }
-    
+
 }
 ?>

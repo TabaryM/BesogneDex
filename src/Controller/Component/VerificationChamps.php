@@ -40,9 +40,10 @@ function verification_dates($dateDebut, $dateFin){
     // On convertis les dates en format comparable facilement
     $dateDebut = strtotime(implode($dateDebut));
     $dateFin = strtotime(implode($dateFin));
+    $dateDuJour = strtotime(implode(getdate()));
 
-    // Si la date de début est infèrieur à la date de fin, on dit que les dates sont valides
-    if($dateDebut <= $dateFin){
+    // Si la date de début est inferieur à la date de fin
+    if($dateDebut <= $dateFin && $dateFin > $dateDuJour){
         $res = true;
     }
     return $res;
