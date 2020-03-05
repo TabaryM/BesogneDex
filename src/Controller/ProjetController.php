@@ -194,6 +194,7 @@ class ProjetController extends AppController
       }
     }
 
+
     /**
     * @author Théo Roton
     * @param id : id du projet pour lequel on affiche l'écran de modification
@@ -205,7 +206,6 @@ class ProjetController extends AppController
     * Le fichier lié à l'affichage de cette page est 'Projet/edit.ctp'.
     */
     public function edit($id){
-
       //On récupère le projet
       $projet = TableRegistry::getTableLocator()->get('projet');
       $projet = $projet->find()
@@ -356,11 +356,12 @@ class ProjetController extends AppController
      * Change le propriétaire d'un projet
      * @param   $idMembre id du membre qui devient propriétaire du projet
      * @param   $idProjet id du projet
+     * @author Clément Colné
      */
     function changerProprietaire($idMembre, $idProjet) {
       $projets = TableRegistry::get('Projet');
       // on récupère l'ID du propriétaire
-      $projet = $projets->find()->where(['idProjet'=>$id_projet])->first();
+      $projet = $projets->find()->where(['idProjet'=>$idProjet])->first();
       $idProprietaire = $projet->idProprietaire;
       // mise à jour du nouveau propriétaire dans la DB
       $query = $projets->query();
@@ -376,6 +377,7 @@ class ProjetController extends AppController
      * Ajoute un utilisateur à un projet
      * @param  $idProjet      id du projet
      * @param  $idUtilisateur id du membre à ajouter au projet
+     * @author Clément Colné
      */
     function ajouterMembre($idProjet, $idUtilisateur) {
       $membre = $this->Membre->newEntity();
@@ -384,6 +386,6 @@ class ProjetController extends AppController
       $membre->idUtilisateur= $idUtilisateur;
       $this->Membre->save($membre);
     }
-
+    
 }
 ?>
