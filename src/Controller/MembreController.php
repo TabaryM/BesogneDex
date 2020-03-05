@@ -7,11 +7,21 @@ use Cake\ORM\TableRegistry;
 class MembreController extends AppController
 {
 
-    /**
-    * Affiche les membres d'un projet.
-    *
-    * Auteur : POP Diana
-    */
+  /**
+  * Affiche les membres d'un projet (le propriétaire est considéré comme un membre et est donc aussi affiché).
+  *
+  * Fonction appelée au clic sur "Gérer les membres" dans le index.ctp du controller des Taches.
+  *
+  * La fonction vérifie si l'utilisateur a accès au projet à l'id donné en argument.
+  * Si l'utilisateur n'y a pas accès, la fonction le redirige vers l'accueil.
+  *
+  * Paramètres : $id correspond à l'idProjet.
+  * Retour : aucun.
+  *
+  * Redirection (si l'utilisateur n'a pas accès au projet): index de Accueil.
+  *
+  * @author POP Diana
+  */
     public function index($id){
       $estProprietaire = false;
       $this->loadComponent('Paginator');
@@ -42,7 +52,21 @@ class MembreController extends AppController
 
 
     /**
-    * TODO: sprint 5, envoi notif au membre invité
+    * Ajoute un membre dans le projet.
+    *
+    * Fonction appelée au clic sur "Inviter" dans le index.ctp de ce controller.
+    *
+    * La fonction vérifie avant l'ajout :
+    *       - Si l'utilisateur n'existe pas
+    *       - Si l'utilisateur est pas déjà membre de cette liste
+    *       - Si l'utilisateur est propriétaire du projet.
+    *
+    * Si l'un de ces critères est vrai, alors le membre n'est pas ajouté dans le projet.
+    *
+    * Paramètres : $id correspond à l'idProjet (les autres informations nécessaires viennent d'un POST).
+    * Retour : redirection.
+    * Redirection : index de ce controller.
+    *
     * @author POP Diana
     */
     public function add($id){
@@ -91,9 +115,20 @@ class MembreController extends AppController
     }
 
     /**
-    * TODO si proprio ne pas supprimer
+    * Supprime un membre du projet.
     *
-    * Auteur : POP Diana
+    * Fonction appelée au clic sur "Oui" du modal apparaissant après clic sur le bouton "Supprimer" du index.ctp de ce controller.
+    *
+    * La fonction vérifie avant l'ajout :
+    *       - Si l'utilisateur est propriétaire du projet .
+    *
+    * Si ce critère est vrai, alors le membre n'est pas supprimé du projet.
+    *
+    * Paramètres : $id_utilisateur correspond à l'idUtilisateur et $id_projet correspond à l'idProjet.
+    * Retour : redirections.
+    * Redirection : index de ce controller.
+    *
+    * @author POP Diana
     */
     public function delete($id_utilisateur, $id_projet){
       // Comme session ne marche pas, on va aller chercher l'idPropriétaire du projet.
