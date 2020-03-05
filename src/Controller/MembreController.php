@@ -155,17 +155,22 @@ class MembreController extends AppController
       // Si l'utilisateur sélectionné est le propriétaire du projet, il ne peut pas se supprimer
       if ($id_utilisateur==$id_proprio){
         $this->Flash->set('Vous êtes propriétaire de ce projet.', ['element' => 'error']);
-        
+
         // Ne croyez pas StackOverflow, cette ligne est nécessaire
         $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id_projet]);
 
       // Si l'utilisateur sélectionné n'en est pas le propriétaire, il supprime
       }else{
         $taches = TableRegistry::get('Tache');
+
+        // Le membre n'est plus responsable d'aucune tâche du projet.
         $taches->updateAll(array('idResponsable' => NULL), ['idProjet'=>$projet->idProjet, 'idResponsable' => $id_utilisateur]);
 
+        // Maintenant, on peut supprimer le membre du projet.
         $membre = $this->Membre->find()->where(['idUtilisateur'=>$id_utilisateur, 'idProjet'=>$id_projet])->first();
         $success = $this->Membre->delete($membre);
+
+        // Tout est ok, message et redirection de l'utilisateur.
         $this->Flash->set('Le membre a été supprimé du projet.', ['element' => 'success']);
         $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id_projet]);
       }
