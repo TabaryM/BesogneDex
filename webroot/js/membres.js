@@ -1,11 +1,21 @@
 var jeSuisIdSelectionne = null;
 
+/**
+ * TODO : doc à faire
+ * @param  {[type]}  id [description]
+ * @return {Boolean}    [description]
+ */
 function afficherGris(id){
   jQuery('.ligne_membre').css('background', 'white');
   jQuery('#'+id).css('background', 'LightGrey');
   jeSuisIdSelectionne = id;
 }
 
+/**
+ * TODO : doc à faire
+ * @param  {[type]} id_projet [description]
+ * @return {[type]}           [description]
+ */
 function supprimer(id_projet){
   if (jeSuisIdSelectionne == null){
     return;
@@ -18,6 +28,11 @@ function supprimer(id_projet){
                   });
   }
 
+  /**
+   * Change le propriétaire d'un projet
+   * @param  idProjet id d'un projet
+   * @author Clément Colné
+   */
   function changerProprietaire(idProjet){
     if (jeSuisIdSelectionne == null){
       // TODO : mettre le bouton en désactivé si aucun membre sélectionné
