@@ -53,10 +53,10 @@
                 <div class="modal-footer text-center">
                     <div class="row text-center" style="width: 484px;">
                         <div class="col text-right">
-                          <?php echo $this->Html->link("Non", array('controller' => 'Tache', 'action'=> 'index', $id), array( 'button class' => 'btn btn-primary', 'data-dismiss' => 'modal'));?>
+                          <?php echo $this->Html->link("Non", array('controller' => 'Tache', 'action'=> 'index', $id), array('button class' => 'btn btn-primary', 'data-dismiss' => 'modal'));?>
                         </div>
                         <div class="col text-left">
-                          <?php echo $this->Html->link("Oui", array('controller' => 'Membre', 'action'=> 'edit', $id), array( 'button class' => 'btn btn-danger'));?>
+                          <button id="bouton_changer_proprietaire" class="btn btn-danger" onClick="<?= 'changerProprietaire('.$id.')' ?>" type="button" >Oui</button>
                         </div>
                     </div>
                 </div>

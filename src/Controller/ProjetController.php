@@ -194,7 +194,6 @@ class ProjetController extends AppController
       }
     }
 
-
     /**
     * @author Théo Roton
     * @param id : id du projet pour lequel on affiche l'écran de modification
@@ -206,6 +205,7 @@ class ProjetController extends AppController
     * Le fichier lié à l'affichage de cette page est 'Projet/edit.ctp'.
     */
     public function edit($id){
+
       //On récupère le projet
       $projet = TableRegistry::getTableLocator()->get('projet');
       $projet = $projet->find()
@@ -341,6 +341,7 @@ class ProjetController extends AppController
         $projets->save($projet);
         //On indique que la modification a réussie
         $this->Flash->success(__('Votre projet a été modifé.'));
+
         //On redirige l'utilisateur sur le projet avec les informations mises à jour
         return $this->redirect(
             array('controller' => 'Tache', 'action' => 'index', $receivedData['id'])
@@ -350,5 +351,39 @@ class ProjetController extends AppController
         $this->redirect($this->referer());
       }
     }
+
+    /**
+     * Change le propriétaire d'un projet
+     * @param   $idMembre id du membre qui devient propriétaire du projet
+     * @param   $idProjet id du projet
+     */
+    function changerProprietaire($idMembre, $idProjet) {
+      $projets = TableRegistry::get('Projet');
+      // on récupère l'ID du propriétaire
+      $projet = $projets->find()->where(['idProjet'=>$id_projet])->first();
+      $idProprietaire = $projet->idProprietaire;
+      // mise à jour du nouveau propriétaire dans la DB
+      $query = $projets->query();
+      $query->update()
+        ->set(['idProprietaire' => $idMembre])
+        ->where(['idProjet' => $idProjet])->execute();
+      // redirection vers la page d'accueil des projets
+      return $this->redirect(['controller'=>'Tache', 'action'=> 'index', $idProjet]);
+
+    }
+
+    /**
+     * Ajoute un utilisateur à un projet
+     * @param  $idProjet      id du projet
+     * @param  $idUtilisateur id du membre à ajouter au projet
+     */
+    function ajouterMembre($idProjet, $idUtilisateur) {
+      $membre = $this->Membre->newEntity();
+
+      $membre->idProjet= $idProjet;
+      $membre->idUtilisateur= $idUtilisateur;
+      $this->Membre->save($membre);
+    }
+
 }
 ?>
