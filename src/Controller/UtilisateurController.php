@@ -87,7 +87,7 @@ class UtilisateurController extends AppController
   /**
   * Fonction pour auto-complétion de Membre/index
   *
-  * Auteur : POP Diana (c'est un presque c/c de ce site : http://www.naidim.org/cakephp-3-tutorial-18-autocomplete)
+  * @author POP Diana (c'est un presque c/c de ce site : http://www.naidim.org/cakephp-3-tutorial-18-autocomplete)
   */
   function complete(){
     $this->autoRender = false;
@@ -146,7 +146,7 @@ class UtilisateurController extends AppController
 
   /**
   * Enregistre les nouvelles informations dans la base de données.
-  * Toute les informations modifiés sont dans le getData()
+  * Toute les informations modifiés sont dans le getData() data = [nom, prenom, pseudo, mdpActu, mdpNew, mdpNewConf]
   * @author Thibault CHONÉ - Clément COLNE
   */
   public function edit(){
@@ -156,63 +156,49 @@ class UtilisateurController extends AppController
     ->where(['idUtilisateur' => $session->read('Auth.User.idUtilisateur')])
     ->first();
 
-    if(!empty($data)){ //Evite l'affichage des flashs quand on arrive sur la page
+    $estModifie = false;
 
-      if(empty($data['mdp_actu'])) {
-        $this->Flash->error(__('Veuillez saisir votre mot de passe pour modifier vos informations.'));
-      }else{
-        if((new DefaultPasswordHasher)->check($data['mdp_actu'], $utilisateur['mdp'])) {
-          if($data['mdp'] == $data['mdpp']) {
+
+    if(!empty($data)){
+      if(!empty($data['mdpActu'])){
+        if((new DefaultPasswordHasher)->check($data['mdpActu'], $utilisateur['mdp'])) {
+          if($data['mdpNew'] == $data['mdpNewConf']) {
+
+            if($utilisateur['pseudo'] == $data['pseudo']){ //Si le pseudo n'a pas changé alors on a pas besoin de préciser la modification
+              unset($data['pseudo']); //sinon il y a une erreur de pseudo identiques
+            }
+
+            $data['mdp'] = $data['mdpNew']; //On affecte le bon nom dans la base de données
+            $data['mdpConfirm'] = $data['mdpNewConf']; //On affecte le bon nom dans la base de données
 
             $data = array_filter($data, function($value) { return !is_null($value) && $value !== '' && !empty($value); }); //On supprime les éléments vide
 
-            if(!empty($data)){
-              $utilisateur = $this->Utilisateur->get($session->read('Auth.User.idUtilisateur')); //On récupère les données utilisateurs
-              $data2 = $this->Utilisateur->patchEntity($utilisateur, $data); //On "assemble" les données entre data et utilisateur
-              if($this->Utilisateur->save($data2)){ //On sauvegarde les données (Le vérificator passe avant)
-                $this->Flash->success(__('Votre compte a été édité.'));
-              }
-
-              $errors = listeErreursVersString($utilisateur->errors()); //Affichage des erreurs si le vérificator n'as pas accepté
-
-              if(!empty($errors)){ //TODO: Factoriser ?
-                $this->Flash->error(
-                  __("Veuillez modifier ce(s) champs : ".implode("\n \r", $errors))
-                );
-              } //Affichage des erreurs si le vérificator n'as pas accepté
+            $utilisateur = $this->Utilisateur->get($session->read('Auth.User.idUtilisateur')); //On récupère les données utilisateurs
+            $data2 = $this->Utilisateur->patchEntity($utilisateur, $data); //On "assemble" les données entre data et utilisateur
+            if($this->Utilisateur->save($data2)){ //On sauvegarde les données (Le vérificator passe avant)
+              $estModifie = true;
             }
+
+
+            if(!empty($utilisateur->errors())){ //TODO: Factoriser ?
+              $errors = listeErreursVersString($utilisateur->errors()); //Affichage des erreurs si le vérificator n'as pas accepté
+              $this->Flash->error(__("Veuillez modifier ce(s) champs : ".implode("\n \r", $errors))); //Affichage des erreurs si le vérificator n'as pas accepté
+            }
+
           }else{
-            $this->Flash->error(__('Le nouveau mot de passe ne correspond pas au mot de passe confirmé.'));
+            $this->Flash->error(__('La confirmation de mot de passe est erroné.'));
           }
-        }else{
-          $this->Flash->error(__('L\'ancien mot de passe est erroné.'));
         }
-
-        $data = array_filter($data, function($value) { return !is_null($value) && $value !== '' && !empty($value); }); //On supprime les éléments vide
-
-        if(!empty($data)){
-          $utilisateur = $this->Utilisateur->get($session->read('Auth.User.idUtilisateur'));
-          $data2 = $this->Utilisateur->patchEntity($utilisateur, $data);
-
-          if($this->Utilisateur->save($data2)){
-            $this->Flash->success(__('Votre compte a été édité.'));
-          }
-
-          $utilisateur = $this->Utilisateur->find()
-          ->where(['idUtilisateur' => $session->read('Auth.User.idUtilisateur')])
-          ->first(); //TODO:Sûrement une meilleure méthode de retrouver les nouvelles infos de l'utilisateur
-
-          $errors = listeErreursVersString($utilisateur->errors()); //Affichage des erreurs si le vérificator n'as pas accepté
-
-              if(!empty($errors)){ //TODO: Factoriser ?
-                $this->Flash->error(
-                  __("Veuillez modifier ce(s) champs : ".implode("\n \r", $errors))
-                );
-              }
-        }
+      }else{
+        $this->Flash->error(__('Veuillez saisir votre mot de passe pour modifier vos informations.'));
       }
-
     }
+
+
+    if($estModifie){
+      $this->Flash->success(__('Votre compte est bien enregistré.'));
+    }
+
     $this->set(compact('utilisateur'));
   }
 
@@ -235,14 +221,14 @@ class UtilisateurController extends AppController
       $this->Flash->error(__('Impossible de supprimer votre compte utilisateur : vérifiez qu\'il existe et que vous êtes bien connecté.'));
     } else {
 
-        // Unassign user from tasks where he was assigned
-        $tasksUsers = TableRegistry::getTableLocator()->get('Tache')->find()->where(['idResponsable' => $utilisateur->idUtilisateur])->all();
-        if(!empty($tasksUsers)) {
-            foreach($tasksUsers as $taskUser) { // All the tasks where the user was responsible are now unassigned
-                $taskUser->idProprietaire = null;
-                TableRegistry::getTableLocator()->get('Tache')->save($taskUser);
-            }
+      // Unassign user from tasks where he was assigned
+      $tasksUsers = TableRegistry::getTableLocator()->get('Tache')->find()->where(['idResponsable' => $utilisateur->idUtilisateur])->all();
+      if(!empty($tasksUsers)) {
+        foreach($tasksUsers as $taskUser) { // All the tasks where the user was responsible are now unassigned
+          $taskUser->idProprietaire = null;
+          TableRegistry::getTableLocator()->get('Tache')->save($taskUser);
         }
+      }
 
       $success = $this->Utilisateur->delete($utilisateur);
       if($success) {

@@ -60,8 +60,8 @@ class UtilisateurTable extends Table{
                   ),
                 'unique' => array(
                     'rule' => function($value, $context){
-                        $rech_email = $context['data']['email'];
-                        $count =  $this->find()->where(['email' => $rech_email])->count();
+                        $rechercheEmail = $context['data']['email'];
+                        $count =  $this->find()->where(['email' => $rechercheEmail])->count();
                         return $count == 0;
                       },
                     'message' => 'Cette adresse email est déjà utilisée.'
@@ -78,36 +78,36 @@ class UtilisateurTable extends Table{
               ),
                 'unique' => array(
                   'rule' => function($value, $context){
-                        $rech_pseudo = $context['data']['pseudo'];
-                        $count = $this->find()->where(['pseudo' => $rech_pseudo])->count();
+                        $recherchePseudo = $context['data']['pseudo'];
+                        $count = $this->find()->where(['pseudo' => $recherchePseudo])->count();
                         return $count == 0;
                     },
                   'message' => 'Ce pseudo est déjà utilisé.'
                 ),
               'validite' => array(
                 'rule' => function($value, $context){
-                    $val_pseudo = $context['data']['pseudo'];
-                    return (bool)preg_match("/^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$/", $val_pseudo);
+                    $pseudo = $context['data']['pseudo'];
+                    return (bool)preg_match("/^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$/", $pseudo);
                   },
                 'message'=> 'Le pseudo est incorrect.'
               )
         )// fin array 'pseudo'
       ) // fin add de pseudo
         ->notEmpty('mdp', 'Un mot de passe est nécessaire.')
-        ->notEmpty('mdpp', 'Une confirmation du mot de passe est nécessaire.')
+        ->notEmpty('mdpConfirm', 'Une confirmation du mot de passe est nécessaire.')
         ->add('mdp', array(
             'longueurMin' => array(
               'rule' => function($value, $context){
-                    $val_mdp = $context['data']['mdp'];
-                    return (bool)preg_match("/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/", $val_mdp);
+                    $mdp = $context['data']['mdp'];
+                    return (bool)preg_match("/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/", $mdp);
                 },
               'message' => 'Le mot de passe doit correspondre aux critères.'
             ),
               'identiques' => array(
                 'rule' => function($value, $context){
-                    $val_mdp = $context['data']['mdp'];
-                    $val_mdpp = $context['data']['mdpp'];
-                    return $val_mdp === $val_mdpp;
+                    $mdp = $context['data']['mdp'];
+                    $mdpConfirm = $context['data']['mdpConfirm'];
+                    return $mdp === $mdpConfirm;
                   },
                 'message' => 'Les mots de passe doivent correspondre.'
             )
@@ -116,8 +116,8 @@ class UtilisateurTable extends Table{
       ->add('prenom', array(
           'validite' => array (
             'rule' => function($value, $context){
-                  $val_prenom = $context['data']['prenom'];
-                  return (bool)preg_match("/[A-Za-z]*[-]?[A-Za-z]*/", $val_prenom);
+                  $prenom = $context['data']['prenom'];
+                  return (bool)preg_match("/[A-Za-z]*[-]?[A-Za-z]*/", $prenom);
               },
             'message' => 'Le prénom est incorrect.',
             'allowEmpty' => true
@@ -127,8 +127,8 @@ class UtilisateurTable extends Table{
       ->add('nom', array(
           'validite' => array(
             'rule' => function($value, $context){
-                $val_nom = $context['data']['nom'];
-                return (bool)preg_match("/[A-Za-z]*[-]?[A-Za-z]*/", $val_nom);
+                $nom = $context['data']['nom'];
+                return (bool)preg_match("/[A-Za-z]*[-]?[A-Za-z]*/", $nom);
               },
             'message' => 'Le nom est incorrect.',
             'allowEmpty' => true

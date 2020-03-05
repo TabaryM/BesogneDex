@@ -144,12 +144,7 @@ class TacheController extends AppController
       $this->redirect($this->referer());
     }
   }
-
-  /**
-  * Utilisée dans : Template/Tache/index.ctp
-  *
-  *
-  */
+  
   /**
    * Utilisée dans : Template/Tache/index.ctp
    *
