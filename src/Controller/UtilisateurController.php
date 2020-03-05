@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller;
 
-require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'AffichageErreurs.php');
+require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'listeErreursVersString.php');
 use App\Controller\AppController;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
@@ -70,9 +70,10 @@ class UtilisateurController extends AppController
       $utilisateur = $this->Utilisateur->patchEntity($utilisateur, $this->request->getData());
       if ($this->Utilisateur->save($utilisateur)) {
         $this->Flash->success(__('Votre compte est bien enregistré.'));
+        $this->Auth->setUser($utilisateur);
         return $this->redirect(['controller' => 'pages', 'action' => 'display','home']);
       }
-      $errors = affichage_erreurs($utilisateur->errors());
+      $errors = listeErreursVersString($utilisateur->errors());
       if(!empty($errors)){ //TODO: Factoriser ?
         $this->Flash->error(
           __("Veuillez modifier ce(s) champs : ".implode("\n \r", $errors))
@@ -125,6 +126,7 @@ class UtilisateurController extends AppController
 
   /**
   * Récupère les données d'un utilisateur pour les rendre disponible dans la page de profil utilisateur
+  * Charge la page Utilisateur/profil dans le fichier profil.ctp
   * @author Mathieu TABARY
   */
   public function profil(){
@@ -144,7 +146,7 @@ class UtilisateurController extends AppController
 
   /**
   * Enregistre les nouvelles informations dans la base de données.
-  *
+  * Toute les informations modifiés sont dans le getData()
   * @author Thibault CHONÉ - Clément COLNE
   */
   public function edit(){
@@ -171,7 +173,7 @@ class UtilisateurController extends AppController
                 $this->Flash->success(__('Votre compte a été édité.'));
               }
 
-              $errors = affichage_erreurs($utilisateur->errors()); //Affichage des erreurs si le vérificator n'as pas accepté
+              $errors = listeErreursVersString($utilisateur->errors()); //Affichage des erreurs si le vérificator n'as pas accepté
 
               if(!empty($errors)){ //TODO: Factoriser ?
                 $this->Flash->error(
@@ -200,7 +202,7 @@ class UtilisateurController extends AppController
           ->where(['idUtilisateur' => $session->read('Auth.User.idUtilisateur')])
           ->first(); //TODO:Sûrement une meilleure méthode de retrouver les nouvelles infos de l'utilisateur
 
-          $errors = affichage_erreurs($utilisateur->errors()); //Affichage des erreurs si le vérificator n'as pas accepté
+          $errors = listeErreursVersString($utilisateur->errors()); //Affichage des erreurs si le vérificator n'as pas accepté
 
               if(!empty($errors)){ //TODO: Factoriser ?
                 $this->Flash->error(

@@ -27,7 +27,7 @@ $Sql="
 
 	CREATE TABLE Projet (
 		idProjet INT NOT NULL AUTO_INCREMENT,
-		titre VARCHAR(50) NOT NULL,
+		titre VARCHAR(128) NOT NULL,
 		description VARCHAR(500),
 		dateDebut DATE DEFAULT NOW(),
 		dateFin DATE,
@@ -75,7 +75,7 @@ $Sql="
 		idTache INT NOT NULL,
 		PRIMARY KEY (idNotificationTache),
 		FOREIGN KEY (idTache) REFERENCES Tache(idTache)
-	);	
+	);
 
 	CREATE TABLE VueNotificationProjet (
 		idUtilisateur INT NOT NULL,

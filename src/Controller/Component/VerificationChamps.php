@@ -1,4 +1,15 @@
 <?php
+
+/** Cette fonction permet d'empecher les injections HTML et SQL
+ * @param $texte texte source a traiter
+ * @return string texte nettoyé
+ * @author PALMIERI Adrien
+ */
+function nettoyer_texte($texte) {
+    $texte = filter_var($texte, FILTER_SANITIZE_STRING);
+    return htmlspecialchars($texte);
+}
+
 /**
  * @author TABARY Mathieu, PALMIERI Adrien
  * @param $titre String : nom du champs à vérifier
@@ -7,7 +18,7 @@
 function verification_titre($titre){
     $res = false;
     // Vérification de la taille
-    if(strlen($titre) >= 1  && strlen($titre) <= 50){
+    if(strlen($titre) >= 1  && strlen($titre) <= 128){
         $res = true;
     }
 
@@ -40,9 +51,10 @@ function verification_dates($dateDebut, $dateFin){
     // On convertis les dates en format comparable facilement
     $dateDebut = strtotime(implode($dateDebut));
     $dateFin = strtotime(implode($dateFin));
+    $dateDuJour = strtotime(implode(getdate()));
 
-    // Si la date de début est infèrieur à la date de fin, on dit que les dates sont valides
-    if($dateDebut <= $dateFin){
+    // Si la date de début est inferieur à la date de fin
+    if($dateDebut <= $dateFin && $dateFin > $dateDuJour){
         $res = true;
     }
     return $res;

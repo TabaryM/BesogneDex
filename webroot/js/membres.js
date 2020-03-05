@@ -20,11 +20,11 @@ function supprimer(id_projet){
   if (jeSuisIdSelectionne == null){
     return;
   }
-    jQuery('#bouton_supprimer_membre').prop('enabled', false);
+    jQuery('#bouton_supprimer_membre_modal').prop('enabled', false);
     jQuery.get("/BesogneDex/membre/delete/"+jeSuisIdSelectionne+ "/" + id_projet,
               function(){
                   document.location.reload(true);
-                  jQuery('#bouton_supprimer_membre').prop('enabled', true);
+                  jQuery('#bouton_supprimer_membre_modal').prop('enabled', true);
                   });
   }
 
