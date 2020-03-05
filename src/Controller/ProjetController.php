@@ -332,8 +332,9 @@ class ProjetController extends AppController
 
         //On vérifie si la nouvelle description est bien formée
         if (verification_description($receivedData['descr'])){
+            $projet->description = nettoyer_texte($receivedData['descr']);
           //Si la nouvelle description respecte les contraintes, alors on modifie le projet
-          $projet->description = filter_var($receivedData['descr'],FILTER_SANITIZE_STRING);
+         // $projet->description = filter_var($receivedData['descr'],FILTER_SANITIZE_STRING);
         } else {
           //Si la description ne respecte pas la contrainte de taille, on affiche une erreur
           $this->Flash->error(__("La taille de la description est incorrecte (500 caractères)."));

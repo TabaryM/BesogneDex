@@ -1,4 +1,15 @@
 <?php
+
+/** Cette fonction permet d'empecher les injections HTML et SQL
+ * @param $texte texte source a traiter
+ * @return string texte nettoyé
+ * @author PALMIERI Adrien
+ */
+function nettoyer_texte($texte) {
+    $texte = filter_var($texte, FILTER_SANITIZE_STRING);
+    return htmlspecialchars($texte);
+}
+
 /**
  * @author TABARY Mathieu, PALMIERI Adrien
  * @param $titre String : nom du champs à vérifier
