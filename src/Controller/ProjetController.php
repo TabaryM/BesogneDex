@@ -385,6 +385,6 @@ class ProjetController extends AppController
       $membre->idUtilisateur= $idUtilisateur;
       $this->Membre->save($membre);
     }
-    
+
 }
 ?>
