@@ -85,7 +85,7 @@
                                     <h4 class="modal-title"></h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                                     </div>
                                     <div class="modal-body" style="text-align:center;">
-                                    <p style="width: 477px;">Êtes-vous sûr de vouloir supprimer cette tâche ? <?php echo $tache->idTache; ?></p>
+                                    <p style="width: 477px;">Êtes-vous sûr de vouloir supprimer cette tâche ?
                                     </div>
 
                                 <div class="modal-footer text-center">
