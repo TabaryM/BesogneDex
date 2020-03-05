@@ -20,7 +20,7 @@ class UtilisateurTable extends Table{
           'className' => 'Projet',
           'foreignKey' => 'idProprietaire',
           'dependent' => true,
-          'cascadeCallbacks' => true,
+          'cascadeCallbacks' => true
       ]);
 
       $this->hasMany('Tache', [
@@ -28,6 +28,19 @@ class UtilisateurTable extends Table{
           'foreignKey' => 'idResponsable'
       ]);
 
+      $this->hasMany('Vue_notification_projet', [
+          'className' => 'Vue_notification_projet',
+          'foreignKey'=> 'idUtilisateur',
+          'dependent' => true,
+          'cascadeCallbbacks' =>true
+      ]);
+
+      $this->hasMany('Vue_notification_tache', [
+          'className' => 'Vue_notification_tache',
+          'foreignKey'=> 'idUtilisateur',
+          'dependent' => true,
+          'cascadeCallbbacks' =>true
+      ]);
   }
 
 /**

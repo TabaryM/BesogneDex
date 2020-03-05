@@ -33,7 +33,7 @@ class ProjetController extends AppController
     * Crée un projet dont l'utilisateur connecté sera le propriétaire.
     * Une ligne dans Membre est donc créée.
     *
-    * @authors : POP Diana, TABARY Mathieu, PALMIERI Adrien
+    * @author : POP Diana, TABARY Mathieu, PALMIERI Adrien
     */
     public function add(){
       if ($this->request->is('post')){
@@ -95,7 +95,7 @@ class ProjetController extends AppController
     /**
     * liste les projets archivés
     *
-    * Auteurs : WATELOT Paul-Emile
+    * @author WATELOT Paul-Emile
     */
     public function archives(){
       $projets = TableRegistry::getTableLocator()->get('Projet');
@@ -116,7 +116,7 @@ class ProjetController extends AppController
     /**
     * Supprime un projet si propriétaire et enleve un membre du groupe si il quitte
     *
-    * Auteurs : WATELOT Paul-Emile
+    * @author WATELOT Paul-Emile
     */
     public function delete($idProjet){
         $projetTab = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
@@ -341,6 +341,7 @@ class ProjetController extends AppController
         $projets->save($projet);
         //On indique que la modification a réussie
         $this->Flash->success(__('Votre projet a été modifé.'));
+
         //On redirige l'utilisateur sur le projet avec les informations mises à jour
         return $this->redirect(
             array('controller' => 'Tache', 'action' => 'index', $receivedData['id'])
@@ -350,5 +351,40 @@ class ProjetController extends AppController
         $this->redirect($this->referer());
       }
     }
+
+    /**
+     * Change le propriétaire d'un projet
+     * @param   $idMembre id du membre qui devient propriétaire du projet
+     * @param   $idProjet id du projet
+     * @author Clément Colné
+     */
+    function changerProprietaire($idMembre, $idProjet) {
+      $projets = TableRegistry::get('Projet');
+      // on récupère l'ID du propriétaire
+      $projet = $projets->find()->where(['idProjet'=>$idProjet])->first();
+      $idProprietaire = $projet->idProprietaire;
+      // mise à jour du nouveau propriétaire dans la DB
+      $query = $projets->query();
+      $query->update()
+        ->set(['idProprietaire' => $idMembre])
+        ->where(['idProjet' => $idProjet])->execute();
+      // redirection vers la page d'accueil des projets
+      return $this->redirect(['controller'=>'Tache', 'action'=> 'index', $idProjet]);
+    }
+
+    /**
+     * Ajoute un utilisateur à un projet
+     * @param  $idProjet      id du projet
+     * @param  $idUtilisateur id du membre à ajouter au projet
+     * @author Clément Colné
+     */
+    function ajouterMembre($idProjet, $idUtilisateur) {
+      $membre = $this->Membre->newEntity();
+
+      $membre->idProjet= $idProjet;
+      $membre->idUtilisateur= $idUtilisateur;
+      $this->Membre->save($membre);
+    }
+    
 }
 ?>
