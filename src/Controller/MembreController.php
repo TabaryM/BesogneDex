@@ -8,6 +8,37 @@ class MembreController extends AppController
 {
 
   /**
+  * Si l'utilisateur n'a pas accès au projet sur lequel il veut effectuer une action, il sera redirigé vers l'accueil.
+  *
+  * Paramètre : $id est l'idProjet.
+  * Retour : aucun.
+  * Redirection (si non accès) : index du controller Accueil.
+  *
+  * @author POP Diana
+  */
+  public function autorisation($id){
+    $estProprietaire = false;
+    $this->loadComponent('Paginator');
+
+    //On récupère la table Projet pour en extraire les infos
+    $projetTab = TableRegistry::getTableLocator()
+      ->get('Projet')->find()
+      ->where(['idProjet' => $id])
+      ->first();
+
+    $session = $this->request->getSession();
+    if ($session->check('Auth.User.idUtilisateur')) {
+      $user = $session->read('Auth.User.idUtilisateur');
+      if($projetTab->idProprietaire == $user){
+        $estProprietaire = true;
+    }else{
+        $this->Flash->error(__('Ce projet n\'existe pas ou vous n\'y avez pas accès.'));
+        $this->redirect(['controller'=>'Accueil', 'action'=>'index']);
+    }
+  }
+}
+
+  /**
   * Affiche les membres d'un projet (le propriétaire est considéré comme un membre et est donc aussi affiché).
   *
   * Fonction appelée au clic sur "Gérer les membres" dans le index.ctp du controller des Taches.
@@ -23,24 +54,7 @@ class MembreController extends AppController
   * @author POP Diana
   */
     public function index($id){
-      $estProprietaire = false;
-      $this->loadComponent('Paginator');
-
-      $projetTab = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
-        ->get('Projet')->find()
-        ->where(['idProjet' => $id])
-        ->first();
-
-      $session = $this->request->getSession();
-      if ($session->check('Auth.User.idUtilisateur')) {
-        $user = $session->read('Auth.User.idUtilisateur');
-        if($projetTab->idProprietaire == $user){
-          $estProprietaire = true;
-      }else{
-          $this->Flash->error(__('Ce projet n\'existe pas ou vous n\'y avez pas accès.'));
-          $this->redirect(['controller'=>'Accueil', 'action'=>'index']);
-      }
-
+      $this->autorisation($id);
       $this->loadComponent('Paginator');
       $session = $this->request->getSession();
       $membres = $this->Paginator->paginate($this->Membre->find()
@@ -48,7 +62,7 @@ class MembreController extends AppController
           ->where(['idProjet' => $id]));
       $this->set(compact('membres', 'id'));
     }
-  }
+
 
 
     /**
@@ -70,6 +84,7 @@ class MembreController extends AppController
     * @author POP Diana
     */
     public function add($id){
+      $this->autorisation($id);
       if ($this->request->is('post')){
 
       // Est-ce que l'utilisateur demandé existe ?
@@ -131,17 +146,24 @@ class MembreController extends AppController
     * @author POP Diana
     */
     public function delete($id_utilisateur, $id_projet){
+      $this->autorisation($id_projet);
       // Comme session ne marche pas, on va aller chercher l'idPropriétaire du projet.
       $projets = TableRegistry::get('Projet');
       $projet = $projets->find()->where(['idProjet'=>$id_projet])->first();
       $id_proprio = $projet->idProprietaire;
 
+      // Si l'utilisateur sélectionné est le propriétaire du projet, il ne peut pas se supprimer
       if ($id_utilisateur==$id_proprio){
-        return $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id_projet]);
+        $this->Flash->set('Vous êtes propriétaire de ce projet.', ['element' => 'error']);
+        // Ne croyez pas StackOverflow, cette ligne est nécessaire
+        $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id_projet]);
+
+      // Si l'utilisateur sélectionné n'en est pas le propriétaire, il supprime
       }else{
         $membre = $this->Membre->find()->where(['idUtilisateur'=>$id_utilisateur, 'idProjet'=>$id_projet])->first();
         $success = $this->Membre->delete($membre);
-        return $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id_projet]);
+        $this->Flash->set('Le membre a été supprimé du projet.', ['element' => 'success']);
+        $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id_projet]);
       }
     }
 

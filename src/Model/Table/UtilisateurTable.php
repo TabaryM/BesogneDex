@@ -35,6 +35,12 @@ class UtilisateurTable extends Table{
           'cascadeCallbbacks' =>true
       ]);
 
+      $this->hasMany('Vue_notification_tache', [
+          'className' => 'Vue_notification_tache',
+          'foreignKey'=> 'idUtilisateur',
+          'dependent' => true,
+          'cascadeCallbbacks' =>true
+      ]);
   }
 
 /**

@@ -70,6 +70,7 @@ class UtilisateurController extends AppController
       $utilisateur = $this->Utilisateur->patchEntity($utilisateur, $this->request->getData());
       if ($this->Utilisateur->save($utilisateur)) {
         $this->Flash->success(__('Votre compte est bien enregistré.'));
+        $this->Auth->setUser($utilisateur);
         return $this->redirect(['controller' => 'pages', 'action' => 'display','home']);
       }
       $errors = listeErreursVersString($utilisateur->errors());
