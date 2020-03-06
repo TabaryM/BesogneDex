@@ -1,5 +1,5 @@
 <div class="row" style="margin-right: 60px;margin-left: 60px;height: 80vh;">
-        <div class="col" style="margin-top: 50px;">
+        <div class="col-xl-6" style="margin-top: 50px;">
             <div class="card shadow" style="background-color: #6fa8dc;">
                 <div class="card-body">
                     <p style="font-weight: bold;">Tâches prioritaires :</p>
@@ -58,7 +58,7 @@
                 </div>
             </div>
         </div>
-        <div class="col" style="margin-top: 50px;">
+        <div class="col-xl-6" style="margin-top: 50px;">
             <div class="card shadow" style="background-color: #6fa8dc;">
                 <div class="card-body">
                     <p style="font-weight: bold;">Notifications récentes :</p>

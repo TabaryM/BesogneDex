@@ -133,7 +133,7 @@
 
 <!-- Boutons : -->
     <div class="row" style="margin-right: 60px;margin-left: 60px;">
-    <div class="col-xl-4">
+    <div class="col-xl-4 col-md-auto col-sm-auto paddingCard">
         <div class="card color-card">
             <div class="card-body shadow d-flex justify-content-between align-items-center color-card">
               <?= $this->Html->image("icones/membres.png", ['class' => 'image_icone']) ?>
@@ -144,7 +144,7 @@
             </div>
         </div>
     </div>
-    <div class="col-xl-4">
+    <div class="col-xl-4 col-md-auto col-sm-auto">
         <div class="card color-card">
             <div class="card-body shadow d-flex justify-content-between align-items-center color-card">
               <?= $this->Html->image("icones/list.png", ['class' => 'image_icone']) ?>
@@ -158,7 +158,7 @@
             </div>
         </div>
     </div>
-    <div class="col-xl-4 d-flex justify-content-end align-items-center">
+    <div class="col-xl-4 col-md-auto col-sm-auto d-flex justify-content-end align-items-center">
       <?= $this->Html->link("", ['controller' => 'Tache', 'action'=> 'add', $idProjet], ['class' => 'btn btn-primary shadow rond-croix']); ?>
     </div>
   </div>
