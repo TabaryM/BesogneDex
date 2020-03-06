@@ -22,7 +22,9 @@
                 <input type="checkbox" class="checkFait" value="<?= $tache->idTache ?>" <?php if ($tache->finie) echo "checked"; ?>>
               </td>
               <td>
-                <?= $tache->leProjet->dateFin->nice('Europe/Paris', 'fr-FR') ?>
+
+                <?php $dateFin = $tache->leProjet->dateFin;
+                      if ($dateFin !== null) echo $dateFin->nice('Europe/Paris', 'fr-FR') ?>
               </td>
               <td>
                 <?= $this->Html->link($tache->leProjet->titre, ['controller' => 'Projet', 'action' => 'details', $tache->leProjet->idProjet]) ?>
