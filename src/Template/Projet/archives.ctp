@@ -21,7 +21,7 @@
                   <?= $archive->dateFin; ?>
                 </td>
                 <td>
-                  <?= null; ?>
+                  <?= $archive->dateArchivage; ?>
                 </td>
               </tr>
             <?php endforeach; ?>

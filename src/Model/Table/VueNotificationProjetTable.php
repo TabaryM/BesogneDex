@@ -3,18 +3,18 @@ namespace App\Model\Table;
 
 use Cake\ORM\Table;
 
-class Vue_notification_tacheTable extends Table {
+class VueNotificationProjetTable extends Table {
 
   public function initialize(array $config){
-    $this->setPrimaryKey(array('idUtilisateur','idNotifTache'));
+    $this->setPrimaryKey(array('idUtilisateur','idNotifProjet'));
 
     $this->belongsTo('Utilisateur', [
       'foreignKey' => 'idUtilisateur',
       'propertyName' => 'un_utilisateur'
     ]);
 
-    $this->belongsTo('Notification_tache', [
-      'foreignKey' => 'idNotifTache',
+    $this->belongsTo('NotificationProjet', [
+      'foreignKey' => 'idNotifProjet',
       'propertyName' => 'une_notification'
     ]);
 
