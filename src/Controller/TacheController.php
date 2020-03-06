@@ -116,7 +116,7 @@ class TacheController extends AppController
           // On verifie qu'il n'existe pas une tache du meme nom
           foreach($this->Tache->find('all', ['conditions'=>['idProjet'=>$idProjet]]) as $task) {
             if($task->titre == $tache->titre) {
-              $this->Flash->error(__('Impossible d\'avoir plusieurs taches avec le meme nom.'));
+              $this->Flash->error(__('Impossible d\'avoir plusieurs tâches avec le même nom dans un même projet.'));
               return $this->redirect(['action'=> 'add', $idProjet]); //TODO: Pas propre
             }
           }
@@ -152,7 +152,7 @@ class TacheController extends AppController
 
       $this->set(compact('taches'));
     } else {
-      $this->Flash->error(_('Une erreur est survenue lors de la récupérations des tâches.'));
+      $this->Flash->error(_('Une erreur est survenue lors de la récupération des tâches.'));
       $this->redirect($this->referer());
     }
   }
@@ -186,7 +186,7 @@ class TacheController extends AppController
         if($tache['titre'] == $data['titre']){
           unset($data['titre']);
         }
-        
+
         $data = array_filter($data, function($value) { return !is_null($value) && $value !== '' && !empty($value); }); //On supprime les éléments vide
 
         $data['idProjet'] = $idProjet;
@@ -195,7 +195,7 @@ class TacheController extends AppController
         $data2 = $this->Tache->patchEntity($tache, $data); //On "assemble" les données entre data et une tâche
 
         if($this->Tache->save($data2)){ //On sauvegarde les données (Le vérificator passe avant)
-          $this->Flash->success(__('La Tâche a été modifié.'));
+          $this->Flash->success(__('La tâche a été modifiée.'));
           $succes = true;
         }else{
           $errors = listeErreursVersString($tache->errors(), $this);
@@ -307,7 +307,7 @@ class TacheController extends AppController
         }
         $this->Tache->save($tache);
       } else {
-        $this->Flash->error(__('Seul le responsable de la tâche peut changer l\'état de celui-ci.'));
+        $this->Flash->error(__('Seul le responsable de la tâche peut changer l\'état de celle-ci.'));
       }
     } else {
       $this->Flash->error(__('Vous devez être connecté pour changer l\'état d\'une tâche.'));

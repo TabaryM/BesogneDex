@@ -184,20 +184,20 @@ class MembreController extends AppController
   * Affiche les membres d'un projet (le propriétaire est considéré comme un membre et est donc aussi affiché).
   * La fonction vérifie si l'utilisateur a accès au projet à l'id donné en argument.
   *
-  * @param id : id du projet.
+  * @param idProjet : id du projet.
   * @return /
   *
   * Redirection : (si non accès) index de Accueil.
   * @author POP Diana
   */
-    public function index($id){
-      $this->autorisation($id);
+    public function index($idProjet){
+      $this->autorisation($idProjet);
       $this->loadComponent('Paginator');
       $session = $this->request->getSession();
       $membres = $this->Paginator->paginate($this->Membre->find()
           ->contain(['Utilisateur'])
-          ->where(['idProjet' => $id]));
-      $this->set(compact('membres', 'id'));
+          ->where(['idProjet' => $idProjet]));
+      $this->set(compact('membres', 'idProjet'));
     }
 
     /**
