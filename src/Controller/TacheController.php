@@ -144,7 +144,7 @@ class TacheController extends AppController
       $this->redirect($this->referer());
     }
   }
-  
+
   /**
    * Utilisée dans : Template/Tache/index.ctp
    *
@@ -227,11 +227,15 @@ class TacheController extends AppController
   * Utilisée dans Template/Tache/index.ctp
   * lors de la suppression d'une tâche.
   * @author WATELOT Paul-Emile
+  * @param $idProjet l'id du projet qui contient la tache, $idTache l'id de la tache a supprimer
+  * @return redirection vers la page du projet
   */
   public function delete($idProjet, $idTache){
+    //donne acces a (Tache/)index.ctp
     $this->set(compact('idProjet','idTache'));
 
-    $projetTab = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
+    //On récupère la table Projet et on recupere le projet voulu
+    $projetTab = TableRegistry::getTableLocator()
     ->get('Projet')->find()
     ->where(['idProjet' => $idProjet])
     ->first();
@@ -247,6 +251,9 @@ class TacheController extends AppController
       ->first();
       //si il est propriétaire du projet ou que l'utilisateur est responsable de la tache il peut supprimer cette tache
       if($projetTab->idProprietaire == $user || $tache->idResponsable == $user){
+
+        //TODO pour PE: Si c'est le proprio envoyer une notif a tout les membres du projet comme quoi la tache X du projet Y a ete supprimée. sinon envoyer une demande de confirmation au proprio et si il accepte, la supprimer
+
         $query = $tacheTab->query();
         $query->delete()->where(['idTache' => $idTache])->execute();
       }

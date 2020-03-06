@@ -135,14 +135,16 @@ class ProjetController extends AppController
     }
 
     /**
-    * liste les projets archivés
+    * liste les projets archivés dont fait parti un membre
     *
     * @author WATELOT Paul-Emile
     */
     public function archives(){
+      //recupere la table projet
       $projets = TableRegistry::getTableLocator()->get('Projet');
 
       $session = $this->request->getSession();
+      //recupere les projets dont fait parti l'utilisateur et dont l'état est "Archive"
       $archives = $projets->find()->distinct()->contain('Utilisateur')
       ->leftJoinWith('Membre')
       ->where(
@@ -150,18 +152,19 @@ class ProjetController extends AppController
             'Membre.idUtilisateur' => $session->read('Auth.User.idUtilisateur'),
             'Projet.idProprietaire' => $session->read('Auth.User.idUtilisateur')
        ]]);
-
+      //partage la variables archives a Archives.ctp
       $this->set(compact('archives'));
-
     }
 
     /**
     * Supprime un projet si propriétaire et enleve un membre du groupe si il quitte
-    *
     * @author WATELOT Paul-Emile
+    * @param $idProjet l'id du projet a supprime ou se retirer
+    * @return redirection vers la page index des projets
     */
     public function delete($idProjet){
-        $projetTab = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
+        //On récupère la table Projet pour en extraire le projet désiré
+        $projetTab = TableRegistry::getTableLocator()
           ->get('Projet')->find()
           ->where(['idProjet' => $idProjet])
           ->first();
@@ -171,11 +174,15 @@ class ProjetController extends AppController
         if ($session->check('Auth.User.idUtilisateur')) {
           $idUser = $session->read('Auth.User.idUtilisateur');
           $membres = TableRegistry::getTableLocator()->get('Membre');
+          //si l'utilisateur est le propriétaire on:
           if($projetTab->idProprietaire == $idUser){
 
             //degage tout les membres du projet
             $query = $membres->query();
             $query->delete()->where(['idProjet' => $idProjet])->execute();
+
+            //TODO pour PE: supprimer les notifs en lien avec les taches du projets pour eviter les conflits de DB
+            //TODO pour PE: supprimer les notifs en lien avec le projet pour eviter les conflits de DB
 
             //supprime les taches du projet
             $taches = TableRegistry::getTableLocator()->get('Tache');
@@ -187,9 +194,12 @@ class ProjetController extends AppController
             $query = $projets->query();
             $query->delete()->where(['idProjet' => $idProjet])->execute();
 
+            //TODO pour PE: Envoyer une notif de suppression a tout les membres comme quoi le projet à été supprimé
+
           }
-          //sinon si c'est un invité on le degage dans la table membre
+          //sinon si c'est un invité on le retire dans la table membre
           else{
+            //retirer les responsabilités du membre dans le projet qu'il souaite quitter
             $tachesSousResponsabilite = TableRegistry::getTableLocator()
                 ->get('Tache')->find()
                 ->where(['AND' => ['idProjet' => $idProjet, 'idResponsable' => $idUser]])
@@ -197,8 +207,12 @@ class ProjetController extends AppController
             foreach($tachesSousResponsabilite as $tache):
                 (new TacheController)->notSoResponsible($idProjet, $tache->idTache);
             endforeach;
+
+            //enleve l'utilisateur du projet
             $query = $membres->query();
             $query->delete()->where(['idProjet' => $idProjet, 'idUtilisateur' => $idUser])->execute();
+
+            //TODO pour PE: Envoyer une notif comme quoi X a quitté le projet a tout les membres
           }
         }
 
