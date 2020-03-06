@@ -5,6 +5,7 @@ require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'lis
 use App\Controller\AppController;
 use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
+use Cake\I18n\Time;
 
 class TacheController extends AppController
 {
@@ -33,6 +34,14 @@ class TacheController extends AppController
 
     //Pour la couronne dans le header
     Configure::write('utilisateurProprietaire', false);
+    //Pour le nom en rouge quand un projet est expiré
+    Configure::write('estExpire', false);
+
+    $today = Time::now();
+    if($projetTab->dateFin < $today){
+      Configure::write('estExpire', true);
+    }
+
     $this->loadComponent('Paginator');
 
     $taches = $this->Paginator->paginate($this->Tache->find()
@@ -144,7 +153,7 @@ class TacheController extends AppController
       $this->redirect($this->referer());
     }
   }
-  
+
   /**
    * Utilisée dans : Template/Tache/index.ctp
    *
