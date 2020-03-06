@@ -29,7 +29,7 @@ $Sql="
 		idProjet INT NOT NULL AUTO_INCREMENT,
 		titre VARCHAR(128) NOT NULL,
 		description VARCHAR(500),
-		dateDebut DATE DEFAULT NOW(),
+		dateDebut DATE NOT NULL,
 		dateFin DATE,
 		etat VARCHAR(10) DEFAULT 'En cours',
 		idProprietaire INT NOT NULL,
