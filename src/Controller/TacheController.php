@@ -183,6 +183,10 @@ class TacheController extends AppController
         $data['titre'] = nettoyerTexte($data['titre']);
         $data['description'] = nettoyerTexte($data['description']);
 
+        if($tache['titre'] == $data['titre']){
+          unset($data['titre']);
+        }
+        
         $data = array_filter($data, function($value) { return !is_null($value) && $value !== '' && !empty($value); }); //On supprime les éléments vide
 
         $data['idProjet'] = $idProjet;
