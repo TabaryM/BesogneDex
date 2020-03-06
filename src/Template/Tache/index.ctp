@@ -189,7 +189,7 @@
   </div>
   <!-- Fin boutons Archiver, Modifier, Supprimer, Quitter le projet, Ajouter une tâche -->
 
-  <!-- Début odal Quitter/Supprimer le projet : -->
+  <!-- Début modal Quitter/Supprimer le projet : -->
   <div class="modal fade" id="leaveModal" role="dialog" tabindex="-1">
           <div class="modal-dialog" role="document">
               <div class="modal-content">

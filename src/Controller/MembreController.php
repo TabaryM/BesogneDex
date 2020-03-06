@@ -9,11 +9,8 @@ class MembreController extends AppController
 
   /**
   * Si l'utilisateur n'a pas accès au projet sur lequel il veut effectuer une action, il sera redirigé vers l'accueil.
-  *
   * @param $id est l'idProjet.
-  * @return /
-  * Redirection (si non accès) : index du controller Accueil.
-  *
+  * @return / Redirection (si non accès) : index du controller Accueil.
   * @author POP Diana
   */
   public function autorisation($id){
@@ -40,17 +37,11 @@ class MembreController extends AppController
 
   /**
   * Affiche les membres d'un projet (le propriétaire est considéré comme un membre et est donc aussi affiché).
-  *
   * Fonction appelée au clic sur "Gérer les membres" dans le index.ctp du controller des Taches.
-  *
   * La fonction vérifie si l'utilisateur a accès au projet à l'id donné en argument.
   * Si l'utilisateur n'y a pas accès, la fonction le redirige vers l'accueil.
-  *
   * @param $id correspond à l'idProjet.
-  * @return /
-  *
-  * Redirection (si l'utilisateur n'a pas accès au projet): index de Accueil.
-  *
+  * @return /Redirection (si l'utilisateur n'a pas accès au projet): index de Accueil.
   * @author POP Diana
   */
     public function index($id){
@@ -67,27 +58,21 @@ class MembreController extends AppController
 
     /**
     * Ajoute un membre dans le projet.
-    *
     * Fonction appelée au clic sur "Inviter" dans le index.ctp de ce controller.
-    *
     * La fonction vérifie avant l'ajout :
     *       - Si l'utilisateur n'existe pas
     *       - Si l'utilisateur est pas déjà membre de cette liste
     *       - Si l'utilisateur est propriétaire du projet.
-    *
     * Si l'un de ces critères est vrai, alors le membre n'est pas ajouté dans le projet.
-    *
     * @param $id correspond à l'idProjet (les autres informations nécessaires viennent d'un POST).
-    * @return redirection.
-    * Redirection : index de ce controller.
-    *
+    * @return redirection Redirection : index de ce controller.
     * @author POP Diana
     */
     public function add($id){
       $this->autorisation($id);
       if ($this->request->is('post')){
 
-      // Est-ce que l'utilisateur demandé existe ?
+          // Est-ce que l'utilisateur demandé existe ?
           $utilisateurs = TableRegistry::get('Utilisateur');
           $query = $utilisateurs->find()
               ->select(['idUtilisateur'])
@@ -131,18 +116,12 @@ class MembreController extends AppController
 
     /**
     * Supprime un membre du projet.
-    *
     * Fonction appelée au clic sur "Oui" du modal apparaissant après clic sur le bouton "Supprimer" du index.ctp de ce controller.
-    *
     * La fonction vérifie avant l'ajout :
     *       - Si l'utilisateur est propriétaire du projet .
-    *
     * Si ce critère est vrai, alors le membre n'est pas supprimé du projet.
-    *
     * @param: $id_utilisateur correspond à l'idUtilisateur et $id_projet correspond à l'idProjet.
-    * @return /
-    * Redirection : index de ce controller.
-    *
+    * @return /Redirection : index de ce controller.
     * @author POP Diana
     */
     public function delete($id_utilisateur, $id_projet){
