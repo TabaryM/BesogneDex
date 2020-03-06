@@ -1,6 +1,8 @@
 <?php
 
-/** Cette fonction permet d'empecher les injections HTML et SQL
+/**
+ * Empêche les injections HTML et SQL
+ *
  * @param $texte String source a traiter
  * @return string texte nettoyé
  * @author PALMIERI Adrien
@@ -11,6 +13,8 @@ function nettoyerTexte($texte) {
 }
 
 /**
+ * Appelée pour la vérification du titre d'un projet ou d'une tâche.
+ *
  * @author TABARY Mathieu, PALMIERI Adrien
  * @param $titre String : nom du champs à vérifier
  * @return bool retourne vrai si le titre correspond aux critères donné dans le cahier des chargess
@@ -28,6 +32,8 @@ function verificationTitre($titre){
 }
 
 /**
+ * Appelée pour la vérification de la desription d'un projet ou d'une tâche.
+ *
  * @author TABARY Mathieu, PALMIERI Adrien
  * @param $description String : nom du champs à vérifier
  * @return bool retourne vrai si la description correspond aux critères donné dans le cahier des chargess
@@ -37,7 +43,7 @@ function verificationDescription($description){
     // Par défaut la description contient une erreur
     $res = false;
     // Si la description correspond au cahier des charges, on retire l'erreur
-    if(strlen($description) <= 500){
+    if(strlen($description) <= 512){
         $res = true;
     }
 
