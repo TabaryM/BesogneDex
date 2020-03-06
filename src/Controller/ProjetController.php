@@ -66,7 +66,7 @@ class ProjetController extends AppController
             // Vérification de la description
             if(!verificationDescription($receivedData['description'])){
                 // Si la description n'est pas correcte
-                $this->Flash->error(__("La description est trop longue"));
+                $this->Flash->error(__("La description est trop longue (max 512 caractères)."));
                 $existeErreur = true;
             }
 

@@ -39,8 +39,8 @@ $Sql="
 
 	CREATE TABLE Tache (
 		idTache INT NOT NULL AUTO_INCREMENT,
-		titre VARCHAR(50) NOT NULL,
-		description VARCHAR(255),
+		titre VARCHAR(64) NOT NULL,
+		description VARCHAR(512),
 		finie BOOLEAN NOT NULL DEFAULT 0,
 		idResponsable INT DEFAULT NULL,
 		idProjet INT NOT NULL,
