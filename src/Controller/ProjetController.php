@@ -17,7 +17,6 @@ class ProjetController extends AppController
     {
         $this->loadComponent('Paginator');
         $session = $this->request->getSession();
-        // $projets = $this->Paginator->paginate($this->Projet->find()->contain(['Membre'])->where(['idUtilisateur' => $session->read('Auth.User.idUtilisateur')]));
         $projets = $this->Paginator->paginate($this->Projet->find()->distinct()->contain('Utilisateur')
         ->leftJoinWith('Membre')
         ->where(
@@ -371,14 +370,13 @@ class ProjetController extends AppController
 
       // Si on a modifié la description
       if ($projet->description != $receivedData['descr']){
-
         // On vérifie si la nouvelle description est bien formée
         if (verificationDescription($receivedData['descr'])){
           // Si la nouvelle description respecte les contraintes, alors on modifie le projet
           $projet->description = nettoyerTexte($receivedData['descr']);
         } else {
           // Si la description ne respecte pas la contrainte de taille, on affiche une erreur
-          $this->Flash->error(__("La taille de la description est incorrecte (500 caractères)."));
+          $this->Flash->error(__("La description est trop longue (max 512 caractères)."));
           $erreur = true;
         }
       }
