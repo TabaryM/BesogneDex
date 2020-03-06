@@ -28,6 +28,41 @@ class NotificationController extends AppController
   }
 
   /**
+  * Les notifications non-vues et non à valider deviennent vues lorsque l'utilisateur va voir ses notifications.
+  *
+  * La fonction est appelée par index() de ce controller.
+  * Un simple update ne convient pas car il est nécessaire d'aller chercher l'attribut "a_valider" dans une autre table (tables NotificationProjet et NotificationTache).
+  *
+  * @param tableNotificationsProjet TableRegistry de VueNotificationProjet
+  * @param tableNotificationsTache TableRegistry de VueNotificationTache
+  * @param idUtilisateur id de l'utilisateur connecté
+  * @return /
+  * Redirection : /
+  *
+  * @author POP Diana
+  */
+  private function updateNotificationsVues($tableNotificationsProjet, $tableNotificationsTache, $idUtilisateur){
+    // On commence par les notifications de projet.
+    $notificationsProjetVues = $tableNotificationsProjet->find()->contain('NotificationProjet')->where(['idUtilisateur'=>$idUtilisateur, 'a_valider'=>0])->toArray();
+    if ($notificationsProjetVues){
+      foreach($notificationsProjetVues as $notification){
+        $notification->vue = 1;
+        $tableNotificationsProjet->save($notification);
+      }
+
+      // Maintenant, on fait les notifications de tâche.
+      $notificationsTacheVues = $tableNotificationsTache->find()->contain('NotificationTache')->where(['idUtilisateur'=>$idUtilisateur, 'a_valider'=>0])->toArray();
+      if ($notificationsTacheVues){
+        foreach($notificationsTacheVues as $notification){
+          $notification->vue = 1;
+          $tableNotificationsTache->save($notification);
+        }
+
+      }
+    }
+  }
+
+  /**
    * Affiche les notifications de l'utilisateur et met à jour la BDD pour dire que les notifications ont été vues.
    * La fonction est appelée au clic sur la cloche de notification depuis n'importe quelle page où l'utilisateur est connecté.
    *
@@ -44,24 +79,22 @@ class NotificationController extends AppController
     $idUtilisateur= $this->autorisation();
 
     // Initialisation des tables
-    $table_notifs_projets = TableRegistry::getTableLocator()->get('VueNotificationProjet');
-    $table_notifs_taches = TableRegistry::getTableLocator()->get('VueNotificationTache');
-
-    // Les notifications non-vues et non à valider deviennent vues lorsque l'utilisateur va voir ses notifs (et ne sont donc plus affichées en gras)
-    // Nécessaire d'utiliser query()->update() plutôt que updateAll() car besoin d'un contain pour l'attribut 'a_valider'.
-    $table_notifs_projets->query()->update()->set(['vue'=>1])->where(['idUtilisateur'=>$idUtilisateur])->execute();
-    $table_notifs_taches->query()->update()->set(['vue'=>1])->where(['idUtilisateur'=>$idUtilisateur])->execute();
+    $tableNotificationsProjet = TableRegistry::getTableLocator()->get('VueNotificationProjet');
+    $tableNotificationsTache = TableRegistry::getTableLocator()->get('VueNotificationTache');
 
     // Récupération des notifications de projet
-    $notifsProjet = $table_notifs_projets->find()->contain(['NotificationProjet'])->where(['idUtilisateur' => $idUtilisateur])->toArray();
-    $notifsTache = $table_notifs_taches->find()->contain(['NotificationTache'])->where(['idUtilisateur' => $idUtilisateur])->toArray();
+    $notificationsProjet = $tableNotificationsProjet->find()->contain(['NotificationProjet'])->where(['idUtilisateur' => $idUtilisateur])->toArray();
+    $notificationsTache = $tableNotificationsTache->find()->contain(['NotificationTache'])->where(['idUtilisateur' => $idUtilisateur])->toArray();
 
     // On merge en une seule array les résultats des deux requêtes.
-    $notifs = array_merge($notifsProjet, $notifsTache);
+    $notifs = array_merge($notificationsProjet, $notificationsTache);
 
     // On trie l'array résultante. Le tri est déjà sur la date, puis sur si la notification est à valider.
     $notifs = Hash::sort($notifs, '{n}.une_notification.Date','asc');
     $notifs = Hash::sort($notifs, '{n}.une_notification.a_valider', 'desc');
+
+    // On met à jour les notifications vues seulement après leur affichage.
+    $this->updateNotificationsVues($tableNotificationsProjet, $tableNotificationsTache, $idUtilisateur);
 
     // Donne aux ctp les variables nécessaires
     $this->set(compact('notifs'));

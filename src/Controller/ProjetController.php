@@ -209,6 +209,10 @@ class ProjetController extends AppController
      * Permet d'archiver un projet uniquement si il est expiré et si l'utilisateur en est le propriétaire
      * @param int $idProjet ID du projet a archiver
      * @author Pedro Sousa Ribeiro
+     * 
+     * Redirection: Si l'utilisateur n'est pas connecté OU s'il n'est pas le propriétaire du projet OU si le projet n'est pas expiré, 
+     *              l'utilisateur est redirigé vers la dernière page qu'il a visité (la page d'où il vient).
+     *              Sinon si tout va bien l'utilisateur est dirigé vers la liste des projets archivés
      */
     public function archive($idProjet) {
       $projet = $this->Projet->get($idProjet);
@@ -234,6 +238,9 @@ class ProjetController extends AppController
           $this->Flash->error(__("Le projet doit être expiré pour pouvoir l'archiver."));
           $this->redirect($this->referer());
         }
+      } else {
+        $this->Flash->error(__("Vous devez être connecté pour archiver un projet."));
+        $this->redirect($this->referer());
       }
     }
 
