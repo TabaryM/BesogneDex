@@ -7,41 +7,187 @@ use Cake\ORM\TableRegistry;
 class MembreController extends AppController
 {
 
+   /**
+    * Vérifie si l'utilisateur est propriétaire du projet.
+    *
+    * @param idProjet : id du projet.
+    * @param idUtilisateur : id de l'utilisateur connecté.
+    * @return Vrai si l'utilisateur est propriétaire du projet, faux s'il ne l'est pas ou s'il n'est pas connecté.
+    *
+    * Redirection : /
+    *
+    * @author POP Diana
+    */
+    private function estProprietaireDe($idProjet){
+      // On récupère le Projet pour en extraire les informations.
+      $tableProjet = TableRegistry::getTableLocator()
+        ->get('Projet')->find()
+        ->where(['idProjet' => $idProjet])
+        ->first();
+
+      $idUtilisateur = null;
+
+      $session = $this->request->getSession();
+      if ($session->check('Auth.User.idUtilisateur')) $idUtilisateur = $session->read('Auth.User.idUtilisateur') ;
+
+      $estProprietaire = false;
+      if($tableProjet->idProprietaire == $idUtilisateur){ $estProprietaire = true; }
+      return $estProprietaire;
+    }
+
+    /**
+    * Pas le droit à la surcharge avec la fonction estProprietaireDe.
+    * Vérifie si l'utilisateur donné est propriétaire du projet.
+    *
+    * @param idProjet : id du projet.
+    * @param idUtilisateur : id de l'utilisateur potentiellement propriétaire.
+    * @return Vrai si l'utilisateur donné est propriétaire du projet.
+    *
+    * Redirection : /
+    *
+    * @author POP Diana
+    */
+    private function estProprietaire($idProjet, $idUtilisateur){
+      // On récupère le Projet pour en extraire les informations.
+      $tableProjet = TableRegistry::getTableLocator()->get('Projet');
+      $query = $tableProjet->find()->where(['idProjet' => $idProjet, 'idProprietaire'=>$idUtilisateur])->first();
+
+      return ($query!==null);
+    }
+
+    /**
+    * Vérifie si l'utilisateur donné est membre du projet.
+    *
+    * @param idProjet : id du projet.
+    * @param idUtilisateur : id de l'utilisateur potentiellement membre.
+    * @return Vrai si l'utilisateur donné est membre du projet.
+    *
+    * Redirection : /
+    *
+    * @author POP Diana
+    */
+    private function estMembreDe($idProjet, $idUtilisateur){
+      $count = $this->Membre->find()->where(['idUtilisateur'=>$idUtilisateur, 'idProjet'=>$idProjet])->count();
+      return ($count>0);
+    }
+
+    /**
+    * Vérifie si un utilisateur existe avec le pseudo donné.
+    *
+    * @param pseudoUtilisateur : pseudo d'un possible utilisateur.
+    * @return Vrai si un utilisateur existe avec ce pseudo.
+    *
+    * Redirection : /
+    *
+    * @author POP Diana
+    */
+    private function existe($pseudoUtilisateur){
+        $tableUtilisateurs = TableRegistry::get('Utilisateur');
+        $query = $tableUtilisateurs->find()
+            ->select(['idUtilisateur'])
+            ->where(['pseudo' => $pseudoUtilisateur])
+            ->first();
+
+        $idUtilisateur = $query['idUtilisateur'];
+
+        return $idUtilisateur!==null;
+    }
+
+    /**
+    * Donne l'id d'une personne grâce au pseudo de cette personne.
+    * Fonction à utiliser seulement si le paramètre n'est pas null.
+    *
+    * @param pseudoUtilisateur : pseudo d'un utilisateur.
+    * @return idUtilisateur : id de l'utilisateur avec le pseudo donné.
+    *
+    * Redirection : /
+    *
+    * @author POP Diana
+    */
+    private function getIdDe($pseudoUtilisateur){
+      $tableUtilisateurs = TableRegistry::get('Utilisateur');
+      $query = $tableUtilisateurs->find()
+          ->select(['idUtilisateur'])
+          ->where(['pseudo' => $pseudoUtilisateur])
+          ->first();
+
+        $idUtilisateur = $query['idUtilisateur'];
+
+        return $idUtilisateur;
+    }
+
+    /**
+    * Crée un nouveau membre et le sauvegarde dans la base de données.
+    * Affiche un message flash pour succès ou échec.
+    *
+    * @param idUtilisateur : id de l'utilisateur à ajouter comme membre.
+    * @param idProjet : id du projet auquel ajouter l'utilisateur comme membre.
+    * @return Vrai si l'utilisateur a bien été sauvegardé comme membre du projet.
+    *
+    * Redirection : /
+    *
+    * @author POP Diana
+    */
+    private function sauvegarderMembre($idUtilisateur, $idProjet){
+      $membre = $this->Membre->newEntity();
+      $membre->idUtilisateur= $idUtilisateur;
+      $membre->idProjet= $idProjet;
+
+      if ($estSauvegarde = $this->Membre->save($membre)) {
+        $this->Flash->success(__('Le membre a été ajouté à la liste.'));
+
+      // S'il y a eu une erreur lors de la sauvegarde du membre.
+      }else{
+        $this->Flash->error(__('Impossible d\'ajouter ce membre.'));
+    }
+    return $estSauvegarde;
+  }
+
+    private function supprimerMembre($idUtilisateur, $idProjet){
+      $tableTaches = TableRegistry::get('Tache');
+
+      // Le membre n'est plus responsable d'aucune tâche du projet.
+      $tableTaches->updateAll(array('idResponsable' => NULL), ['idProjet'=>$idProjet, 'idResponsable' => $idUtilisateur]);
+
+      // Maintenant, on peut supprimer le membre du projet.
+      $membre = $this->Membre->find()->where(['idUtilisateur'=>$idUtilisateur, 'idProjet'=>$idProjet])->first();
+
+      if ($this->Membre->delete($membre)){
+        $this->Flash->set('Le membre a été supprimé du projet.', ['element' => 'success']);
+      }else{
+        $this->Flash->set('Impossible de supprimer ce membre.', ['element' => 'success']);
+      }
+    }
+
   /**
-  * Si l'utilisateur n'a pas accès au projet sur lequel il veut effectuer une action, il sera redirigé vers l'accueil.
-  * @param $id est l'idProjet.
-  * @return / Redirection (si non accès) : index du controller Accueil.
+  * Si l'utilisateur n'est pas le propriétaire du projet, il sera redirigé vers l'accueil avec un message d'erreur.
+  *
+  * @param idProjet : id du projet.
+  * @return /
+  *
+  * Redirection : (si non accès) index de Accueil.
+  *
   * @author POP Diana
   */
-  public function autorisation($id){
-    $estProprietaire = false;
-    $this->loadComponent('Paginator');
+  private function autorisation($idProjet){
+    // On vérifie si l'utilisateur est propriétaire du projet.
+    $estProprietaire = $this->estProprietaireDe($idProjet);
 
-    //On récupère la table Projet pour en extraire les infos
-    $projetTab = TableRegistry::getTableLocator()
-      ->get('Projet')->find()
-      ->where(['idProjet' => $id])
-      ->first();
-
-    $session = $this->request->getSession();
-    if ($session->check('Auth.User.idUtilisateur')) {
-      $user = $session->read('Auth.User.idUtilisateur');
-      if($projetTab->idProprietaire == $user){
-        $estProprietaire = true;
-    }else{
-        $this->Flash->error(__('Ce projet n\'existe pas ou vous n\'y avez pas accès.'));
-        $this->redirect(['controller'=>'Accueil', 'action'=>'index']);
+    // On procède à la vérification.
+    if ($estProprietaire==false){
+      $this->Flash->error(__('Ce projet n\'existe pas ou vous n\'y avez pas accès.'));
+      $this->redirect(['controller'=>'Accueil', 'action'=>'index', $idProjet]);
     }
   }
-}
 
   /**
   * Affiche les membres d'un projet (le propriétaire est considéré comme un membre et est donc aussi affiché).
-  * Fonction appelée au clic sur "Gérer les membres" dans le index.ctp du controller des Taches.
   * La fonction vérifie si l'utilisateur a accès au projet à l'id donné en argument.
-  * Si l'utilisateur n'y a pas accès, la fonction le redirige vers l'accueil.
-  * @param $id correspond à l'idProjet.
-  * @return /Redirection (si l'utilisateur n'a pas accès au projet): index de Accueil.
+  *
+  * @param id : id du projet.
+  * @return /
+  *
+  * Redirection : (si non accès) index de Accueil.
   * @author POP Diana
   */
     public function index($id){
@@ -54,109 +200,103 @@ class MembreController extends AppController
       $this->set(compact('membres', 'id'));
     }
 
-
-
     /**
     * Ajoute un membre dans le projet.
     * Fonction appelée au clic sur "Inviter" dans le index.ctp de ce controller.
+    *
     * La fonction vérifie avant l'ajout :
     *       - Si l'utilisateur n'existe pas
     *       - Si l'utilisateur est pas déjà membre de cette liste
     *       - Si l'utilisateur est propriétaire du projet.
+    *
     * Si l'un de ces critères est vrai, alors le membre n'est pas ajouté dans le projet.
-    * @param $id correspond à l'idProjet (les autres informations nécessaires viennent d'un POST).
-    * @return redirection Redirection : index de ce controller.
+    *
+    * @param idProjet : l'id du projet (les autres informations nécessaires viennent d'un POST).
+    * @return /
+    *
+    * Redirection : index de ce controller.
+    *
     * @author POP Diana
     */
-    public function add($id){
-      $this->autorisation($id);
+    public function add($idProjet){
+      $this->autorisation($idProjet);
+
       if ($this->request->is('post')){
+        /* Initialisation du pseudo et de l'id de l'utilisateur à ajouter. */
+        $pseudoUtilisateur = $this->request->getData()['recherche_utilisateurs'];
+        $idUtilisateur = null;
 
-          // Est-ce que l'utilisateur demandé existe ?
-          $utilisateurs = TableRegistry::get('Utilisateur');
-          $query = $utilisateurs->find()
-              ->select(['idUtilisateur'])
-              ->where(['pseudo' => $this->request->getData()['recherche_utilisateurs']])
-              ->first();
-          $id_utilisateur = $query['idUtilisateur'];
+        /* Initialisation de variables pour vérifications. */
+        // Est-ce que l'utilisateur à ajouter existe ?
+        $existeUtilisateur = $this->existe($pseudoUtilisateur);
 
-        if ($id_utilisateur===null){
-          $this->Flash->error(__('Ce membre n\'existe pas.'));
-          return $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id]);
+        if ($existeUtilisateur){
+          $idUtilisateur = $this->getIdDe($pseudoUtilisateur);
         }
 
-        // Est-ce que l'utilisateur est propriétaire du projet ?
-        $session = $this->request->getSession(); // Le check Session est vrai car on est passés par index de ce même controller
-        if ($id_utilisateur===$session->read('Auth.User.idUtilisateur')){
-          $this->Flash->error(__('Vous êtes le propriétaire de ce projet.'));
-          return $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id]);
-        }
+        // Est-ce que l'utilisateur à ajouter est le propriétaire ?
+        $estProprietaire = $this->estProprietaire($idProjet, $idUtilisateur);
 
-        // Est-ce que l'utilisateur demandé est déjà dans le projet ?
-        $count = $this->Membre->find()->where(['idUtilisateur'=>$id_utilisateur, 'idProjet'=>$id])->count();
-        if ($count>0){
-          $this->Flash->error(__('Ce membre est déjà dans le projet.'));
-          return $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id]);
-        }
+        // Est-ce que l'utilisateur à ajouter est déjà membre ?
+        $estDejaMembre = $this->estMembreDe($idProjet, $idUtilisateur);
 
-        // Bienvenue au nouveau membre dans le projet !
-        $membre = $this->Membre->newEntity();
+        // Si la personne à ajouter existe, qu'elle n'est pas le propriétaire et qu'elle n'est pas déjà membre, on l'ajoute à la liste de membres.
+        if ($existeUtilisateur && !$estProprietaire && !$estDejaMembre){
+          $this->sauvegarderMembre($idUtilisateur, $idProjet);
 
-        $membre->idProjet= $id;
-        $membre->idUtilisateur= $id_utilisateur;
+        // Si les vérifications ont été fausses, on affiche les messages d'erreur selon les cas.
+        }else{
+          if(!$existeUtilisateur) $this->Flash->error(__('Ce membre n\'existe pas.'));
 
-        if ($this->Membre->save($membre)) {
-          $this->Flash->success(__('Le membre a été ajouté à la liste.'));
+          if ($estProprietaire) $this->Flash->error(__('Vous êtes le propriétaire de ce projet et faites donc déjà partie de ce projet.'));
 
-          return $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id]);
-        }
-        $this->Flash->error(__('Impossible d\'ajouter ce membre.'));
-      } // fin if post
+          if ($estDejaMembre && !$estProprietaire) $this->Flash->error(__('Ce membre est déjà dans le projet.'));
+
+      }// Fin messages des verifications
+
+        // Peu importe le cas, on est redirigé vers l'index.
+        $this->redirect(['controller'=>'Membre', 'action'=> 'index', $idProjet]);
+      } // Fin if post
     }
 
     /**
     * Supprime un membre du projet.
-    * Fonction appelée au clic sur "Oui" du modal apparaissant après clic sur le bouton "Supprimer" du index.ctp de ce controller.
-    * La fonction vérifie avant l'ajout :
+    *
+    * La fonction vérifie avant la suppression :
     *       - Si l'utilisateur est propriétaire du projet .
     * Si ce critère est vrai, alors le membre n'est pas supprimé du projet.
+    *
     * @param: $id_utilisateur correspond à l'idUtilisateur et $id_projet correspond à l'idProjet.
-    * @return /Redirection : index de ce controller.
+    * @return /
+    *
+    * Redirection : index de ce controller.
+    *
     * @author POP Diana
     */
-    public function delete($id_utilisateur, $id_projet){
-      $this->autorisation($id_projet);
-      // Comme session ne marche pas, on va aller chercher l'idPropriétaire du projet.
-      $projets = TableRegistry::get('Projet');
-      $projet = $projets->find()->where(['idProjet'=>$id_projet])->first();
-      $id_proprio = $projet->idProprietaire;
+    public function delete($idUtilisateur, $idProjet){
+      $this->autorisation($idProjet);
 
-      // Si l'utilisateur sélectionné est le propriétaire du projet, il ne peut pas se supprimer
-      if ($id_utilisateur==$id_proprio){
-        $this->Flash->set('Vous êtes propriétaire de ce projet.', ['element' => 'error']);
+      // Est-ce que l'utilisateur à supprimer est membre de ce projet ?
+      $estMembre = $this->estMembreDe($idProjet, $idUtilisateur);
 
-        // Ne croyez pas StackOverflow, cette ligne est nécessaire
-        $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id_projet]);
+      // Est-ce que l'utilisateur à supprimer est propriétaire de ce projet ?
+      $estProprietaire = $this->estProprietaire($idProjet, $idUtilisateur);
 
-      // Si l'utilisateur sélectionné n'en est pas le propriétaire, il supprime
+      // Si l'utilisateur à supprimer du projet n'en est pas propriétaire, on peut le supprimer.
+      if (!$estProprietaire && $estMembre){
+        $this->supprimerMembre($idUtilisateur, $idProjet);
+
+      // Si l'utilisateur à supprimer du projet en est le propriétaire, on ne peut pas le supprimer.
+      }else if($estProprietaire){
+          $this->Flash->set('Vous êtes propriétaire de ce projet.', ['element' => 'error']);
+
+      // Si l'utilisateur à supprimer du projet n'en est pas membre, on ne peut pas le supprimer (empêche une grosse erreur avec delete(entity) de CakePhp).
       }else{
-        $taches = TableRegistry::get('Tache');
-
-        // Le membre n'est plus responsable d'aucune tâche du projet.
-        $taches->updateAll(array('idResponsable' => NULL), ['idProjet'=>$projet->idProjet, 'idResponsable' => $id_utilisateur]);
-
-        // Maintenant, on peut supprimer le membre du projet.
-        $membre = $this->Membre->find()->where(['idUtilisateur'=>$id_utilisateur, 'idProjet'=>$id_projet])->first();
-        $success = $this->Membre->delete($membre);
-
-        // Tout est ok, message et redirection de l'utilisateur.
-        $this->Flash->set('Le membre a été supprimé du projet.', ['element' => 'success']);
-        $this->redirect(['controller'=>'Membre', 'action'=> 'index', $id_projet]);
+        $this->Flash->set('Cet utilisateur n\'est pas membre du projet.', ['element' => 'error']);
       }
-    }
 
-    public function edit($id_utilisateur, $id_projet){
-      return $this->redirect(['action'=> 'index', $id_projet]);
+      // Dans tous les cas, on redirige à l'index.
+      $this->redirect(['controller'=>'Membre', 'action'=> 'index', $idProjet]);
     }
 
 }
