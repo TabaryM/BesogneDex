@@ -45,8 +45,7 @@ class UtilisateurTable extends Table{
 
 /**
 * Vérifications du formulaire d'inscription avec messsages d'erreurs.
-*
-* Auteur : POP Diana
+* @author POP Diana
 */
   public function validationDefault(Validator $validator)
   {
@@ -138,7 +137,7 @@ class UtilisateurTable extends Table{
     )//fin add de nom
     ->allowEmptyString('prenom')
     ->allowEmptyString('nom')
-    ;// point-virgule vital
+    ;
 
   }
 
