@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'VerificationChamps.php');
+require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'ModificationsProjet.php');
 use Cake\ORM\TableRegistry;
 use Cake\I18n\Time;
 
@@ -30,10 +31,13 @@ class ProjetController extends AppController
     }
 
     /**
-    * Crée un projet dont l'utilisateur connecté sera le propriétaire.
+    * Créer un projet dont l'utilisateur connecté sera le propriétaire.
     * Une ligne dans Membre est donc créée.
     *
     * @author : POP Diana, TABARY Mathieu, PALMIERI Adrien
+    *
+    * Le fichier lié à cet affichage est 'Projet/add.ctp'
+    * La page chargé si une demande de création de projet est faite est la liste des projets de l'utilisateur.
     */
     public function add(){
         // Récuperation de données pour l'affichage de la page de création
@@ -69,7 +73,7 @@ class ProjetController extends AppController
             $receivedData['dateFin'] = nettoyageDate($receivedData['dateFin']);
             // Si la date était incorrecte on affiche un message pour l'utilisateur
             if($receivedData['dateFin'] == null){
-                $this->Flash->error(__("Votre date de fin étant incorrecte, elle a été supprimée"));
+                $this->Flash->error(__("Votre date de fin étant incorrecte (au moins un champ vide), elle n'a pas été enregistrée"));
             }
 
             // Vérification des dates
@@ -105,6 +109,8 @@ class ProjetController extends AppController
 
             // On enregistre le projet dans la base de données
             if ($this->Projet->save($projet)) {
+                ajouterMembre($projet->idProjet, $idUtilisateur);
+                /*
                 // TODO : utiliser la méthode d'ajout de membre à un projet
                 // On ajoute le créateur du projet en tant que membre de ce projet
                 $membres = TableRegistry::getTableLocator()->get('Membre');
@@ -119,9 +125,12 @@ class ProjetController extends AppController
                     $this->Flash->error(__("Impossible d'ajouter votre projet."));
                     return $this->redirect(['action'=> 'index']);
                 }
+                */
+            } else{
+                // Si il y a eu une erreur lors de l'ajout du projet dans la database
+                $this->Flash->error(__("Impossible d'ajouter votre projet."));
             }
-            // Si il y a eu une erreur lors de l'ajout du projet dans la database
-            $this->Flash->error(__("Impossible d'ajouter votre projet."));
+            return $this->redirect(['action'=> 'index', $projet->idProjet]);
         }
     }
 
@@ -227,7 +236,6 @@ class ProjetController extends AppController
         }
       }
     }
-
 
     /**
     * @author Théo Roton
@@ -391,13 +399,12 @@ class ProjetController extends AppController
      * Change le propriétaire d'un projet
      * @param   $idMembre id du membre qui devient propriétaire du projet
      * @param   $idProjet id du projet
-     * @author Clément Colné
+     * @author  Clément Colné
      */
     function changerProprietaire($idMembre, $idProjet) {
       $projets = TableRegistry::get('Projet');
       // on récupère l'ID du propriétaire
       $projet = $projets->find()->where(['idProjet'=>$idProjet])->first();
-      $idProprietaire = $projet->idProprietaire;
       // mise à jour du nouveau propriétaire dans la DB
       $query = $projets->query();
       $query->update()
@@ -405,20 +412,6 @@ class ProjetController extends AppController
         ->where(['idProjet' => $idProjet])->execute();
       // redirection vers la page d'accueil des projets
       return $this->redirect(['controller'=>'Tache', 'action'=> 'index', $idProjet]);
-    }
-
-    /**
-     * Ajoute un utilisateur à un projet
-     * @param  $idProjet      id du projet
-     * @param  $idUtilisateur id du membre à ajouter au projet
-     * @author Clément Colné
-     */
-    function ajouterMembre($idProjet, $idUtilisateur) {
-      $membre = $this->Membre->newEntity();
-
-      $membre->idProjet= $idProjet;
-      $membre->idUtilisateur= $idUtilisateur;
-      $this->Membre->save($membre);
     }
 
 }
