@@ -73,7 +73,7 @@ class ProjetController extends AppController
             $receivedData['dateFin'] = nettoyageDate($receivedData['dateFin']);
             // Si la date était incorrecte on affiche un message pour l'utilisateur
             if($receivedData['dateFin'] == null){
-                $this->Flash->error(__("Votre date de fin étant incorrecte (au moins un champ vide), elle n'a pas été enregistrée"));
+                $this->Flash->warning(__("Votre date de fin étant incorrecte (au moins un champ vide), elle n'a pas été enregistrée"));
             }
 
             // Vérification des dates
