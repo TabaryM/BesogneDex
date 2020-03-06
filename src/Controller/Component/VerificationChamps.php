@@ -11,6 +11,7 @@ function nettoyerTexte($texte) {
 }
 
 /**
+ * Vérifie et nettoie les titres de projet ou de taches
  * @author TABARY Mathieu, PALMIERI Adrien
  * @param $titre String : nom du champs à vérifier
  * @return bool retourne vrai si le titre correspond aux critères donné dans le cahier des chargess
@@ -28,6 +29,7 @@ function verificationTitre($titre){
 }
 
 /**
+ * Vérifie et nettoie les description de projet ou de taches
  * @author TABARY Mathieu, PALMIERI Adrien
  * @param $description String : nom du champs à vérifier
  * @return bool retourne vrai si la description correspond aux critères donné dans le cahier des chargess
@@ -45,6 +47,7 @@ function verificationDescription($description){
 }
 
 /**
+ * Vérifie que la date de début est antérieur à la date de fin, que la date de fin existe
  * @author TABARY Mathieu
  * @param $dateDebut array : Date de début du projet
  * @param $dateFin array : Date de fin du projet
@@ -52,13 +55,14 @@ function verificationDescription($description){
  */
 function verificationDates($dateDebut, $dateFin){
     // Si la date de fin n'est pas définie tout va bien
-    if($dateFin == null){
-        return true;
-    }
     // On convertis les dates en format comparable facilement
     $dateDebut = strtotime(implode($dateDebut));
     $dateFin = strtotime(implode($dateFin));
     $res = false;
+
+    if($dateFin == null){
+        $res = true;
+    }
 
     // Si la date de début est antérieure à la date de fin tout va bien
     if($dateDebut <= $dateFin){
