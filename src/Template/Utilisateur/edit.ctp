@@ -50,7 +50,7 @@
           <?= $this->Form->submit('Valider', array('class' => 'btn shadow boutonValider')); ?>
         </div>
         <div class="col d-flex flex-column justify-content-around align-items-center" style="height: 150px;">
-          <?= $this->Html->link("Supprimer mon compte", array('controller' => 'Utilisateur', 'action' => 'deleteConfirmation'), array( 'class' => 'btn btn-danger'));?>
+          <?= $this->Html->link("Supprimer mon compte", array('controller' => 'Utilisateur', 'action' => 'deleteAccount'), array( 'class' => 'btn btn-danger'));?>
         </div>
       </div>
       <!-- Fin Boutons Valider et supprimer le compte-->
