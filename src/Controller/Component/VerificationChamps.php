@@ -60,7 +60,6 @@ function verificationDates($dateDebut, $dateFin){
     $dateFin = strtotime(implode($dateFin));
     $res = false;
 
-    // TODO : vérifier que la date de début est bien ultérieure à la date du jour
     // Si la date de début est antérieure à la date de fin tout va bien
     if($dateDebut <= $dateFin){
         $res = true;
