@@ -7,9 +7,6 @@ use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\Auth\DefaultPasswordHasher;
 
-/**
-* @author Diana
-*/
 class UtilisateurController extends AppController
 {
 
@@ -20,6 +17,14 @@ class UtilisateurController extends AppController
 
   public function index(){
     return $this->redirect(['action'=> 'profil']);
+  }
+
+  private function afficherErreurs($erreursAAfficher){
+    if(!empty($erreursAAfficher)){
+      $this->Flash->error(
+        __("Veuillez modifier ce(s) champs : ".implode("\n \r", $erreursAAfficher))
+      );
+    }
   }
 
   /**
@@ -58,27 +63,42 @@ class UtilisateurController extends AppController
 
   /**
   * Permet à l'utilisateur de s'inscrire.
-  * La page qui appelle cette fonction est : Template/Pages/home.ctp.
+  *
+  * La fonction est appelée au clic sur 'Créer mon compte' dans Template/Pages/home.ctp.
+  *
+  * Si l'inscription a été validée, l'utilisateur est automatiquement connecté.
+  *
+  * @param /
+  * @return /
+  * Redirection : Template/Pages/home.ctp
+  *
   * @author POP Diana
   */
   public function add(){
     $utilisateur = $this->Utilisateur->newEntity();
+
     if ($this->request->is('post')) {
       $utilisateur = $this->Utilisateur->patchEntity($utilisateur, $this->request->getData());
+
+      // Si l'inscription est bien réalisée.
       if ($this->Utilisateur->save($utilisateur)) {
         $this->Flash->success(__('Votre compte est bien enregistré.'));
+
+        // On connecte l'utilisateur et on le redirige.
         $this->Auth->setUser($utilisateur);
-        return $this->redirect(['controller' => 'pages', 'action' => 'display','home']);
-      }
-      $errors = listeErreursVersString($utilisateur->errors());
-      if(!empty($errors)){ //TODO: Factoriser ?
-        $this->Flash->error(
-          __("Veuillez modifier ce(s) champs : ".implode("\n \r", $errors))
-        );
-      }
-      return $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
+        $this->redirect(['controller' => 'Accueil', 'action' => 'index']);
+
+      // Si l'inscription a eu des erreurs et ne s'est donc pas faite.
+    }else{
+        $erreurs = listeErreursVersString($utilisateur->errors());
+        $this->afficherErreurs(listeErreursVersString($utilisateur->errors()));
+        $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
+
+    // Redirige sur la page d'inscription si ce n'est pas un POST.
     }
-    $this->set('utilisateur', $utilisateur);
+  }else {
+      $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
+    }
   }
 
   /**
@@ -172,11 +192,8 @@ class UtilisateurController extends AppController
               $estModifie = true;
             }
 
-
-            if(!empty($utilisateur->errors())){ //TODO: Factoriser ?
-              $errors = listeErreursVersString($utilisateur->errors()); //Affichage des erreurs si le vérificator n'as pas accepté
-              $this->Flash->error(__("Veuillez modifier ce(s) champs : ".implode("\n \r", $errors))); //Affichage des erreurs si le vérificator n'as pas accepté
-            }
+            $erreurs = listeErreursVersString($utilisateur->errors());
+            $this->afficherErreurs($erreurs);
 
           }else{
             $this->Flash->error(__('La confirmation de mot de passe est erroné.'));
@@ -228,6 +245,8 @@ class UtilisateurController extends AppController
       }
     }
   }
+
+
 
 }
 
