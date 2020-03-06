@@ -59,7 +59,7 @@ class ProjetController extends AppController
             // Vérification du titre
             if(!verificationTitre($receivedData['titre'])){
                 // Si le titre n'est pas correct
-                $this->Flash->error(__("Titre incorrect (doit avoir entre 1 et 128 caractères)"));
+                $this->Flash->error(__("Le titre est incorrect (min 1 caractère, max 128 caractères)."));
                 $existeErreur = true;
             }
 
@@ -73,20 +73,20 @@ class ProjetController extends AppController
             $receivedData['dateFin'] = nettoyageDate($receivedData['dateFin']);
             // Si la date était incorrecte on affiche un message pour l'utilisateur
             if($receivedData['dateFin'] == null){
-                $this->Flash->warning(__("Votre date de fin étant incorrecte (au moins un champ vide), elle n'a pas été enregistrée"));
+                $this->Flash->warning(__("Votre date de fin étant incorrecte (au moins un champ vide), elle n'a pas été enregistrée."));
             }
 
             // Vérification des dates
             if(!verificationDates($receivedData['dateDebut'], $receivedData['dateFin'])){
                 // Si les dates ne sont pas cohérentes
-                $this->Flash->error(__("La fin du projet ne peut pas se faire avant le début de ce projet"));
+                $this->Flash->error(__("La fin du projet ne peut pas être avant le début de ce projet."));
                 $existeErreur = true;
             }
 
             // Vérification de la date de fin
             if(!verificationDateFin($receivedData['dateFin'])){
                 // Si la date de fin est antérieur à la date du jour
-                $this->Flash->error(__("La fin du projet ne peut pas se faire avant la date du jour"));
+                $this->Flash->error(__("La fin du projet ne peut pas se faire avant la date du jour."));
                 $existeErreur = true;
             }
 
@@ -94,48 +94,37 @@ class ProjetController extends AppController
             $listeProjetsUtilisateur = $this->Projet->find('all', ['conditions'=>['idProprietaire'=>$idUtilisateur]]);
             foreach($listeProjetsUtilisateur as $proj) {
                 if($proj->titre == $receivedData['titre']) {
-                    $this->Flash->error(__("Impossible d'ajouter un projet avec un nom identique"));
+                    $this->Flash->error(__("Impossible d'ajouter un projet avec un nom identique."));
                     $existeErreur = true;
                 }
             }
 
-            if($existeErreur){
-                return $this->redirect(['action'=> 'index']);
-            }
-
             // Tout les tests se sont bien déroulés, on commence à créer le projet
-            $projet = $this->Projet->newEntity($receivedData);
-            $projet->idProprietaire = $idUtilisateur;
+            if(!$existeErreur){
+              $projet = $this->Projet->newEntity($receivedData);
+              $projet->idProprietaire = $idUtilisateur;
 
-            // On enregistre le projet dans la base de données
-            if ($this->Projet->save($projet)) {
-                ajouterMembre($projet->idProjet, $idUtilisateur);
-                /*
-                // TODO : utiliser la méthode d'ajout de membre à un projet
-                // On ajoute le créateur du projet en tant que membre de ce projet
-                $membres = TableRegistry::getTableLocator()->get('Membre');
-                $membre = $membres->newEntity();
-                $membre->set('idUtilisateur', $idUtilisateur);
-                $membre->set('idProjet', $projet->idProjet);
-                if ($membres->save($membre)) {
-                    $this->Flash->success(__('Votre projet a été sauvegardé.'));
-                    return $this->redirect(['action'=> 'index']);
-                }else {
-                    // Si il y a eu une erreur lors de l'ajout du membre dans la database
-                    $this->Flash->error(__("Impossible d'ajouter votre projet."));
-                    return $this->redirect(['action'=> 'index']);
-                }
-                */
-            } else{
-                // Si il y a eu une erreur lors de l'ajout du projet dans la database
-                $this->Flash->error(__("Impossible d'ajouter votre projet."));
+              // On enregistre le projet dans la base de données
+              if ($this->Projet->save($projet)) {
+                  ajouterMembre($projet->idProjet, $idUtilisateur);
+
+              // Si il y a eu une erreur lors de l'ajout du projet dans la database
+              }else{
+                  $this->Flash->error(__("Impossible d'ajouter votre projet."));
+              }
+
+              // Tout est ok.
+              $this->redirect(['action'=> 'index', $projet->idProjet]);
+
+            // S'il y a eu des erreurs dans la vérification
+            }else{
+              $this->redirect(['action'=> 'add']);
             }
-            return $this->redirect(['action'=> 'index', $projet->idProjet]);
-        }
-    }
+        }// fin if post
+    }// fin fonction
 
     /**
-    * liste les projets archivés
+    * Liste les projets archivés
     *
     * @author WATELOT Paul-Emile
     */
@@ -209,8 +198,8 @@ class ProjetController extends AppController
      * Permet d'archiver un projet uniquement si il est expiré et si l'utilisateur en est le propriétaire
      * @param int $idProjet ID du projet a archiver
      * @author Pedro Sousa Ribeiro
-     * 
-     * Redirection: Si l'utilisateur n'est pas connecté OU s'il n'est pas le propriétaire du projet OU si le projet n'est pas expiré, 
+     *
+     * Redirection: Si l'utilisateur n'est pas connecté OU s'il n'est pas le propriétaire du projet OU si le projet n'est pas expiré,
      *              l'utilisateur est redirigé vers la dernière page qu'il a visité (la page d'où il vient).
      *              Sinon si tout va bien l'utilisateur est dirigé vers la liste des projets archivés
      */
