@@ -48,26 +48,33 @@ class TacheController extends AppController
   } // fin fonction
 
   /**
-  * Permet d'afficher les détails d'un projet (Description + liste des membres)
   * @author Thibault Choné, Théo Roton
-  * @param $id : id du projet cliqué ou affiché
+  * @param idProjet : id du projet pour lequel on affiche les détails
+  *
+  * Cette fonction affiche les détails, la description et les membres,
+  * du projet identifié par son id.
   */
   public function details($idProjet)
   {
 
     $this->autorisation($idProjet);
 
+    //On récupère la table des projets
     $projets = TableRegistry::getTableLocator()->get('Projet');
+    //On récupère le projet identifié par idProjet
     $projet = $projets->find()->where(['idProjet' => $idProjet])->first();
+    //On récupère la description du projet
     $desc = $projet->description;
 
+    //On récupère la table des membres
     $membres = TableRegistry::getTableLocator()->get('Membre');
+    //On récupère les membres du projet identifié par idProjet
     $membres = $membres->find()->contain('Utilisateur')
     ->where(['idProjet' => $idProjet]);
 
-    $mbs = "";
+    $mbs = array();
     foreach ($membres as $m) {
-      $mbs .= $m->un_utilisateur->pseudo . "<br>";
+      array_push($mbs,$m->un_utilisateur->pseudo);
     }
 
     $this->set(compact('desc', 'idProjet', 'mbs'));
@@ -144,7 +151,7 @@ class TacheController extends AppController
       $this->redirect($this->referer());
     }
   }
-  
+
   /**
    * Utilisée dans : Template/Tache/index.ctp
    *
