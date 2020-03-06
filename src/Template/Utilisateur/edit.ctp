@@ -50,10 +50,34 @@
           <?= $this->Form->submit('Valider', array('class' => 'btn shadow boutonValider')); ?>
         </div>
         <div class="col d-flex flex-column justify-content-around align-items-center" style="height: 150px;">
-          <?= $this->Html->link("Supprimer mon compte", array('controller' => 'Utilisateur', 'action' => 'deleteConfirmation'), array( 'class' => 'btn btn-danger'));?>
+          <?= $this->Html->link("Supprimer son compte", array('controller' => 'Utilisateur'), array('button class' => 'btn btn-danger', 'data-toggle' => 'modal', 'data-target' => '#supprimerModal')); ?>
         </div>
       </div>
       <!-- Fin Boutons Valider et supprimer le compte-->
     </div>
   </div>
 </div>
+
+<!-- Début modal supprimer son compte : -->
+<div class="modal fade" id="supprimerModal" role="dialog" tabindex="-1">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"></h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
+                <div class="modal-body" style="text-align:center;">
+                    <p style="width: 477px;">Voulez-vous vraiment supprimer votre compte ?</p>
+                </div>
+                <div class="modal-footer text-center">
+                    <div class="row text-center" style="width: 484px;">
+                        <div class="col text-right">
+                          <?php echo $this->Html->link("Non", array('action'=> 'edit'), array( 'button class' => 'btn btn-primary', 'data-dismiss' => 'modal'));?>
+                        </div>
+                        <div class="col text-left">
+                          <?php echo $this->Html->link("Oui", array('controller' => 'Utilisateur', 'action'=> 'deleteAccount'), array( 'button class' => 'btn btn-danger'));?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+<!-- Fin modal supprimer son compte -->
