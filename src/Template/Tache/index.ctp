@@ -155,8 +155,8 @@
     <!-- Fin table -->
 
     <!-- Début boutons Détails du projet, Gérer les membres -->
-    <div class="row" style="margin-right: 60px;margin-left: 60px;">
-    <div class="col-xl-4 col-md-auto col-sm-auto paddingCard">
+    <div class="row d-flex justify-content-start" style="margin-right: 60px;margin-left: 60px;">
+    <div class="col-xl-4 col-lg-5 col-md-5 d-flex flex-row justify-content-between align-items-center">
         <div class="card color-card">
             <div class="card-body shadow d-flex justify-content-between align-items-center color-card">
               <?= $this->Html->image("icones/membres.png", ['class' => 'image_icone']) ?>
@@ -167,7 +167,7 @@
             </div>
         </div>
     </div>
-    <div class="col-xl-4 col-md-auto col-sm-auto">
+    <div class="col-xl-4 col-lg-5 col-md-5 d-flex justify-content-between align-items-center">
         <div class="card color-card">
             <div class="card-body shadow d-flex justify-content-between align-items-center color-card">
               <?= $this->Html->image("icones/list.png", ['class' => 'image_icone']) ?>
@@ -181,13 +181,13 @@
             </div>
         </div>
     </div>
-    <div class="col-xl-4 col-md-auto col-sm-auto d-flex justify-content-end align-items-center">
+    <div class="col-xl-4 col-lg-2 col-md-2 d-flex justify-content-end align-items-center">
       <?= $this->Html->link("", ['controller' => 'Tache', 'action'=> 'add', $idProjet], ['class' => 'btn btn-primary shadow rond-croix']); ?>
     </div>
   </div>
   <!-- Fin boutons Archiver, Modifier, Supprimer, Quitter le projet, Ajouter une tâche -->
 
-  <!-- Début odal Quitter/Supprimer le projet : -->
+  <!-- Début modal Quitter/Supprimer le projet : -->
   <div class="modal fade" id="leaveModal" role="dialog" tabindex="-1">
           <div class="modal-dialog" role="document">
               <div class="modal-content">

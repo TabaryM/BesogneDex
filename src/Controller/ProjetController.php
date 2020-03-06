@@ -17,7 +17,6 @@ class ProjetController extends AppController
     {
         $this->loadComponent('Paginator');
         $session = $this->request->getSession();
-        // $projets = $this->Paginator->paginate($this->Projet->find()->contain(['Membre'])->where(['idUtilisateur' => $session->read('Auth.User.idUtilisateur')]));
         $projets = $this->Paginator->paginate($this->Projet->find()->distinct()->contain('Utilisateur')
         ->leftJoinWith('Membre')
         ->where(
@@ -56,7 +55,7 @@ class ProjetController extends AppController
             // Vérification du titre
             if(!verificationTitre($receivedData['titre'])){
                 // Si le titre n'est pas correct
-                $this->Flash->error(__("Titre incorrect (doit avoir entre 1 et 128 caractères)"));
+                $this->Flash->error(__("Le titre est incorrect (min 1 caractère, max 128 caractères)."));
                 $existeErreur = true;
             }
 
@@ -70,20 +69,20 @@ class ProjetController extends AppController
             $receivedData['dateFin'] = nettoyageDate($receivedData['dateFin']);
             // Si la date était incorrecte on affiche un message pour l'utilisateur
             if($receivedData['dateFin'] == null){
-                $this->Flash->warning(__("Votre date de fin étant incorrecte (au moins un champ vide), elle n'a pas été enregistrée"));
+                $this->Flash->warning(__("Votre date de fin étant incorrecte (au moins un champ vide), elle n'a pas été enregistrée."));
             }
 
             // Vérification des dates
             if(!verificationDates($receivedData['dateDebut'], $receivedData['dateFin'])){
                 // Si les dates ne sont pas cohérentes
-                $this->Flash->error(__("La fin du projet ne peut pas se faire avant le début de ce projet"));
+                $this->Flash->error(__("La fin du projet ne peut pas être avant le début de ce projet."));
                 $existeErreur = true;
             }
 
             // Vérification de la date de fin
             if(!verificationDateFin($receivedData['dateFin'])){
                 // Si la date de fin est antérieur à la date du jour
-                $this->Flash->error(__("La fin du projet ne peut pas se faire avant la date du jour"));
+                $this->Flash->error(__("La fin du projet ne peut pas se faire avant la date du jour."));
                 $existeErreur = true;
             }
 
@@ -91,54 +90,46 @@ class ProjetController extends AppController
             $listeProjetsUtilisateur = $this->Projet->find('all', ['conditions'=>['idProprietaire'=>$idUtilisateur]]);
             foreach($listeProjetsUtilisateur as $proj) {
                 if($proj->titre == $receivedData['titre']) {
-                    $this->Flash->error(__("Impossible d'ajouter un projet avec un nom identique"));
+                    $this->Flash->error(__("Impossible d'ajouter un projet avec un nom identique."));
                     $existeErreur = true;
                 }
             }
 
-            if($existeErreur){
-                return $this->redirect(['action'=> 'index']);
-            }
-
             // Tout les tests se sont bien déroulés, on commence à créer le projet
-            $projet = $this->Projet->newEntity($receivedData);
-            $projet->idProprietaire = $idUtilisateur;
+            if(!$existeErreur){
+              $projet = $this->Projet->newEntity($receivedData);
+              $projet->idProprietaire = $idUtilisateur;
 
-            // On enregistre le projet dans la base de données
-            if ($this->Projet->save($projet)) {
-                ajouterMembre($projet->idProjet, $idUtilisateur);
-                /*
-                // TODO : utiliser la méthode d'ajout de membre à un projet
-                // On ajoute le créateur du projet en tant que membre de ce projet
-                $membres = TableRegistry::getTableLocator()->get('Membre');
-                $membre = $membres->newEntity();
-                $membre->set('idUtilisateur', $idUtilisateur);
-                $membre->set('idProjet', $projet->idProjet);
-                if ($membres->save($membre)) {
-                    $this->Flash->success(__('Votre projet a été sauvegardé.'));
-                    return $this->redirect(['action'=> 'index']);
-                }else {
-                    // Si il y a eu une erreur lors de l'ajout du membre dans la database
-                    $this->Flash->error(__("Impossible d'ajouter votre projet."));
-                    return $this->redirect(['action'=> 'index']);
-                }
-                */
-            } else{
-                // Si il y a eu une erreur lors de l'ajout du projet dans la database
-                $this->Flash->error(__("Impossible d'ajouter votre projet."));
+              // On enregistre le projet dans la base de données
+              if ($this->Projet->save($projet)) {
+                  ajouterMembre($projet->idProjet, $idUtilisateur);
+
+              // Si il y a eu une erreur lors de l'ajout du projet dans la database
+              }else{
+                  $this->Flash->error(__("Impossible d'ajouter votre projet."));
+              }
+
+              // Tout est ok.
+              $this->redirect(['action'=> 'index', $projet->idProjet]);
+
+            // S'il y a eu des erreurs dans la vérification
+            }else{
+              $this->redirect(['action'=> 'add']);
             }
-            return $this->redirect(['action'=> 'index', $projet->idProjet]);
-        }
-    }
+        }// fin if post
+    }// fin fonction
 
     /**
-    * liste les projets archivés
+    * liste les projets archivés dont fait parti un membre
+    *
     * @author WATELOT Paul-Emile
     */
     public function archives(){
+      //recupere la table projet
       $projets = TableRegistry::getTableLocator()->get('Projet');
 
       $session = $this->request->getSession();
+      //recupere les projets dont fait parti l'utilisateur et dont l'état est "Archive"
       $archives = $projets->find()->distinct()->contain('Utilisateur')
       ->leftJoinWith('Membre')
       ->where(
@@ -146,17 +137,19 @@ class ProjetController extends AppController
             'Membre.idUtilisateur' => $session->read('Auth.User.idUtilisateur'),
             'Projet.idProprietaire' => $session->read('Auth.User.idUtilisateur')
        ]]);
-
+      //partage la variables archives a Archives.ctp
       $this->set(compact('archives'));
-
     }
 
     /**
     * Supprime un projet si propriétaire et enleve un membre du groupe si il quitte
     * @author WATELOT Paul-Emile
+    * @param $idProjet l'id du projet a supprime ou se retirer
+    * @return redirection vers la page index des projets
     */
     public function delete($idProjet){
-        $projetTab = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
+        //On récupère la table Projet pour en extraire le projet désiré
+        $projetTab = TableRegistry::getTableLocator()
           ->get('Projet')->find()
           ->where(['idProjet' => $idProjet])
           ->first();
@@ -166,11 +159,15 @@ class ProjetController extends AppController
         if ($session->check('Auth.User.idUtilisateur')) {
           $idUser = $session->read('Auth.User.idUtilisateur');
           $membres = TableRegistry::getTableLocator()->get('Membre');
+          //si l'utilisateur est le propriétaire on:
           if($projetTab->idProprietaire == $idUser){
 
             //degage tout les membres du projet
             $query = $membres->query();
             $query->delete()->where(['idProjet' => $idProjet])->execute();
+
+            //TODO pour PE: supprimer les notifs en lien avec les taches du projets pour eviter les conflits de DB
+            //TODO pour PE: supprimer les notifs en lien avec le projet pour eviter les conflits de DB
 
             //supprime les taches du projet
             $taches = TableRegistry::getTableLocator()->get('Tache');
@@ -182,8 +179,13 @@ class ProjetController extends AppController
             $query = $projets->query();
             $query->delete()->where(['idProjet' => $idProjet])->execute();
 
-          }else{
-            //sinon si c'est un invité on le degage dans la table membre
+
+            //TODO pour PE: Envoyer une notif de suppression a tout les membres comme quoi le projet à été supprimé
+
+          }
+          //sinon si c'est un invité on le retire dans la table membre
+          else{
+            //retirer les responsabilités du membre dans le projet qu'il souhaite quitter
             $tachesSousResponsabilite = TableRegistry::getTableLocator()
                 ->get('Tache')->find()
                 ->where(['AND' => ['idProjet' => $idProjet, 'idResponsable' => $idUser]])
@@ -191,8 +193,12 @@ class ProjetController extends AppController
             foreach($tachesSousResponsabilite as $tache):
                 (new TacheController)->notSoResponsible($idProjet, $tache->idTache);
             endforeach;
+
+            //enleve l'utilisateur du projet
             $query = $membres->query();
             $query->delete()->where(['idProjet' => $idProjet, 'idUtilisateur' => $idUser])->execute();
+
+            //TODO pour PE: Envoyer une notif comme quoi X a quitté le projet a tout les membres
           }
         }
 
@@ -203,8 +209,8 @@ class ProjetController extends AppController
      * Permet d'archiver un projet uniquement si il est expiré et si l'utilisateur en est le propriétaire
      * @param int $idProjet ID du projet a archiver
      * @author Pedro Sousa Ribeiro
-     * 
-     * Redirection: Si l'utilisateur n'est pas connecté OU s'il n'est pas le propriétaire du projet OU si le projet n'est pas expiré, 
+     *
+     * Redirection: Si l'utilisateur n'est pas connecté OU s'il n'est pas le propriétaire du projet OU si le projet n'est pas expiré,
      *              l'utilisateur est redirigé vers la dernière page qu'il a visité (la page d'où il vient).
      *              Sinon si tout va bien l'utilisateur est dirigé vers la liste des projets archivés
      */
@@ -364,14 +370,13 @@ class ProjetController extends AppController
 
       // Si on a modifié la description
       if ($projet->description != $receivedData['descr']){
-
         // On vérifie si la nouvelle description est bien formée
         if (verificationDescription($receivedData['descr'])){
           // Si la nouvelle description respecte les contraintes, alors on modifie le projet
           $projet->description = nettoyerTexte($receivedData['descr']);
         } else {
           // Si la description ne respecte pas la contrainte de taille, on affiche une erreur
-          $this->Flash->error(__("La taille de la description est incorrecte (500 caractères)."));
+          $this->Flash->error(__("La description est trop longue (max 512 caractères)."));
           $erreur = true;
         }
       }
