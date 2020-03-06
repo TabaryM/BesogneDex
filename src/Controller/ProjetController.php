@@ -356,13 +356,12 @@ class ProjetController extends AppController
      * Change le propriétaire d'un projet
      * @param   $idMembre id du membre qui devient propriétaire du projet
      * @param   $idProjet id du projet
-     * @author Clément Colné
+     * @author  Clément Colné
      */
     function changerProprietaire($idMembre, $idProjet) {
       $projets = TableRegistry::get('Projet');
       // on récupère l'ID du propriétaire
       $projet = $projets->find()->where(['idProjet'=>$idProjet])->first();
-      $idProprietaire = $projet->idProprietaire;
       // mise à jour du nouveau propriétaire dans la DB
       $query = $projets->query();
       $query->update()
