@@ -97,8 +97,7 @@ class AppController extends Controller
 
   /**
   * Pris de la doc officielle.
-  *
-  * Auteur : POP Diana
+  * @author : POP Diana
   */
     public function beforeFilter(Event $event)
     {
@@ -107,8 +106,7 @@ class AppController extends Controller
 
     /**
     * Booléen permettant d'afficher le header différemment selon si l'utilisateur est connecté ou non.
-    *
-    * Auteur : ROSSI Djessy
+    * @author : ROSSI Djessy
     */
     public function beforeRender(Event $event){
       if ($this->request->getSession()->read('Auth.User')){
