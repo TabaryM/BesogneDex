@@ -11,10 +11,8 @@ class NotificationController extends AppController
   /**
   * Vérifie si l'utilisateur peut accéder aux notifications.
   * Si l'utilisateur n'est pas connecté, alors il ne peut pas y accéder.
-  *
   * @return id de l'utilisateur s'il est connecté
   * Redirection vers la page précédente sinon.
-  *
   * @author POP Diana, SOUSA RIBIERO Pedro
   */
   private function autorisation(){
@@ -29,16 +27,12 @@ class NotificationController extends AppController
 
   /**
   * Les notifications non-vues et non à valider deviennent vues lorsque l'utilisateur va voir ses notifications.
-  *
   * La fonction est appelée par index() de ce controller.
   * Un simple update ne convient pas car il est nécessaire d'aller chercher l'attribut "a_valider" dans une autre table (tables NotificationProjet et NotificationTache).
-  *
   * @param tableNotificationsProjet TableRegistry de VueNotificationProjet
   * @param tableNotificationsTache TableRegistry de VueNotificationTache
   * @param idUtilisateur id de l'utilisateur connecté
-  * @return /
-  * Redirection : /
-  *
+  * @return / Redirection : /
   * @author POP Diana
   */
   private function updateNotificationsVues($tableNotificationsProjet, $tableNotificationsTache, $idUtilisateur){
@@ -65,14 +59,9 @@ class NotificationController extends AppController
   /**
    * Affiche les notifications de l'utilisateur et met à jour la BDD pour dire que les notifications ont été vues.
    * La fonction est appelée au clic sur la cloche de notification depuis n'importe quelle page où l'utilisateur est connecté.
-   *
    * Les notifications à valider sont affichées en premier, puis sont par date décroissante.
    * Les notifications non vues par l'utilisateur (= sont apparues depuis la dernière fois qu'il a cliqué sur la cloche) sont affichées en gras.
-   *
-   * @param /
-   * @return /
-   * Redirection : si l'utilisateur n'est pas connecté, renvoie à la page d'inscription.
-   *
+   * @return Redirection : si l'utilisateur n'est pas connecté, renvoie à la page d'inscription.
    * @author POP Diana, SOUSA RIBIERO Pedro
    */
   public function index(){
@@ -100,7 +89,6 @@ class NotificationController extends AppController
     $this->set(compact('notifs'));
 
   }
-
 
 }
 ?>

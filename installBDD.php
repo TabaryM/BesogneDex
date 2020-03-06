@@ -28,7 +28,7 @@ $Sql="
 	CREATE TABLE Projet (
 		idProjet INT NOT NULL AUTO_INCREMENT,
 		titre VARCHAR(128) NOT NULL,
-		description VARCHAR(500),
+		description VARCHAR(512),
 		dateDebut DATE NOT NULL,
 		dateFin DATE,
 		etat VARCHAR(10) DEFAULT 'En cours',
@@ -39,8 +39,8 @@ $Sql="
 
 	CREATE TABLE Tache (
 		idTache INT NOT NULL AUTO_INCREMENT,
-		titre VARCHAR(50) NOT NULL,
-		description VARCHAR(255),
+		titre VARCHAR(128) NOT NULL,
+		description VARCHAR(512),
 		finie BOOLEAN NOT NULL DEFAULT 0,
 		idResponsable INT DEFAULT NULL,
 		idProjet INT NOT NULL,
