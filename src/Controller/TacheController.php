@@ -19,19 +19,17 @@ class TacheController extends AppController
 
     $estProprietaire = false;
 
-
     $session = $this->request->getSession();
     if ($session->check('Auth.User.idUtilisateur')) {
-          $user = $session->read('Auth.User.idUtilisateur');
+        $user = $session->read('Auth.User.idUtilisateur');
     }
 
-    $projetTab = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
+    $projetTab = TableRegistry::getTableLocator() // On récupère la table Projet pour en extraire les infos
     ->get('Projet')->find()
     ->where(['idProjet' => $idProjet])
     ->first();
 
-
-    //Pour la couronne dans le header
+    // Pour la couronne dans le header
     Configure::write('utilisateurProprietaire', false);
     $this->loadComponent('Paginator');
 
@@ -39,35 +37,42 @@ class TacheController extends AppController
     ->contain('Utilisateur')
     ->where(['idProjet' => $idProjet]));
 
-    //Regarde si l'utilisateur est autorisé à acceder au contenu
+    // Regarde si l'utilisateur est autorisé à acceder au contenu
     $estProprietaire = $this->autorisation($idProjet);
 
     // fin session check idUtilisateur
     $this->set(compact('taches', 'idProjet', 'projetTab', 'estProprietaire', 'user'));
 
-  } // fin fonction
+  }
 
   /**
-  * Permet d'afficher les détails d'un projet (Description + liste des membres)
   * @author Thibault Choné, Théo Roton
-  * @param $id : id du projet cliqué ou affiché
+  * @param idProjet : id du projet pour lequel on affiche les détails
+  *
+  * Cette fonction affiche les détails, la description et les membres,
+  * du projet identifié par son id.
   */
   public function details($idProjet)
   {
 
     $this->autorisation($idProjet);
 
+    //On récupère la table des projets
     $projets = TableRegistry::getTableLocator()->get('Projet');
+    //On récupère le projet identifié par idProjet
     $projet = $projets->find()->where(['idProjet' => $idProjet])->first();
+    //On récupère la description du projet
     $desc = $projet->description;
 
+    //On récupère la table des membres
     $membres = TableRegistry::getTableLocator()->get('Membre');
+    //On récupère les membres du projet identifié par idProjet
     $membres = $membres->find()->contain('Utilisateur')
     ->where(['idProjet' => $idProjet]);
 
-    $mbs = "";
+    $mbs = array();
     foreach ($membres as $m) {
-      $mbs .= $m->un_utilisateur->pseudo . "<br>";
+      array_push($mbs,$m->un_utilisateur->pseudo);
     }
 
     $this->set(compact('desc', 'idProjet', 'mbs'));
@@ -75,20 +80,19 @@ class TacheController extends AppController
 
   /**
   * Ajoute une ligne dans la table tache
-  * @author Clément COLNE, Adrien Palmieri
+  * @author Clément Colné, Adrien Palmieri
   */
   public function add($idProjet){
-    if ($this->request->is('post')){
-      echo 'hello';
+    if ($this->request->is('post')) {
       $data = $this->request->getData();
       $data['idProjet'] = $idProjet;
 
-        $data['titre'] = nettoyerTexte($data['titre']);
-        $data['description'] = nettoyerTexte($data['description']);
+      $data['titre'] = nettoyerTexte($data['titre']);
+      $data['description'] = nettoyerTexte($data['description']);
 
-        $tache = $this->Tache->newEntity($data);
+      $tache = $this->Tache->newEntity($data);
 
-      if(!empty($tache->errors()) && $tache->errors() != NULL){ //TODO: C'est pas propre
+      if(!empty($tache->errors()) && $tache->errors() != null){ //TODO: C'est pas propre
         $errors = listeErreursVersString($tache->errors(), $this);
         $this->Flash->error(
           __("Erreurs : ".implode("\n \r", $errors))
@@ -99,7 +103,6 @@ class TacheController extends AppController
         $tache->idProjet = $idProjet;
         if(empty($tache->titre)){
           $this->Flash->error(__('Impossible d\'ajouter une tâche avec un nom vide.'));
-          //return $this->redirect(['action'=> 'add', $idProjet]);
         }else{
           // On verifie qu'il n'existe pas une tache du meme nom
           foreach($this->Tache->find('all', ['conditions'=>['idProjet'=>$idProjet]]) as $task) {
@@ -114,7 +117,6 @@ class TacheController extends AppController
               // l'utilisateur devient responsable de la tâche
               $this->devenirResponsable($idProjet, $tache->idTache);
             }
-
             return $this->redirect(['action'=> 'index', $idProjet]); //TODO: Pas propre
           }else{
             $this->Flash->error(__('Impossible d\'ajouter votre tâche.'));
@@ -127,8 +129,9 @@ class TacheController extends AppController
 
   /**
   * Affiche toutes les tâches de l'utilisateur
-  *
-  * @author Pedro
+  * @author Pedro Sousa Ribeiro
+  * Redirection: Si l'utilisateur n'est pas connecté, il est redirigé vers la page d'où il vient.
+  *              Sinon il est dirigé vers la liste de ses tâches
   */
   public function my() {
     $session = $this->request->getSession();
@@ -147,11 +150,8 @@ class TacheController extends AppController
 
   /**
    * Utilisée dans : Template/Tache/index.ctp
-   *
    * Affiche la page de modification de tâche et traite le formulaire de modification (et le push dans la bdd en cas de succès)
-   *
    * Redirect vers la liste des projets si il y a eu une modification effective.
-   *
    * @author Thibault Choné
    * @param  int $idProjet id du projet dans lequel se trouve la tâche
    * @param  int $idTache  id de la tâche à modifier
@@ -160,7 +160,6 @@ class TacheController extends AppController
   public function edit($idProjet, $idTache)
   {
     $data = $this->request->getData();
-
 
     $tache = $this->Tache->find()
     ->where(['idTache' => $idTache])
@@ -172,7 +171,6 @@ class TacheController extends AppController
       if(empty($data['titre'])){
           $this->Flash->error(__("Le nom de la tâche ne peut pas être vide."));
       }else{
-
         $data['titre'] = nettoyerTexte($data['titre']);
         $data['description'] = nettoyerTexte($data['description']);
 
@@ -188,7 +186,6 @@ class TacheController extends AppController
           $succes = true;
         }else{
           $errors = listeErreursVersString($tache->errors(), $this);
-
           if(!empty($errors)){ //TODO: Factoriser ?
             $this->Flash->error(
               __("Erreurs : ".implode("\n \r", $errors))
@@ -258,7 +255,6 @@ class TacheController extends AppController
         $query->delete()->where(['idTache' => $idTache])->execute();
       }
     }
-
     return $this->redirect(['action' => 'index', $idProjet]);
   }
 
@@ -274,10 +270,12 @@ class TacheController extends AppController
   }
 
   /**
-  * Permet de changer l'état d'une tache de "fait" a "non fait" et vis versa
+  * Permet de changer l'état d'une tache de "fait" a "non fait" et vis versa. Cette méthode est utilisé par le script JS en Ajax
   * @param int $id ID de la tache dont l'etat est a changer
   * @param boolean $fait Booleen indiquant si la tache est faite ou non
   * @author Pedro Sousa Ribeiro
+  *
+  * Redirection: aucune
   */
   public function changerEtat($id, $fait) {
     // Desactive le rendu de la vue (pas besoin de la vue)
@@ -304,6 +302,9 @@ class TacheController extends AppController
 
   }
 
+  /**
+   * TODO : Faire la doc
+   */
   private function autorisation($idProjet){
 
     $projetTab = TableRegistry::getTableLocator() //On récupère la table Projet pour en extraire les infos
@@ -317,7 +318,6 @@ class TacheController extends AppController
       if($projetTab->idProprietaire == $user){
         //Pour la couronne dans le header
         Configure::write('utilisateurProprietaire', true);
-
         return true;
         // S'il n'est pas propriétaire, est-il membre ?
         // -> Vérifie en même temps si le projet existe.
@@ -328,13 +328,12 @@ class TacheController extends AppController
         ->where(['idUtilisateur' => $user, 'idProjet' => $idProjet])
         ->count();
         // S'il n'est pas membre non plus, on le redirige.
-        if ($query==0){
+        if ($query == 0){
           $this->Flash->error(__('Ce projet n\'existe pas ou vous n\'y avez pas accès.'));
           return $this->redirect(['controller'=>'Accueil', 'action'=>'index']);
         }
       }
     }
-    //return $this->redirect(['controller'=>'Pages', 'display'=>'home']);;
   }
 
 }

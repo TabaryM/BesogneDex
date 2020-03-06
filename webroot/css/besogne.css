@@ -211,6 +211,10 @@ div.message.success {
   background-color: rgba(0, 255, 0, 0.5);
 }
 
+div.message.warning {
+  background-color: rgba(243, 146, 107, 1);
+}
+
 div.message.hidden {
   height: 0;
 }

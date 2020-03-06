@@ -28,7 +28,7 @@ $Sql="
 	CREATE TABLE Projet (
 		idProjet INT NOT NULL AUTO_INCREMENT,
 		titre VARCHAR(128) NOT NULL,
-		description VARCHAR(500),
+		description VARCHAR(512),
 		dateDebut DATE DEFAULT NOW(),
 		dateFin DATE,
 		etat VARCHAR(10) DEFAULT 'En cours',
@@ -39,8 +39,8 @@ $Sql="
 
 	CREATE TABLE Tache (
 		idTache INT NOT NULL AUTO_INCREMENT,
-		titre VARCHAR(50) NOT NULL,
-		description VARCHAR(255),
+		titre VARCHAR(128) NOT NULL,
+		description VARCHAR(512),
 		finie BOOLEAN NOT NULL DEFAULT 0,
 		idResponsable INT DEFAULT NULL,
 		idProjet INT NOT NULL,
@@ -81,6 +81,7 @@ $Sql="
 		idUtilisateur INT NOT NULL,
 		idNotifProjet INT NOT NULL,
 		vue BOOLEAN DEFAULT 0,
+		etat VARCHAR(50) NOT NULL DEFAULT 'En attente',
 		PRIMARY KEY (idUtilisateur, idNotifProjet),
 		FOREIGN KEY (idUtilisateur) REFERENCES Utilisateur(idUtilisateur),
 		FOREIGN KEY (idNotifProjet) REFERENCES NotificationProjet(idNotificationProjet)
