@@ -1,13 +1,20 @@
-<?php
-  use Cake\Core\Configure;
-
-  Configure::write('titre_header_tache',$projetTab->titre);
- ?>
 <!-- Auteur : Thibault CHONÉ - Valérie MARISSENS - Adrien PALMIERI -->
+
+   <!-- Début modification header -->
+   <?php
+    use Cake\Core\Configure;
+
+    Configure::write('titre_header_tache',$projetTab->titre);
+   ?>
+   <!-- Fin modification du header -->
+
+   <!-- Début table -->
     <div class="row d-flex align-items-start" style="margin-left:60px;margin-right:60px;margin-top:20px;">
       <div class="col-xl-12" style="height: 80%;">
         <div class="table-responsive">
           <table class="table table-borderless table-green">
+
+            <!-- Début header du tableau avec informations du projet -->
             <thead class="thead-light">
               <?php
               if($estProprietaire){
@@ -32,15 +39,22 @@
                 <th class="text-center" style="width: 194px;">Actions</th>
               </tr>
             </thead>
+            <!-- Fin header du tableau avec informations du projet -->
+
+
             <tbody>
               <?php
                 foreach ($taches as $tache):
                  ?>
                 <tr style="height: 50px;">
+                  <!-- Début Tâche -->
                   <td>
                     <?= $this->Html->link($tache->titre, array('controller' => 'Tache'), array('data-toggle' => 'modal', 'data-target' => '#descriptionModal' . $tache->idTache));
                     ?>
                   </td>
+                  <!-- Fin Tâche -->
+
+                  <!-- Début Attribuée à -->
                   <td class="text-center">
                     <?php
                     if(isset($tache->responsable->pseudo)){
@@ -50,6 +64,9 @@
                     }
                     ?>
                   </td>
+                  <!-- Fin Attribuée à -->
+
+                  <!-- Début  Fait? avec checkbox -->
                   <td class="text-center">
                     <?= $this->Form->create('Tache' . $tache->idTache, ['url' => ['controller' => 'Tache', 'action' => 'finie', $tache->idTache], 'id' => 'Tache' . $tache->idTache]) ?>
                     <input type="checkbox" class="checkFait" value="<?= $tache->idTache ?>"
@@ -58,6 +75,9 @@
                     >
                     <?= $this->Form->end(); ?>
                   </td>
+                  <!-- Fin Fait? avec checkbox -->
+
+                  <!-- Début DropdownMenu Actions avec boutons Supprimer la tâche, Modifier la tâche, Se retirer/proposer pour la tâche -->
                   <td class="text-center">
                     <div class="dropdown">
                       <a class="test" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">●●●</a>
@@ -77,7 +97,9 @@
                     </div>
                   </td>
                 </tr>
-                <!-- Modal Supprimer une tâche : -->
+                <!-- Fin DropdownMenu Actions avec boutons Supprimer la tâche, Modifier la tâche, Se retirer/proposer pour la tâche -->
+
+                <!-- Début modal Supprimer une tâche : -->
                 <div class="modal fade" id=<?php echo "deleteModal" . $tache->idTache ?> role="dialog" tabindex="-1">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
@@ -101,8 +123,9 @@
                             </div>
                         </div>
                 </div>
+                <!-- Fin modal Supprimer une tâche -->
 
-                <!-- Modal Description d'une tâche -->
+                <!-- Début modal Description d'une tâche -->
                 <div class="modal fade" id=<?php echo "descriptionModal" . $tache->idTache ?> role="dialog" tabindex="-1">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
@@ -123,6 +146,7 @@
                             </div>
                         </div>
                 </div>
+                <!-- Fin modal Description d'une tâche -->
 
               <?php endforeach;  ?>
             </tbody>
@@ -130,10 +154,11 @@
         </div>
       </div>
     </div>
+    <!-- Fin table -->
 
-<!-- Boutons : -->
+    <!-- Début boutons Détails du projet, Gérer les membres -->
     <div class="row" style="margin-right: 60px;margin-left: 60px;">
-    <div class="col-xl-4">
+    <div class="col-xl-4 col-md-auto col-sm-auto paddingCard">
         <div class="card color-card">
             <div class="card-body shadow d-flex justify-content-between align-items-center color-card">
               <?= $this->Html->image("icones/membres.png", ['class' => 'image_icone']) ?>
@@ -144,7 +169,7 @@
             </div>
         </div>
     </div>
-    <div class="col-xl-4">
+    <div class="col-xl-4 col-md-auto col-sm-auto">
         <div class="card color-card">
             <div class="card-body shadow d-flex justify-content-between align-items-center color-card">
               <?= $this->Html->image("icones/list.png", ['class' => 'image_icone']) ?>
@@ -158,12 +183,13 @@
             </div>
         </div>
     </div>
-    <div class="col-xl-4 d-flex justify-content-end align-items-center">
+    <div class="col-xl-4 col-md-auto col-sm-auto d-flex justify-content-end align-items-center">
       <?= $this->Html->link("", ['controller' => 'Tache', 'action'=> 'add', $idProjet], ['class' => 'btn btn-primary shadow rond-croix']); ?>
     </div>
   </div>
+  <!-- Fin boutons Archiver, Modifier, Supprimer, Quitter le projet, Ajouter une tâche -->
 
-  <!-- Modal Quitter/Supprimer le projet : -->
+  <!-- Début odal Quitter/Supprimer le projet : -->
   <div class="modal fade" id="leaveModal" role="dialog" tabindex="-1">
           <div class="modal-dialog" role="document">
               <div class="modal-content">
@@ -189,6 +215,7 @@
               </div>
           </div>
   </div>
+  <!-- Fin modal Quitter/Supprimer le projet -->
 
 
   <script src="assets/js/jquery.min.js"></script>
