@@ -8,19 +8,9 @@ class MembreTable extends Table{
 
 /**
 * Permet de lier les tables Projet et Utilisateur pour les queries.
-*
 * Auteur : POP Diana
 */
   public function initialize(array $config){
-    /*
-    $this->hasOne('Utilisateur')
-         ->setForeignKey('idUtilisateur')
-         ->setBindingKey('idUtilisateur')
-         ->setProperty('un_utilisateur');
-    $this->hasMany('Projet')
-      ->setForeignKey('idProjet')
-      ->setBindingKey('idProjet');
-      */
       $this->setPrimaryKey(array('idUtilisateur', 'idProjet'));
       $this->belongsTo('Utilisateur', [
         'foreignKey' => 'idUtilisateur',

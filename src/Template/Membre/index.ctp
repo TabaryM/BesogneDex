@@ -1,8 +1,7 @@
-<?php use Cake\Routing\Router; ?>
+<?php use Cake\Routing\Router;
+// TODO: Ajouter une icône de recherche avec la ligne en dessous
+?>
 
-
-
-<?php // TODO: Ajouter une icône de recherche avec la ligne en dessous ?>
 <?= $this->Html->script('membres.js') ?>
 
  <?= $this->Form->create(null, ['url' => ['controller' => 'Membre', 'action' => 'add', $id]] ); ?>
@@ -15,7 +14,7 @@
             <div class="card-body">
 
                 <?php foreach ($membres as $membre): ?>
-                    <p onClick="afficherGris(<?php echo $membre->idUtilisateur ?>)" id=<?php echo $membre->idUtilisateur ?> class='ligne_membre'>
+                    <p onClick="afficherGris(<?= $membre->idUtilisateur ?>)" id=<?= $membre->idUtilisateur ?> class='ligne_membre'>
                       <?= $membre->un_utilisateur->pseudo ?>
                     </p>
                 <?php endforeach; ?>
@@ -31,11 +30,11 @@
       <?= $this->Html->link("Changer de propriétaire", "", ['class' => 'btn btn-primary shadow grosBouton boutonRouge', 'data-toggle' => 'modal', 'data-target' => '#promoteModal']); ?>
       <button id="bouton_supprimer_membre" class="btn btn-danger shadow grosBouton" type="button" data-toggle="modal" data-target="#deleteMembreModal" >Supprimer</button>
       <?= $this->Html->link("Retour", array('controller' => 'Tache', 'action'=> 'index', $id), array( 'class' => 'btn btn-primary shadow grosBouton boutonRouge')); ?>
-      </div>
+    </div>
 </div>
 
 <script>
-  var local_source= '<?php echo Router::url(array('controller' => 'Utilisateur', 'action' => 'complete')); ?>';
+  var local_source= '<?= Router::url(array('controller' => 'Utilisateur', 'action' => 'complete')); ?>';
   jQuery('#recherche-utilisateurs').autocomplete({
     source:local_source,
     minLength: 1
@@ -53,7 +52,7 @@
                 <div class="modal-footer text-center">
                     <div class="row text-center" style="width: 484px;">
                         <div class="col text-right">
-                          <?php echo $this->Html->link("Non", array('controller' => 'Tache', 'action'=> 'index', $id), array('button class' => 'btn btn-primary', 'data-dismiss' => 'modal'));?>
+                          <?= $this->Html->link("Non", array('controller' => 'Tache', 'action'=> 'index', $id), array('button class' => 'btn btn-primary', 'data-dismiss' => 'modal'));?>
                         </div>
                         <div class="col text-left">
                           <button id="bouton_changer_proprietaire" class="btn btn-danger" onClick="<?= 'changerProprietaire('.$id.')' ?>" type="button" >Oui</button>

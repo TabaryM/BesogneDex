@@ -35,6 +35,7 @@ h1 {
 .image_icone {
   width:70px;
   height:50px;
+  margin-right: 10px;
 }
 
 .div_mail_mdp_header {
@@ -304,4 +305,9 @@ div.message.hidden {
 
 .form-addTache textarea, .form-addTache input[type=text], .form-addTache input[type=email], .form-addTache input[type=password] {
   width: 100%;
+}
+
+.titre_header_rouge {
+  color:red;
+  margin-left: 20px;
 }

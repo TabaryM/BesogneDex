@@ -45,9 +45,9 @@ $cakeDescription = 'BesogneDex';
 
 </head>
 <body class="default">
-      
 
-  <?= $this->element('header', ['titre' => Configure::read('titre_header_tache'), 'utilisateurProprietaire' => Configure::read('utilisateurProprietaire')]) ?>
+
+  <?= $this->element('header', ['titre' => Configure::read('titre_header_tache'), 'utilisateurProprietaire' => Configure::read('utilisateurProprietaire'), 'estExpire' => Configure::read('estExpire')]) ?>
   <?= $this->element('navbar') ?>
   <?= $this->Flash->render() ?>
   <?= $this->fetch('content') ?>
@@ -56,6 +56,6 @@ $cakeDescription = 'BesogneDex';
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
   <?= $this->Html->script('tacheTermine.js'); ?>
-  
+
 </body>
 </html>
