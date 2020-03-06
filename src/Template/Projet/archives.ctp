@@ -13,8 +13,8 @@
             <?php foreach ($archives as $archive): ?>
               <tr>
                 <td>
-                  <?php
-                  echo $this->Html->link($archive->titre, array('controller' => 'Tache', 'action'=> 'index', $archive->idProjet));
+                  <?=
+                  $this->Html->link($archive->titre, array('controller' => 'Tache', 'action'=> 'index', $archive->idProjet));
                   ?>
                 </td>
                 <td>
@@ -32,8 +32,8 @@
   </div>
   <div class="row d-flex align-items-start" style="margin-right: 60px;margin-left: 60px;">
     <div class="col-xl-12" style="height: 80%;">
-        <?php
-        echo $this->Html->link("Retour", array('controller' => 'Projet', 'action'=> 'index'), array( 'class' => 'btn btn-primary'));
+        <?=
+        $this->Html->link("Retour", array('controller' => 'Projet', 'action'=> 'index'), array( 'class' => 'btn btn-primary'));
         ?>
     </div>
   </div>

@@ -13,9 +13,7 @@
             <?php foreach ($projets as $projet): ?>
               <tr>
                 <td>
-                  <?php
-                  echo $this->Html->link($projet->titre, array('controller' => 'Tache', 'action'=> 'index', $projet->idProjet));
-                  ?>
+                  <?= $this->Html->link($projet->titre, array('controller' => 'Tache', 'action'=> 'index', $projet->idProjet)); ?>
                 </td>
                 <td>
                   <?= $projet->un_utilisateur->pseudo; ?>
@@ -32,11 +30,11 @@
   </div>
   <div class="row d-flex justify-content-end" style="margin-right: 60px;margin-left: 60px;margin-top:60px;">
     <div class="col-xl-12 d-flex justify-content-end">
-        <?php
-        echo $this->Html->link("Projets archivés", array('controller' => 'Projet', 'action'=> 'archives'), array( 'class' => 'btn btn-primary grosBouton shadow'));
+        <?=
+          $this->Html->link("Projets archivés", array('controller' => 'Projet', 'action'=> 'archives'), array( 'class' => 'btn btn-primary grosBouton shadow'));
         ?>
-        <?php
-        echo $this->Html->link("Ajouter un projet", array('controller' => 'Projet', 'action'=> 'add'), array( 'class' => 'btn btn-primary grosBouton shadow'));
+        <?=
+          $this->Html->link("Ajouter un projet", array('controller' => 'Projet', 'action'=> 'add'), array( 'class' => 'btn btn-primary grosBouton shadow'));
         ?>
     </div>
   </div>

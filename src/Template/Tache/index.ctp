@@ -3,7 +3,6 @@
    <!-- Début modification header -->
    <?php
     use Cake\Core\Configure;
-
     Configure::write('titre_header_tache',$projetTab->titre);
    ?>
    <!-- Fin modification du header -->
@@ -40,7 +39,6 @@
               </tr>
             </thead>
             <!-- Fin header du tableau avec informations du projet -->
-
 
             <tbody>
               <?php
@@ -82,8 +80,8 @@
                     <div class="dropdown">
                       <a class="test" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">●●●</a>
                       <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        <?php echo $this->Html->link("Supprimer la tâche", array('controller' => 'Tache', 'action'=> 'index', $idProjet), array('class' => 'dropdown-item', 'data-toggle' => 'modal', 'data-target' => '#deleteModal' . $tache->idTache)); ?>
-                        <?php echo $this->Html->link("Modifier la tâche", array('controller' => 'Tache', 'action'=> 'edit', $idProjet, $tache->idTache), array( 'class' => 'dropdown-item'));?>
+                        <?= $this->Html->link("Supprimer la tâche", array('controller' => 'Tache', 'action'=> 'index', $idProjet), array('class' => 'dropdown-item', 'data-toggle' => 'modal', 'data-target' => '#deleteModal' . $tache->idTache)); ?>
+                        <?= $this->Html->link("Modifier la tâche", array('controller' => 'Tache', 'action'=> 'edit', $idProjet, $tache->idTache), array( 'class' => 'dropdown-item'));?>
                         <?php
                         if (isset ($user) && isset($tache->responsable)) {
                             if($tache->idResponsable == $user) {
@@ -100,7 +98,7 @@
                 <!-- Fin DropdownMenu Actions avec boutons Supprimer la tâche, Modifier la tâche, Se retirer/proposer pour la tâche -->
 
                 <!-- Début modal Supprimer une tâche : -->
-                <div class="modal fade" id=<?php echo "deleteModal" . $tache->idTache ?> role="dialog" tabindex="-1">
+                <div class="modal fade" id=<?= "deleteModal" . $tache->idTache ?> role="dialog" tabindex="-1">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -113,10 +111,10 @@
                                 <div class="modal-footer text-center">
                                     <div class="row text-center" style="width: 484px;">
                                         <div class="col text-right">
-                                          <?php echo $this->Html->link("Non", array('controller' => 'Tache', 'action'=> 'index', $idProjet), array( 'button class' => 'btn btn-primary', 'data-dismiss' => 'modal'));?>
+                                          <?= $this->Html->link("Non", array('controller' => 'Tache', 'action'=> 'index', $idProjet), array( 'button class' => 'btn btn-primary', 'data-dismiss' => 'modal'));?>
                                         </div>
                                         <div class="col text-left">
-                                          <?php echo $this->Html->link("Oui", array('controller' => 'Tache', 'action'=> 'delete', $idProjet, $tache->idTache), array( 'button class' => 'btn btn-danger'));?>
+                                          <?= $this->Html->link("Oui", array('controller' => 'Tache', 'action'=> 'delete', $idProjet, $tache->idTache), array( 'button class' => 'btn btn-danger'));?>
                                         </div>
                                     </div>
                                 </div>
@@ -126,20 +124,20 @@
                 <!-- Fin modal Supprimer une tâche -->
 
                 <!-- Début modal Description d'une tâche -->
-                <div class="modal fade" id=<?php echo "descriptionModal" . $tache->idTache ?> role="dialog" tabindex="-1">
+                <div class="modal fade" id=<?= "descriptionModal" . $tache->idTache ?> role="dialog" tabindex="-1">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h4 class="modal-title">
-                                      <?php echo $tache->titre; ?>
+                                      <?= $tache->titre; ?>
                                     </h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
                                 <div class="modal-body" style="text-align:center;">
-                                    <?php echo $tache->description; ?>
+                                    <?= $tache->description; ?>
                                 </div>
                                 <div class="modal-footer text-center">
                                     <div class="row text-center" style="width: 484px;">
                                         <div class="col text-right">
-                                          <?php echo $this->Html->link("Ok", array('controller' => 'Tache', 'action'=> 'index', $idProjet), array( 'button class' => 'btn btn-primary', 'data-dismiss' => 'modal'));?>
+                                          <?= $this->Html->link("Ok", array('controller' => 'Tache', 'action'=> 'index', $idProjet), array( 'button class' => 'btn btn-primary', 'data-dismiss' => 'modal'));?>
                                         </div>
                                     </div>
                                 </div>
@@ -205,10 +203,10 @@
                   <div class="modal-footer text-center">
                       <div class="row text-center" style="width: 484px;">
                           <div class="col text-right">
-                            <?php echo $this->Html->link("Non", array('controller' => 'Tache', 'action'=> 'index', $idProjet), array( 'button class' => 'btn btn-primary', 'data-dismiss' => 'modal'));?>
+                            <?= $this->Html->link("Non", array('controller' => 'Tache', 'action'=> 'index', $idProjet), array( 'button class' => 'btn btn-primary', 'data-dismiss' => 'modal'));?>
                           </div>
                           <div class="col text-left">
-                            <?php echo $this->Html->link("Oui", array('controller' => 'Projet', 'action'=> 'delete', $idProjet), array( 'button class' => 'btn btn-danger'));?>
+                            <?= $this->Html->link("Oui", array('controller' => 'Projet', 'action'=> 'delete', $idProjet), array( 'button class' => 'btn btn-danger'));?>
                           </div>
                       </div>
                   </div>

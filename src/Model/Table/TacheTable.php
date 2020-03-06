@@ -32,11 +32,6 @@ class TacheTable extends Table{
 
   }
 
-
-/**
-* Vérifications du formulaire de création/modif de tâche avec messsages d'erreurs.
-* @author  Thibault CHONÉ
-*/
 /**
  * Vérifications du formulaire de création/modif de tâche avec messsages d'erreurs.
  * @author Thibault CHONÉ
