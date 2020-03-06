@@ -26,7 +26,6 @@ class UtilisateurController extends AppController
   * Pris de la doc officielle :
   * Permet les utilisateurs de s'inscrire et de se déconnecter.
   * La doc demande à ne pas ajouter 'login' dans la liste pour ne pas causer de problèmes avec le fonctionnement normal de AuthComponent.
-  *
   * @author POP Diana
   */
   public function beforeFilter(Event $event)
@@ -38,7 +37,6 @@ class UtilisateurController extends AppController
   /**
   * Permet à l'utilisateur de se connecter.
   * Les pages qui appellent cette fonction sont : Template/Element/header.ctp et Template/Utilisateur/login.ctp.
-  *
   * @author POP Diana
   */
   public function login(){
@@ -61,7 +59,6 @@ class UtilisateurController extends AppController
   /**
   * Permet à l'utilisateur de s'inscrire.
   * La page qui appelle cette fonction est : Template/Pages/home.ctp.
-  *
   * @author POP Diana
   */
   public function add(){
@@ -86,7 +83,6 @@ class UtilisateurController extends AppController
 
   /**
   * Fonction pour auto-complétion de Membre/index
-  *
   * @author POP Diana (c'est un presque c/c de ce site : http://www.naidim.org/cakephp-3-tutorial-18-autocomplete)
   */
   function complete(){
@@ -100,7 +96,6 @@ class UtilisateurController extends AppController
     $resultsArr = [];
     foreach ($results as $result) {
       $resultsArr[] =['label' => $result['pseudo'], 'value' => $result['pseudo']];
-
     }
     echo json_encode($resultsArr);
   }
@@ -108,7 +103,6 @@ class UtilisateurController extends AppController
   /**
   * Permet à l'utilisateur de se déconnecter.
   * La page qui appelle cette fonction est : Template/Element/Utilisateur/logout_confirmation.ctp
-  *
   * @author POP Diana
   */
   public function logout(){
@@ -117,7 +111,6 @@ class UtilisateurController extends AppController
 
   /**
   * Utilisée dans la page : Template/Element/header.ctp
-  *
   * @author MARISSENS Valérie
   */
   public function logoutConfirmation(){
@@ -202,17 +195,11 @@ class UtilisateurController extends AppController
     $this->set(compact('utilisateur'));
   }
 
-
-  public function deleteConfirmation() {
-
-
-  }
-
-  /** Supprime le compte de l'utilisateur ainsi que les données associées
-  *
+  /**
+  * Supprime le compte de l'utilisateur ainsi que les données associées
   * @author PALMIERI Adrien
   */
-  // IMPORTANT : Lorsque les notifications seront ajoutées, il faudra ajouter la suppression des notifications associées.
+  // TODO : Lorsque les notifications seront ajoutées, il faudra ajouter la suppression des notifications associées.
   public function deleteAccount() {
     $currentUserId = $this->request->getSession()->read('Auth.User.idUtilisateur');
     $utilisateur = $this->Utilisateur->get($currentUserId);
@@ -238,7 +225,6 @@ class UtilisateurController extends AppController
       } else {
         $this->Flash->error(__('Impossible de supprimer votre compte utilisateur.'));
         $this->redirect(array('controller' => 'Utilisateur', 'action'=> 'edit'));
-
       }
     }
   }

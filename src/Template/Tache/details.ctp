@@ -10,7 +10,13 @@
       <p>Membres du projet :</p>
       <div class="card">
         <div class="card-body">
-          <p><?= $mbs ?></p>
+          <p>
+            <?php
+            foreach ($mbs as $ps) {
+              echo $ps.'<br>';
+            }
+            ?>
+          </p>
         </div>
       </div>
     </div>

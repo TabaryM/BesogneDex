@@ -1,6 +1,8 @@
 <?php
 
-/** Cette fonction permet d'empecher les injections HTML et SQL
+/**
+ * Empêche les injections HTML et SQL
+ *
  * @param $texte String source a traiter
  * @return string texte nettoyé
  * @author PALMIERI Adrien
@@ -39,7 +41,7 @@ function verificationDescription($description){
     // Par défaut la description contient une erreur
     $res = false;
     // Si la description correspond au cahier des charges, on retire l'erreur
-    if(strlen($description) <= 500){
+    if(strlen($description) <= 512){
         $res = true;
     }
 
