@@ -2,8 +2,6 @@ var jeSuisIdSelectionne = null;
 
 /**
  * TODO : doc à faire
- * @param  {[type]}  id [description]
- * @return {Boolean}    [description]
  */
 function afficherGris(id){
   jQuery('.ligne_membre').css('background', 'white');
@@ -13,8 +11,6 @@ function afficherGris(id){
 
 /**
  * TODO : doc à faire
- * @param  {[type]} id_projet [description]
- * @return {[type]}           [description]
  */
 function supprimer(id_projet){
   if (jeSuisIdSelectionne == null){
