@@ -21,7 +21,7 @@
                   ?>
                   <tr>
                     <td> <?= $tachesPrioritaires[$nbColonnes]['titre']?> </td>
-                    <td> <?= $tachesPrioritaires[$nbColonnes]['dateFin']?> </td> <!-- Il y a sûrement un meilleur affichage de date -->
+                    <td> <?= $tachesPrioritaires[$nbColonnes]['dateFin']->nice('Europe/Paris', 'fr-FR') ?> </td> <!-- Il y a sûrement un meilleur affichage de date -->
                   </tr>
                   <?php
                 }else{
