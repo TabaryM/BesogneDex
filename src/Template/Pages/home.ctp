@@ -62,7 +62,7 @@ $cakeDescription = 'BesogneDex';
 <body class="home">
 
 
-      <?= $this->element('header', ['titre' => 'BesogneDex', 'utilisateurProprietaire' => false]) ?>
+      <?= $this->element('header', ['titre' => 'BesogneDex', 'utilisateurProprietaire' => false, 'estExpire' => Configure::read('estExpire')]) ?>
 
       <!-- TODO Il faudra mettre tout les styles dans le css -->
       <div style="height: 80vh;margin-top: 20px;">
