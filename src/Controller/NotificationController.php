@@ -98,5 +98,44 @@ class NotificationController extends AppController
 
   }
 
+    /**
+     *
+     * Méthode permettant a l'utilisateur de refuser une notification a valider.
+     *
+     * La méthode recherche la notification dans la table VueNotificationProjet puis change
+     * son etat pour indiquer que l'utilisateur a donné une réponse négative a celle-ci.
+     *
+     * Si la notification n'existe pas ou n'a pas le statut 'en attente' (cela veut dire
+     * que l'utilisateur a déjà accepté ou refusée), celle-ci renvoie une erreur.
+     *
+     * @param $idNotifProjet : id du projet dans la table VueNotificationProjet
+     * @author PALMIERI Adrien
+     */
+    public function declineInvitation($idNotifProjet) {
+        $idUtilisateur = $this->autorisation(); // On récupère l'id utilisateur (et verifie si il est tjrs connecté)
+        $vueNotificationProjetTable = TableRegistry::getTableLocator()->get('VueNotificationProjet');
+        $notificationProjet = $vueNotificationProjetTable->find()->where(['idUtilisateur' => $idUtilisateur,
+            'idNotifProjet' => $idNotifProjet])->first();
+
+        if($notificationProjet) { // Si la notification existe
+            if($notificationProjet->etat == 'En attente') { // S'il n'a pas déjà répondu a la notif
+                $notificationProjet->vue = 1; // La notification a ete vue puisqu'il a repondu
+               $notificationProjet->etat = 'Refusé'; // Il refuse la notification
+               $vueNotificationProjetTable->save($notificationProjet); // On sauvegarde les changements
+               // TODO || Voir avec les gens du front pour qu'ils mettent juste à jour l'interface
+               // TODO || quand on a répondu a une notif au lieu de faire un flash
+                $this->Flash->success(__('Vous avez répondu à la notification.'));
+            } else {
+                $this->Flash->error(__("Vous avez déjà répondu à cette notification."));
+            }
+        } else {
+            $this->Flash->error(__("La notification à laquelle vous essayez d'accéder n'existe pas."));
+        }
+        $this->redirect($this->referer());
+    }
+
+
+
+
 }
 ?>
