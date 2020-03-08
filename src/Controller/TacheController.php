@@ -55,12 +55,12 @@ class TacheController extends AppController
   }
 
   /**
-  * @author Thibault Choné, Théo Roton
-  * @param idProjet : id du projet pour lequel on affiche les détails
-  *
-  * Cette fonction affiche les détails, la description et les membres,
-  * du projet identifié par son id.
-  */
+   * Cette fonction affiche les détails, la description et les membres,
+   * du projet identifié par son id.
+   * @param idProjet : id du projet pour lequel on affiche les détails
+   *
+   * @author Thibault Choné, Théo Roton
+   */
   public function details($idProjet)
   {
 
@@ -88,9 +88,11 @@ class TacheController extends AppController
   }
 
   /**
-  * Ajoute une ligne dans la table tache
-  * @author Clément Colné, Adrien Palmieri
-  */
+   * Cette méthode permet d'ajouter une tâche à un projet
+   *
+   * @param idProjet id du projet dans lequel ajouter la tâche
+   * @author Clément Colné, Adrien Palmieri
+   */
   public function add($idProjet){
     if ($this->request->is('post')) {
       $data = $this->request->getData();
