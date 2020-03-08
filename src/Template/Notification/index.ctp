@@ -13,11 +13,15 @@
                 <?= $notif->une_notification->date->nice('Europe/Paris', 'fr-FR') ?>
               </td>
               <td class="d-flex justify-content-center">
-                <?php if ($notif->une_notification->a_valider): ?>
+                <?php if ($notif->une_notification->a_valider && $notif->etat=="En attente"): ?>
                   <!-- TODO: Fonction accepter / refuser invitation -->
                   <?= $this->Html->link("Accepter", ['action'=> '#'], ['class' => 'btn btn-primary']); ?>
                   <?= $this->Html->link("Refuser", ['controller' => 'notification', 'action'=> 'declineInvitation', $notif->idNotifProjet], ['class' => 'btn btn btn-danger']); ?>
-                <?php else: ?>
+                <?php elseif ($notif->une_notification->a_valider && $notif->etat=="Accepté"): ?>
+                  <button class="btn btn-primary" disabled="true"> Invitation acceptée </button>
+                <?php elseif ($notif->une_notification->a_valider && $notif->etat=="Refusé"): ?>
+                  <button class="btn btn-danger" disabled="true"> Invitation refusée </button>
+                <?php else : ?>
                   <?= $this->Html->link("Consulter le projet", ['controller' => 'projet', 'action'=> 'index', $notif->une_notification->idProjet], ['class' => 'btn btn-primary']); ?>
                 <?php endif; ?>
               </td>
