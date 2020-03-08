@@ -91,7 +91,7 @@ $Sql="
 		idUtilisateur INT NOT NULL,
 		idNotifTache INT NOT NULL,
 		vue BOOLEAN DEFAULT 0,
-    etat VARCHAR(50) NOT NULL DEFAULT 'En attente',
+		etat VARCHAR(50) NOT NULL DEFAULT 'En attente',
 		PRIMARY KEY (idUtilisateur, idNotifTache),
 		FOREIGN KEY (idUtilisateur) REFERENCES Utilisateur(idUtilisateur),
 		FOREIGN KEY (idNotifTache) REFERENCES NotificationTache(idNotificationTache)
