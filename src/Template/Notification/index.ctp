@@ -24,6 +24,9 @@
                 <?php else : ?>
                   <?= $this->Html->link("Consulter le projet", ['controller' => 'projet', 'action'=> 'index', $notif->une_notification->idProjet], ['class' => 'btn btn-primary']); ?>
                 <?php endif; ?>
+                <?php if ($notif->vue != 0): ?>
+                  <?= $this->Html->link("Supprimer", ['controller' => 'notification', 'action' => 'supprimerNotification',  $notif->idNotifProjet]) ?>
+                <?php endif; ?>
               </td>
             </tr>
           <?php endforeach; ?>
