@@ -142,19 +142,24 @@ class NotificationController extends AppController
     * par son id. On récupère l'id de l'utilisateur, puis on récupère
     * dans la table des vues notifications la notification correspondante
     * et on la supprime. On renvoie ensuite l'utilisateur sur la liste de
-    * ses notifications. 
+    * ses notifications.
     */
     public function supprimerNotification($idNotification) {
+      // On récupère l'id de l'utilisateur connecté
       $session = $this->request->getSession();
       $idUtilisateur = $session->read('Auth.User.idUtilisateur');
 
+      // On récupère la table des vues notifications
       $vue_notifications = TableRegistry::getTableLocator()->get('Vue_notification_projet');
+      // On récupère la notification correspondant à la suppression
       $notification = $vue_notifications->find()
       ->where(['idUtilisateur' => $idUtilisateur])
       ->where(['idNotifProjet' => $idNotification])
       ->first();
 
+      // On supprime la notification
       $vue_notifications->delete($notification);
+      // On redirige l'utilisateur sur la liste de ses notifications
       $this->redirect($this->referer());
     }
 
