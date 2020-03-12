@@ -137,7 +137,7 @@ class NotificationController extends AppController
 
     /**
     * @author Théo Roton
-    * @param idNotification : id de la notification à supprimer
+    * @param not : notification à supprimer
     *
     * Cette fonction permet de supprimer une notification de projet identifié
     * par son id. On récupère l'id de l'utilisateur, puis on récupère
@@ -145,37 +145,54 @@ class NotificationController extends AppController
     * et on la supprime. On renvoie ensuite l'utilisateur sur la liste de
     * ses notifications.
     */
-    public function supprimerNotification($notification) {
-      $notification = explode("_", $notification);
-      var_dump($notification);
+    public function supprimerNotification($not) {
+      $not = explode("_", $not);
 
       // On récupère l'id de l'utilisateur connecté
       $session = $this->request->getSession();
       $idUtilisateur = $session->read('Auth.User.idUtilisateur');
 
-      if ($notification[1] == "Tache"){
-        // On récupère la table des vues notifications des projets
-        $vue_notifications = TableRegistry::getTableLocator()->get('Vue_notification_tache');
-        // On récupère la notification correspondant à la suppression
-        $notification = $vue_notifications->find()
-        ->where(['idUtilisateur' => $idUtilisateur])
-        ->where(['idNotifTache' => $notification[0]])
-        ->first();
+      if ($not[1] == 'Tache'){
+        $id = 'idNotifTache';
+        $table = 'Vue_notification_tache';
+        $id_suppr = 'idNotificationTache';
+        $suppr = 'Notification_tache';
 
-      } else if ($notification[1] == "Projet"){
-        // On récupère la table des vues notifications des projets
-        $vue_notifications = TableRegistry::getTableLocator()->get('Vue_notification_projet');
-        // On récupère la notification correspondant à la suppression
-        $notification = $vue_notifications->find()
-        ->where(['idUtilisateur' => $idUtilisateur])
-        ->where(['idNotifProjet' => $notification[0]])
-        ->first();
+      } else if ($not[1] == 'Projet'){
+        $id = 'idNotifProjet';
+        $table = 'Vue_notification_projet';
+        $id_suppr = 'idNotificationProjet';
+        $suppr = 'Notification_projet';
 
       }
+
+      // On récupère la table des vues notifications
+      $vue_notifications = TableRegistry::getTableLocator()->get($table);
+      // On récupère la notification correspondant à la suppression
+      $notification = $vue_notifications->find()
+      ->where(['idUtilisateur' => $idUtilisateur])
+      ->where([$id => intval($not[0])])
+      ->first();
 
 
       // On supprime la notification
       $vue_notifications->delete($notification);
+
+
+      $count = $vue_notifications->find()
+      ->where([$id => intval($not[0])])
+      ->count();
+
+      if ($count == 0){
+        $notifications = TableRegistry::getTableLocator()->get($suppr);
+
+        $notification = $notifications->find()
+        ->where([$id_suppr => intval($not[0])])
+        ->first();
+
+        $notifications->delete($notification);
+      }
+
       // On redirige l'utilisateur sur la liste de ses notifications
       $this->redirect($this->referer());
     }
