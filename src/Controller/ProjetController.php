@@ -8,9 +8,77 @@ use Cake\I18n\Time;
 
 class ProjetController extends AppController
 {
+
+  /**
+  * Vérifie si l'utilisateur est propriétaire du projet donné.
+  *
+  * @param idProjet : id du projet
+  * @return user id du Propriétaire si l'utilisateur est propriétaire du projet donné (mais ce n'est pas utile)
+  *
+  * Redirection (si l'utilisateur n'est pas connecté ou n'est pas propriétaire) : index de Accueil
+  *
+  * @author Diana POP
+  **/
+  private function autorisationProprietaire($idProjet){
+
+    $projetTab = $this->Projet->find()->where(['idProjet' => $idProjet])->first();
+    $session = $this->request->getSession();
+
+    // Si l'utilisateur est connecté (le redirect pris en compte sera celui du Auth s'il n'est pas connecté)
+    if ($session->check('Auth.User.idUtilisateur')) {
+      $user = $session->read('Auth.User.idUtilisateur');
+
+      // Si l'utilisateur est propriétaire
+      if($projetTab->idProprietaire == $user){
+        return $user;
+      }
+    }
+
+    // Si l'utilisateur n'est pas le propriétaire ou si ce projet n'existe pas
+    $this->Flash->error(__('Vous n\'êtes pas le propriétaire de ce projet ou ce projet n\'existe pas.'));
+    $this->redirect(['controller'=>'Accueil', 'action'=>'index']);
+  }
+
+  /**
+  * Vérifie si l'utilisateur est propriétaire ou membre du projet donné.
+  *
+  * @param idProjet : id du projet
+  * @return Vrai si l'utilisateur est propriétaire ou membre du projet donné
+  *
+  * Redirection (si l'utilisateur n'est pas connecté ou n'est pas membre) : index de Accueil
+  *
+  * @author Diana POP
+  **/
+  private function autorisationMembre($idProjet){
+    $projetTab = $this->Projet->find()->where(['idProjet' => $idProjet])->first();
+
+    $session = $this->request->getSession();
+    if ($session->check('Auth.User.idUtilisateur')) {
+      $user = $session->read('Auth.User.idUtilisateur');
+      // L'utilisateur est-il propriétaire ?
+      if($projetTab->idProprietaire == $user){
+        return true;
+
+      // S'il n'est pas propriétaire, est-il membre ?
+      }else{
+        $membres = TableRegistry::get('Membre');
+        $query = $membres->find()->select(['idUtilisateur'])->where(['idUtilisateur' => $user, 'idProjet' => $idProjet])->count();
+
+        // Renvoie vrai si l'utilisateur est membre.
+        if ($query > 0){
+          return true;
+        }
+      }
+    }
+    $this->Flash->error(__('Ce projet n\'existe pas ou vous n\'y avez pas accès.'));
+    return $this->redirect(['controller'=>'Accueil', 'action'=>'index']);
+  }
+
+
+
   /**
   *  Affiche la liste des projets dont l'utilisateur est membre.
-  * TODO: Il faut afficher les listes dont l'utilisateur est membre et non celles pour lesquelles il est propriétaire.
+  *
   * @author : POP Diana
   */
     public function index()
@@ -66,12 +134,15 @@ class ProjetController extends AppController
                 $existeErreur = true;
             }
 
-            $receivedData['dateFin'] = nettoyageDate($receivedData['dateFin']);
-            // Si la date était incorrecte on affiche un message pour l'utilisateur
-            if($receivedData['dateFin'] == null){
-                $this->Flash->warning(__("Votre date de fin étant incorrecte (au moins un champ vide), elle n'a pas été enregistrée."));
-            }
+            // trois valeurs possibles pour le retour de nettoyage date : bien remplis; mal remplis; pas remplis
+            switch (nettoyageDate($receivedData['dateFin'])){
+                case "mal fait":
+                    $this->Flash->warning(__("Votre date de fin étant incorrecte (au moins un champ vide), elle n'a pas été enregistrée."));
+                case "pas fait":
+                    $receivedData['dateFin'] = null;
+                    break;
 
+            }
             // Vérification des dates
             if(!verificationDates($receivedData['dateDebut'], $receivedData['dateFin'])){
                 // Si les dates ne sont pas cohérentes
@@ -208,7 +279,7 @@ class ProjetController extends AppController
     /**
      * Permet d'archiver un projet uniquement si il est expiré et si l'utilisateur en est le propriétaire
      * @param int $idProjet ID du projet a archiver
-     * @author Pedro Sousa Ribeiro
+     * @author Pedro Sousa Ribeiro (et Diana mais juste pour l'autorisationProprietaire)
      *
      * Redirection: Si l'utilisateur n'est pas connecté OU s'il n'est pas le propriétaire du projet OU si le projet n'est pas expiré,
      *              l'utilisateur est redirigé vers la dernière page qu'il a visité (la page d'où il vient).
@@ -218,11 +289,10 @@ class ProjetController extends AppController
       $projet = $this->Projet->get($idProjet);
       $now = Time::now();
 
-      $session = $this->request->getSession();
-      if ($session->check('Auth.User.idUtilisateur')) {
-        $user = $session->read('Auth.User.idUtilisateur');
+      $this->autorisationProprietaire($idProjet);
+
+        // Projet expiré
         if ($projet->dateFin < $now) {
-          if ($user === $projet->idProprietaire) {
             $projet->etat = "Archive";
             $projet->dateArchivage = Time::now();
             $this->Projet->save($projet);
@@ -230,18 +300,12 @@ class ProjetController extends AppController
             // Projet archivé
             $this->Flash->success(__("Projet achivé avec succès"));
             $this->redirect(['action' => 'archives']);
-          } else { // Pas le propriétaire
-            $this->Flash->error(__("Seul le propriétaire est en mesure d'archiver le projet."));
-            $this->redirect($this->referer());
-          }
-        } else { // Projet non expiré
+
+        // Projet non expiré
+        }else {
           $this->Flash->error(__("Le projet doit être expiré pour pouvoir l'archiver."));
           $this->redirect($this->referer());
         }
-      } else {
-        $this->Flash->error(__("Vous devez être connecté pour archiver un projet."));
-        $this->redirect($this->referer());
-      }
     }
 
     /**
@@ -253,6 +317,9 @@ class ProjetController extends AppController
     * Le fichier lié à l'affichage de cette page est 'Projet/edit.ctp'.
     */
     public function edit($id){
+      // On vérifie que l'utilisateur est bien propriétaire du projet (redirection si non)
+      $this->autorisationProprietaire($id);
+
       //On récupère le projet
       $projet = TableRegistry::getTableLocator()->get('projet');
       $projet = $projet->find()
@@ -385,38 +452,8 @@ class ProjetController extends AppController
       if (!$erreur){
         // On sauvegarde les nouvelles informations du projet
         $projets->save($projet);
-
         // On indique que la modification a réussie
         $this->Flash->success(__('Votre projet a été modifé.'));
-
-        //On récupère la table des notifications des projets
-        $notifications = TableRegistry::getTableLocator()->get('Notification_projet');
-
-        //On crée une nouvelle notification pour le projet courant
-        $notification = $notifications->newEntity();
-        $notification->a_valider = 0;
-        $notification->contenu = "Le projet ".$projet->titre." a été modifié.";
-        $notification->idProjet = $receivedData['id'];
-        $notifications->save($notification);
-        $idNot = $notification->idNotificationProjet;
-
-        //On récupère la table de vue des notifications des projets
-        $vue_notifications = TableRegistry::getTableLocator()->get('Vue_notification_projet');
-
-        //On récupère les membres du projet
-        $membres = TableRegistry::getTableLocator()->get('Membre');
-        $membres = $membres->find()->contain('Utilisateur')
-        ->where(['idProjet' => $receivedData['id']]);
-
-        //Pour chaque membre du projet, on envoie une notification à celui-ci
-        foreach ($membres as $m) {
-          $idUtil = $m->un_utilisateur->idUtilisateur;
-
-          $vue_not = $vue_notifications->newEntity();
-          $vue_not->idUtilisateur = $idUtil;
-          $vue_not->idNotifProjet = $idNot;
-          $vue_notifications->save($vue_not);
-        }
 
         // On redirige l'utilisateur sur le projet avec les informations mises à jour
         return $this->redirect(
@@ -435,7 +472,13 @@ class ProjetController extends AppController
      * @author  Clément Colné
      */
     function changerProprietaire($idMembre, $idProjet) {
+      $idProprietaire = $this->autorisationProprietaire($idProjet);
       $projets = TableRegistry::get('Projet');
+
+      if ($idMembre == $idProprietaire){
+        $this->Flash->set('Vous êtes déjà propriétaire.', ['element' => 'error']);
+        return $this->redirect(['controller'=>'Projet', 'action'=> 'index']);
+      }
       // on récupère l'ID du propriétaire
       $projet = $projets->find()->where(['idProjet'=>$idProjet])->first();
       // mise à jour du nouveau propriétaire dans la DB
@@ -444,7 +487,9 @@ class ProjetController extends AppController
         ->set(['idProprietaire' => $idMembre])
         ->where(['idProjet' => $idProjet])->execute();
       // redirection vers la page d'accueil des projets
-      return $this->redirect(['controller'=>'Tache', 'action'=> 'index', $idProjet]);
+
+      $this->Flash->set('Le propriétaire a bien été modifié.', ['element' => 'success']);
+      return $this->redirect(['controller'=>'Projet', 'action'=> 'index']);
     }
 
 }
