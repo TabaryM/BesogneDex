@@ -57,14 +57,14 @@ function verificationDescription($description){
  */
 function verificationDates($dateDebut, $dateFin){
     // Si la date de fin n'est pas définie tout va bien
+    if($dateFin == null){
+        return true;
+    }
+
+    $res = false;
     // On convertis les dates en format comparable facilement
     $dateDebut = strtotime(implode($dateDebut));
     $dateFin = strtotime(implode($dateFin));
-    $res = false;
-
-    if($dateFin == null){
-        $res = true;
-    }
 
     // Si la date de début est antérieure à la date de fin tout va bien
     if($dateDebut <= $dateFin){
@@ -76,14 +76,32 @@ function verificationDates($dateDebut, $dateFin){
 /**
  * Si la date passée en paramètre est vide, la supprime
  * @param $date array(date) : La date à nettoyer
- * @return array|null : Retourne null si la date est incomplète. Retourne la date sans modification si elle est complète.
+ * @return string : Retourne null si la date est incomplète. Retourne la date sans modification si elle est complète.
  * @author TABARY Mathieu
  */
 function nettoyageDate($date){
-    if($date['year'] == '' || $date['month'] == '' || $date['day'] == ''){
-        $date = null;
+    $cpt = 0;
+
+    if($date['year'] == '') $cpt++;
+    if($date['month'] == '') $cpt++;
+    if($date['day'] == '') $cpt++;
+
+    switch ($cpt){
+        case 0:
+            $res = "bien fait";
+            break;
+        case 1:
+        case 2:
+            $res = "mal fait";
+            break;
+        case 3:
+            $res = "pas fait";
+            break;
+        default:
+            $res = "Erreur";
     }
-    return $date;
+
+    return $res;
 }
 
 /**
@@ -99,7 +117,12 @@ function verificationDateFin($dateFin){
     }
     // Par défaut la date de fin contient une erreur
     $res = false;
-    $dateDuJour = strtotime(implode(getdate()));
+    $dateDuJour = array(
+        'year' => getdate()['year'],
+        'month' => getdate()['mon'],
+        'day' => getdate()['mday']
+    );
+    $dateDuJour = strtotime(implode($dateDuJour));
     $dateFin = strtotime(implode($dateFin));
 
     // Si la date de fin ultérieure à la date du jour tout va bien

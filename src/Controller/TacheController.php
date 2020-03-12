@@ -19,7 +19,6 @@ class TacheController extends AppController
   {
 
     $estProprietaire = false;
-
     $session = $this->request->getSession();
     if ($session->check('Auth.User.idUtilisateur')) {
         $user = $session->read('Auth.User.idUtilisateur');
@@ -264,10 +263,44 @@ class TacheController extends AppController
       //si il est propriétaire du projet ou que l'utilisateur est responsable de la tache il peut supprimer cette tache
       if($projetTab->idProprietaire == $user || $tache->idResponsable == $user){
 
-        //TODO pour PE: Si c'est le proprio envoyer une notif a tout les membres du projet comme quoi la tache X du projet Y a ete supprimée. sinon envoyer une demande de confirmation au proprio et si il accepte, la supprimer
+        //Si c'est le proprio envoyer une notif a tout les membres du projet comme quoi la tache X du projet Y a ete supprimée.
+        if($projetTab->idProprietaire == $user){
+          //On récupère la table des notifications des projets
+          $notifications = TableRegistry::getTableLocator()->get('Notification_tache');
 
-        $query = $tacheTab->query();
-        $query->delete()->where(['idTache' => $idTache])->execute();
+          //On crée une nouvelle notification pour le projet courant
+          $notification = $notifications->newEntity();
+          $notification->a_valider = 0;
+          $notification->contenu = "La tâche ".$tache->titre." a été supprimée.";
+          $notification->idTache = null;
+          $notifications->save($notification);
+          $idNot = $notification->idNotificationTache;
+
+          //On récupère la table de vue des notifications des projets
+          $vue_notifications = TableRegistry::getTableLocator()->get('Vue_notification_tache');
+
+          //On récupère les membres du projet
+          $membres = TableRegistry::getTableLocator()->get('Membre');
+          $membres = $membres->find()->contain('Utilisateur')
+          ->where(['idProjet' => $idProjet]);
+
+          //Pour chaque membre du projet, on envoie une notification à celui-ci
+          foreach ($membres as $m) {
+            $idUtil = $m->un_utilisateur->idUtilisateur;
+
+            $vue_not = $vue_notifications->newEntity();
+            $vue_not->idUtilisateur = $idUtil;
+            $vue_not->idNotifTache = $idNot;
+            $vue_notifications->save($vue_not);
+
+            $query = $tacheTab->query();
+            $query->delete()->where(['idTache' => $idTache])->execute();
+          }
+        }
+        else{
+          //TODO pour PE: sinon envoyer une demande de confirmation au proprio et si il accepte, la supprimer
+
+        }
       }
     }
     return $this->redirect(['action' => 'index', $idProjet]);

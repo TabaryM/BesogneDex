@@ -52,14 +52,14 @@
           <table class="table table-striped table-green table-borderless">
             <tbody>
               <?php
-              $nbColonnes = 0;
-              while ($nbColonnes < 11) { //On affiche pas plus de 10 colonnes
-                if(false){
+              $nbLigne = 0;
+              while ($nbLigne < 11) { //On affiche pas plus de 10 lignes
+                if(isset($notifs[$nbLigne])){
                   //Affichage de la notification
                   ?>
                   <tr>
-                    <td> </td>
-                    <td> </td>
+                    <td><?= $notifs[$nbLigne]->une_notification->contenu ?></td>
+                    <td><?= $notifs[$nbLigne]->une_notification->date->nice('Europe/Paris', 'fr-FR') ?></td>
                   </tr>
                   <?php
                 }else{
@@ -71,7 +71,7 @@
                   </tr>
                   <?php
                 }//Fin if else
-                $nbColonnes++;
+                $nbLigne++;
               }//Fin boucle
               ?>
             </tbody>
