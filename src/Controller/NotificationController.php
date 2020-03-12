@@ -85,6 +85,7 @@ class NotificationController extends AppController
 
     // On merge en une seule array les résultats des deux requêtes.
     $notifs = array_merge($notificationsProjet, $notificationsTache);
+    //echo "<pre>" , var_dump($notifs) , "</pre>";
 
     // On trie l'array résultante. Le tri est déjà sur la date, puis sur si la notification est à valider.
     $notifs = Hash::sort($notifs, '{n}.une_notification.Date','asc');

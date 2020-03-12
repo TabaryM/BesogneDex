@@ -28,8 +28,16 @@
                   <?= $this->Html->link("Consulter le projet", ['controller' => 'tache', 'action'=> 'index', $notif->une_notification->idProjet], ['class' => 'btn btn-primary']); ?>
                 <?php endif; ?>
                 <?php endif; ?>
-                <?php if ($notif->vue != 0  && !$notif->une_notification->idProjet == null): ?>
-                  <?= $this->Html->link("Supprimer","", ['class' => 'btn btn-danger shadow', 'data-toggle' => 'modal', 'data-target' => '#deleteModal' . $notif->idNotifProjet]) ?>
+
+                <?php
+                if(isset($notif->idNotifTache)){
+                  $id = $notif->idNotifTache;
+                } else {
+                  $id = $notif->idNotifProjet;
+                }
+                ?>
+                <?php if ($notif->vue || !$notif->une_notification->a_valider): ?>
+                  <?= $this->Html->link("Supprimer","", ['class' => 'btn btn-danger shadow', 'data-toggle' => 'modal', 'data-target' => '#deleteModal' . $id]) ?>
                 <?php endif; ?>
               </td>
             </tr>
