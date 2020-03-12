@@ -231,6 +231,7 @@ class TacheController extends AppController
     $tache->idResponsable = $session->read('Auth.User.idUtilisateur');
     $this->Tache->save($tache);
     // TODO: Envoyer notification aux autres membres du projet
+    //TODO: NOTIF A FAIRE A ENVOYER A TOUS LES MEMBRES
     return $this->redirect(['action' => 'index', $idProjet]);
   }
 
@@ -326,6 +327,8 @@ class TacheController extends AppController
     $tache = $this->Tache->get($idTache);
     $tache->idResponsable = NULL;
     $this->Tache->save($tache);
+    //Pour chaque membre du projet, on envoie une notification à celui-ci
+    //TODO: NOTIF A FAIRE A ENVOYER A TOUS LES MEMBRES
     return $this->redirect(['action' => 'index', $idProjet]);
   }
 
@@ -352,6 +355,7 @@ class TacheController extends AppController
         } else {
           $tache->finie = 0;
         }
+        //TODO: NOTIF A FAIRE A ENVOYER A TOUS LES MEMBRES VVALIDER UNETACHE
         $this->Tache->save($tache);
       } else {
         $this->Flash->error(__('Seul le responsable de la tâche peut changer l\'état de celle-ci.'));
