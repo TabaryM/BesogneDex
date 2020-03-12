@@ -24,9 +24,7 @@
                 <?php else : ?>
                   <?= $this->Html->link("Consulter le projet", ['controller' => 'projet', 'action'=> 'index', $notif->une_notification->idProjet], ['class' => 'btn btn-primary']); ?>
                 <?php endif; ?>
-                <?php if ($notif->vue != 0): ?>
-                  <?= $this->Html->link("Supprimer","", ['class' => 'btn btn-danger shadow', 'data-toggle' => 'modal', 'data-target' => '#deleteModal' . $notif->idNotifProjet]) ?>
-                <?php endif; ?>
+                <?= $this->Html->link("Supprimer","", ['class' => 'btn btn-danger shadow', 'data-toggle' => 'modal', 'data-target' => '#deleteModal' . $notif->idNotifProjet]) ?>
               </td>
             </tr>
 

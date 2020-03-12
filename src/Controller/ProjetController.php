@@ -289,16 +289,17 @@ class ProjetController extends AppController
       $projet = $this->Projet->get($idProjet);
       $now = Time::now();
 
-      $this->autorisationProprietaire($idProjet);
-
-        // Projet expiré
-        if ($projet->dateFin < $now) {
-            $projet->etat = "Archive";
+      $session = $this->request->getSession();
+      if ($session->check('Auth.User.idUtilisateur')) {
+        $user = $session->read('Auth.User.idUtilisateur');
+        if ($projet->etat == 'Expire') {
+          if ($user === $projet->idProprietaire) {
+            $projet->etat = 'Archive';
             $projet->dateArchivage = Time::now();
             $this->Projet->save($projet);
 
             // Projet archivé
-            $this->Flash->success(__("Projet achivé avec succès"));
+            $this->Flash->success(__("Projet archivé avec succès"));
             $this->redirect(['action' => 'archives']);
 
         // Projet non expiré
@@ -306,6 +307,33 @@ class ProjetController extends AppController
           $this->Flash->error(__("Le projet doit être expiré pour pouvoir l'archiver."));
           $this->redirect($this->referer());
         }
+    }
+
+    /**
+    * @author Théo Roton
+    */
+    public function desarchive($idProjet) {
+      $projet = $this->Projet->get($idProjet);
+
+      $session = $this->request->getSession();
+      if ($session->check('Auth.User.idUtilisateur')) {
+        $user = $session->read('Auth.User.idUtilisateur');
+        if ($user === $projet->idProprietaire) {
+          $projet->etat = "Expire";
+          $projet->dateArchivage = NULL;
+          $this->Projet->save($projet);
+
+          // Projet archivé
+          $this->Flash->success(__("Projet désarchivé avec succès"));
+          $this->redirect(['action' => 'index']);
+        } else { // Pas le propriétaire
+          $this->Flash->error(__("Seul le propriétaire est en mesure de désarchiver le projet."));
+          $this->redirect($this->referer());
+        }
+      } else {
+        $this->Flash->error(__("Vous devez être connecté pour désarchiver un projet."));
+        $this->redirect($this->referer());
+      }
     }
 
     /**
@@ -343,13 +371,14 @@ class ProjetController extends AppController
     */
     public function modifierInfos(){
       $receivedData = $this->request->getData();
-      echo "<pre>" , var_dump($receivedData) , "</pre>";
 
       // On récupère le projet pour avoir les anciennes informations
       $projets = TableRegistry::getTableLocator()->get('projet');
       $projet = $projets->find()
       ->where(['idProjet' => $receivedData['id']])
       ->first();
+
+      echo "<pre>" , var_dump($projet->etat) , "</pre>";
 
       $erreur = false;
 
@@ -402,9 +431,11 @@ class ProjetController extends AppController
             $projet->dateDebut = date('Y-m-d',strtotime(implode($receivedData['dateDeb'])));
             $projet->dateFin = date('Y-m-d',strtotime(implode($receivedData['dateFin'])));
 
-            // Si le projet était archivé, et que la nouvelle date de fin est après aujourd'hui, on met le projet en cours
-            if ($projet->etat == 'Archive' && verificationDates($today, $receivedData['dateFin'])) {
+            // Si le projet était archivé ou expiré, et que la nouvelle date de fin est après aujourd'hui, on met le projet en cours
+            if (($projet->etat == 'Archive' || $projet->etat == 'Expire') && verificationDates($today, $receivedData['dateFin'])) {
               $projet->etat = 'En cours';
+            } else {
+              $projet->etat = 'Expire';
             }
 
           } else {
@@ -419,8 +450,8 @@ class ProjetController extends AppController
           $projet->dateDebut = date('Y-m-d',strtotime(implode($receivedData['dateDeb'])));
           $projet->dateFin = null;
 
-          // Si le projet était archivé, alors on le met en cours
-          if ($projet->etat == 'Archive') {
+          // Si le projet était archivé ou expiré, alors on le met en cours
+          if ($projet->etat == 'Archive' || $projet->etat == 'Expire') {
             $projet->etat = 'En cours';
           }
 
