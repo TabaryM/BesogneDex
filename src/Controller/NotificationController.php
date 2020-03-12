@@ -115,8 +115,9 @@ class NotificationController extends AppController
     public function declineInvitation($idNotifProjet) {
         $idUtilisateur = $this->autorisation(); // On récupère l'id utilisateur (et verifie si il est tjrs connecté)
         $vueNotificationProjetTable = TableRegistry::getTableLocator()->get('VueNotificationProjet');
-        $notificationProjet = $vueNotificationProjetTable->find()->where(['idUtilisateur' => $idUtilisateur,
-            'idNotifProjet' => $idNotifProjet])->first();
+        $notificationProjet = $vueNotificationProjetTable->find()
+        ->where(['idUtilisateur' => $idUtilisateur, 'idNotifProjet' => $idNotifProjet])
+        ->first();
 
         if($notificationProjet) { // Si la notification existe
             if($notificationProjet->etat == 'En attente') { // S'il n'a pas déjà répondu a la notif
@@ -133,6 +134,27 @@ class NotificationController extends AppController
             $this->Flash->error(__("La notification à laquelle vous essayez d'accéder n'existe pas."));
         }
         $this->redirect($this->referer());
+    }
+
+    public function supprimerTache($idNotifTache){
+      // On récupère l'id de l'utilisateur connecté
+      $session = $this->request->getSession();
+      $idUtilisateur = $session->read('Auth.User.idUtilisateur');
+
+      // On récupère la table des vues notifications
+      $vue_notifications = TableRegistry::getTableLocator()->get('Vue_notification_tache');
+      // On récupère la notification correspondant à la suppression
+      $notification = $vue_notifications->find()
+      ->where(['idUtilisateur' => $idUtilisateur])
+      ->where(['idNotifTache' => $idNotifTache])
+      ->first();
+
+      $notification->etat = 'Refusé';
+
+      $vue_notifications->save($notification);
+
+      // On redirige l'utilisateur sur la liste de ses notifications
+      $this->redirect($this->referer());
     }
 
     /**
