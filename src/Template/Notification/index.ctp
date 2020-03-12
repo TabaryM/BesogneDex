@@ -25,10 +25,39 @@
                   <?= $this->Html->link("Consulter le projet", ['controller' => 'projet', 'action'=> 'index', $notif->une_notification->idProjet], ['class' => 'btn btn-primary']); ?>
                 <?php endif; ?>
                 <?php if ($notif->vue != 0): ?>
-                  <?= $this->Html->link("Supprimer", ['controller' => 'notification', 'action' => 'supprimerNotification',  $notif->idNotifProjet]) ?>
+                  <?= $this->Html->link("Supprimer","", ['class' => 'btn btn-danger shadow', 'data-toggle' => 'modal', 'data-target' => '#deleteModal' . $notif->idNotifProjet]) ?>
                 <?php endif; ?>
               </td>
             </tr>
+
+
+            <!-- Début modal Supprimer une notification : -->
+            <div class="modal fade" id=<?= "deleteModal" . $notif->idNotifProjet ?>>
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title"></h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                </div>
+                                <div class="modal-body" style="text-align:center;">
+                                <p style="width: 477px;">Êtes-vous sûr de vouloir supprimer cette notification ?</p>
+                                </div>
+
+                            <div class="modal-footer text-center">
+                                <div class="row text-center" style="width: 484px;">
+                                    <div class="col text-right">
+                                      <?= $this->Html->link("Non", array('controller' => 'Notification', 'action'=> 'index'), array( 'button class' => 'btn btn-primary', 'data-dismiss' => 'modal'));?>
+                                    </div>
+                                    <div class="col text-left">
+                                      <?= $this->Html->link("Oui", array('controller' => 'Notification', 'action'=> 'supprimerNotification',  $notif->idNotifProjet), array( 'button class' => 'btn btn-danger'));?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <!-- Fin modal Supprimer une notification -->
+
+
           <?php endforeach; ?>
         </tbody>
       </table>

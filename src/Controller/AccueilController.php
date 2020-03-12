@@ -25,15 +25,15 @@ class AccueilController extends AppController
 
       /*SELECT tache.titre, dateFin
       FROM projet JOIN Tache USING(idProjet)
-      Where idProprietaire == $idUtilisateur and dateFin < $dateDans7Jours*/
+      Where idProprietaire == $idUtilisateur and dateFin < $dateDans7Jours and dateArchivage IS NULL and finie == 0*/
 
-      //On recherche toute les tâches des projets qui ont une date qui se finit dans moins de 7 jours
+      //On recherche toute les tâches non finie des projets qui ont une date qui se finit dans moins de 7 jours, dans un projet non archivé
       $tachesResponsable = TableRegistry::getTableLocator()
         ->get('Tache')->find()
         ->select(['titre', 'Projet.dateFin'])
         ->contain('Projet')
         ->distinct()
-        ->where(['idResponsable' => $idUtilisateur, 'Projet.dateFin <' => $dateDans7Jours])
+        ->where(['idResponsable' => $idUtilisateur, 'Projet.dateFin <' => $dateDans7Jours, function ($exp, $q) { return $exp->isNull('dateArchivage'); }, 'finie' => 0])
         ->limit(10)
         ->toArray()
         ;

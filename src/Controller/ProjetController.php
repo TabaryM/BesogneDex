@@ -444,7 +444,7 @@ class ProjetController extends AppController
         ->set(['idProprietaire' => $idMembre])
         ->where(['idProjet' => $idProjet])->execute();
       // redirection vers la page d'accueil des projets
-      return $this->redirect(['controller'=>'Tache', 'action'=> 'index', $idProjet]);
+      $this->redirect(['controller'=>'Tache', 'action'=> 'index', $idProjet]);
     }
 
 }
