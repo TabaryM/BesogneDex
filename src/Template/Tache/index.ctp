@@ -27,7 +27,7 @@
               ?>
               <?php
               if(isset($projetTab->dateFin) && !empty($projetTab->dateFin)){
-                echo '<strong>Date fin : </strong>';
+                echo '- <strong>Date fin : </strong>';
                 echo $projetTab->dateFin->nice('Europe/Paris', 'fr-FR');
               }
               ?>
@@ -172,7 +172,11 @@
             <div class="card-body shadow d-flex justify-content-between align-items-center color-card">
               <?= $this->Html->image("icones/list.png", ['class' => 'image_icone']) ?>
               <?php if($estProprietaire): ?>
-                <?= $this->Html->link("Archiver", ['controller' => 'Projet', 'action' => 'archive', $idProjet], ['class' => 'btn btn-primary shadow']); ?>
+                <?php if($projetTab->etat == 'Archive'): ?>
+                  <?= $this->Html->link("Désarchiver", ['controller' => 'Projet', 'action' => 'desarchive', $idProjet], ['class' => 'btn btn-primary shadow']); ?>
+                <?php else: ?>
+                  <?= $this->Html->link("Archiver", ['controller' => 'Projet', 'action' => 'archive', $idProjet], ['class' => 'btn btn-primary shadow']); ?>
+                <?php endif; ?>
                 <?= $this->Html->link("Modifier", ['controller' => 'Projet', 'action' => 'edit', $idProjet], ['class' => 'btn btn-primary shadow']); ?>
                 <?= $this->Html->link("Supprimer", "", ['class' => 'btn btn-danger shadow', 'data-toggle' => 'modal', 'data-target' => '#leaveModal']); ?>
               <?php else: ?>
