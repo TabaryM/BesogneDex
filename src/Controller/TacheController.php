@@ -19,7 +19,6 @@ class TacheController extends AppController
   {
 
     $estProprietaire = false;
-
     $session = $this->request->getSession();
     if ($session->check('Auth.User.idUtilisateur')) {
         $user = $session->read('Auth.User.idUtilisateur');

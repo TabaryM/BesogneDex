@@ -3,6 +3,8 @@ namespace App\Controller;
 
 use Cake\ORM\TableRegistry;
 use Cake\I18n\Time;
+use Cake\Utility\Hash;
+
 
 class AccueilController extends AppController
 {
@@ -23,15 +25,15 @@ class AccueilController extends AppController
 
       /*SELECT tache.titre, dateFin
       FROM projet JOIN Tache USING(idProjet)
-      Where idProprietaire == $idUtilisateur and dateFin < $dateDans7Jours*/
+      Where idProprietaire == $idUtilisateur and dateFin < $dateDans7Jours and dateArchivage IS NULL and finie == 0*/
 
-      //On recherche toute les tâches des projets qui ont une date qui se finit dans moins de 7 jours
+      //On recherche toute les tâches non finie des projets qui ont une date qui se finit dans moins de 7 jours, dans un projet non archivé
       $tachesResponsable = TableRegistry::getTableLocator()
         ->get('Tache')->find()
         ->select(['titre', 'Projet.dateFin'])
         ->contain('Projet')
         ->distinct()
-        ->where(['idResponsable' => $idUtilisateur, 'Projet.dateFin <' => $dateDans7Jours])
+        ->where(['idResponsable' => $idUtilisateur, 'Projet.dateFin <' => $dateDans7Jours, function ($exp, $q) { return $exp->isNull('dateArchivage'); }, 'finie' => 0])
         ->limit(10)
         ->toArray()
         ;
@@ -44,6 +46,25 @@ class AccueilController extends AppController
       }
 
       $this->set(compact('tachesPrioritaires'));
+
+      //on recherche les notifs d'un User
+      // Initialisation des tables
+      $tableNotificationsProjet = TableRegistry::getTableLocator()->get('VueNotificationProjet');
+      $tableNotificationsTache = TableRegistry::getTableLocator()->get('VueNotificationTache');
+
+      // Récupération des notifications de projet
+      $notificationsProjet = $tableNotificationsProjet->find()->contain(['NotificationProjet'])->where(['idUtilisateur' => $idUtilisateur])->toArray();
+      $notificationsTache = $tableNotificationsTache->find()->contain(['NotificationTache'])->where(['idUtilisateur' => $idUtilisateur])->toArray();
+
+      // On merge en une seule array les résultats des deux requêtes.
+      $notifs = array_merge($notificationsProjet, $notificationsTache);
+
+      // On trie l'array résultante. Le tri est déjà sur la date, puis sur si la notification est à valider.
+      $notifs = Hash::sort($notifs, '{n}.une_notification.Date','asc');
+      $notifs = Hash::sort($notifs, '{n}.une_notification.a_valider', 'desc');
+
+      // Donne aux ctp les variables nécessaires
+      $this->set(compact('notifs'));
     }
   }
 
