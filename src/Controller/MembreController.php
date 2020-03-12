@@ -246,11 +246,12 @@ class MembreController extends AppController
         if ($existeUtilisateur && !$estProprietaire && !$estDejaMembre){
 
           //On récupère la table des projets
-          $projets = TableRegistry::getTableLocator()->get('Notification_projet');
+          $projets = TableRegistry::getTableLocator()->get('Projet');
           $projet = $projets->find()->where(['idProjet' => $idProjet])->first();
           $nomProjet = $projet['titre'];
 
-          envoyerNotificationProjet(1, "Le propriétaire vous demande de rejoindre son projet" . $nomProjet, $idProjet, $idUtilisateur);
+          //Envoie une notification à un utilisateur pour lui demander de rejoindre son projet
+          envoyerNotificationProjet(1, "Le propriétaire vous demande de rejoindre son projet " . $nomProjet, $idProjet, $idUtilisateur);
 
           $this->sauvegarderMembre($idUtilisateur, $idProjet);
 
