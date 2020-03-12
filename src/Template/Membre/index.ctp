@@ -23,8 +23,7 @@
         </div>
     </div>
 </div>
-<?php $goto = Router::url(array('controller'=>'Membre', 'action'=> 'delete'));
-?>
+<?php $goto = Router::url(array('controller'=>'Membre', 'action'=> 'delete')); ?>
 <div class="row" style="margin-right: 60px;margin-left: 60px;margin-top: 50px;">
     <div class="col-xl-10 d-flex flex-row justify-content-between align-items-xl-center">
       <?= $this->Html->link("Changer de propriétaire", "", ['class' => 'btn btn-primary shadow grosBouton boutonRouge', 'data-toggle' => 'modal', 'data-target' => '#promoteModal']); ?>
@@ -40,6 +39,7 @@
     minLength: 1
 });
 </script>
+
 <!-- Modal Passer ses droits sur le projet : -->
 <div class="modal fade" id="promoteModal" role="dialog" tabindex="-1">
         <div class="modal-dialog" role="document">
@@ -62,6 +62,7 @@
             </div>
         </div>
 </div>
+<!-- Fin Modal Passer ses droits sur le projet : -->
 
 <!-- Modal supprimer un membre : -->
 <div class="modal fade" id="deleteMembreModal" role="dialog" tabindex="-1">
@@ -85,3 +86,4 @@
       </div>
     </div>
   </div>
+<!-- Fin Modal supprimer un membre : -->

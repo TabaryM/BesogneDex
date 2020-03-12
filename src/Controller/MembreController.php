@@ -3,6 +3,8 @@ namespace App\Controller;
 
 use Cake\ORM\TableRegistry;
 
+require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'Notifications.php');
+
 
 class MembreController extends AppController
 {
@@ -242,6 +244,15 @@ class MembreController extends AppController
 
         // Si la personne à ajouter existe, qu'elle n'est pas le propriétaire et qu'elle n'est pas déjà membre, on l'ajoute à la liste de membres.
         if ($existeUtilisateur && !$estProprietaire && !$estDejaMembre){
+
+          //On récupère la table des projets
+          $projets = TableRegistry::getTableLocator()->get('Projet');
+          $projet = $projets->find()->where(['idProjet' => $idProjet])->first();
+          $nomProjet = $projet['titre'];
+
+          //Envoie une notification à un utilisateur pour lui demander de rejoindre son projet
+          envoyerNotificationProjet(1, "Le propriétaire vous demande de rejoindre son projet " . $nomProjet, $idProjet, $idUtilisateur);
+
           $this->sauvegarderMembre($idUtilisateur, $idProjet);
 
         // Si les vérifications ont été fausses, on affiche les messages d'erreur selon les cas.
