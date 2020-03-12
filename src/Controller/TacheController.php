@@ -343,6 +343,7 @@ class TacheController extends AppController
         } else {
           $tache->finie = 0;
         }
+        //TODO: NOTIF A FAIRE A ENVOYER A TOUS LES MEMBRES VVALIDER UNETACHE
         $this->Tache->save($tache);
       } else {
         $this->Flash->error(__('Seul le responsable de la tâche peut changer l\'état de celle-ci.'));
