@@ -22,9 +22,13 @@
                 <?php elseif ($notif->une_notification->a_valider && $notif->etat=="Refusé"): ?>
                   <button class="btn btn-danger" disabled="true"> Invitation refusée </button>
                 <?php else : ?>
-                  <?= $this->Html->link("Consulter le projet", ['controller' => 'projet', 'action'=> 'index', $notif->une_notification->idProjet], ['class' => 'btn btn-primary']); ?>
+                  <?php if ($notif->une_notification->idProjet == null): ?>
+                    <button class="btn btn-primary" disabled="true"> Projet indisponible </button>
+                  <?php else : ?>
+                  <?= $this->Html->link("Consulter le projet", ['controller' => 'tache', 'action'=> 'index', $notif->une_notification->idProjet], ['class' => 'btn btn-primary']); ?>
                 <?php endif; ?>
-                <?php if ($notif->vue != 0): ?>
+                <?php endif; ?>
+                <?php if ($notif->vue != 0  && !$notif->une_notification->idProjet == null): ?>
                   <?= $this->Html->link("Supprimer","", ['class' => 'btn btn-danger shadow', 'data-toggle' => 'modal', 'data-target' => '#deleteModal' . $notif->idNotifProjet]) ?>
                 <?php endif; ?>
               </td>
