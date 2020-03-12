@@ -262,11 +262,13 @@ class TacheController extends AppController
       ->first();
       //si il est propriétaire du projet ou que l'utilisateur est responsable de la tache il peut supprimer cette tache
       if($projetTab->idProprietaire == $user || $tache->idResponsable == $user){
+        //On récupère la table des notifications des projets
+        $notifications = TableRegistry::getTableLocator()->get('Notification_tache');
+        //On récupère la table de vue des notifications des projets
+        $vue_notifications = TableRegistry::getTableLocator()->get('Vue_notification_tache');
 
         //Si c'est le proprio envoyer une notif a tout les membres du projet comme quoi la tache X du projet Y a ete supprimée.
         if($projetTab->idProprietaire == $user){
-          //On récupère la table des notifications des projets
-          $notifications = TableRegistry::getTableLocator()->get('Notification_tache');
 
           //On crée une nouvelle notification pour le projet courant
           $notification = $notifications->newEntity();
@@ -275,9 +277,6 @@ class TacheController extends AppController
           $notification->idTache = null;
           $notifications->save($notification);
           $idNot = $notification->idNotificationTache;
-
-          //On récupère la table de vue des notifications des projets
-          $vue_notifications = TableRegistry::getTableLocator()->get('Vue_notification_tache');
 
           //On récupère les membres du projet
           $membres = TableRegistry::getTableLocator()->get('Membre');
@@ -293,13 +292,26 @@ class TacheController extends AppController
             $vue_not->idNotifTache = $idNot;
             $vue_notifications->save($vue_not);
 
+            //TODO pour PE: supprimer les notifs en lien avec la tache pour eviter les conflits de DB            
+
             $query = $tacheTab->query();
             $query->delete()->where(['idTache' => $idTache])->execute();
           }
         }
         else{
-          //TODO pour PE: sinon envoyer une demande de confirmation au proprio et si il accepte, la supprimer
+          //sinon envoyer une demande de confirmation au proprio et si il accepte, la supprimer
+          //On crée une nouvelle notification pour le projet courant
+          $notification = $notifications->newEntity();
+          $notification->a_valider = 1;
+          $notification->contenu = $session->read('Auth.User.pseudo')." veut supprimer la tâche ".$tache->titre.".";
+          $notification->idTache = $idTache;
+          $notifications->save($notification);
+          $idNot = $notification->idNotificationTache;
 
+          $vue_not = $vue_notifications->newEntity();
+          $vue_not->idUtilisateur = $projetTab->idProprietaire;
+          $vue_not->idNotifTache = $idNot;
+          $vue_notifications->save($vue_not);
         }
       }
     }
