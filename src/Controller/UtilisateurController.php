@@ -4,6 +4,7 @@ namespace App\Controller;
 require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'listeErreursVersString.php');
 use App\Controller\AppController;
 use Cake\Event\Event;
+use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\Auth\DefaultPasswordHasher;
 
@@ -49,6 +50,11 @@ class UtilisateurController extends AppController
       $utilisateur = $this->Auth->identify();
       if ($utilisateur){
         $this->Auth->setUser($utilisateur);
+
+        /* Augmente le temps de session si la case "Rester connecté" a été cochée */
+        if ($this->request->getData(['resterConnecte'])==1){
+          Configure::write('Session', ['timeout' => 24*60*30 ]);
+        }
         $this->Flash->success(__('Vous êtes connecté !'));
         return $this->redirect(['controller' => 'Accueil', 'action' => 'index']);
       }else{
