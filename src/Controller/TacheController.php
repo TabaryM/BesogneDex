@@ -35,7 +35,7 @@ class TacheController extends AppController
     Configure::write('estExpire', false);
 
     $today = Time::now();
-    if($projetTab->dateFin < $today){
+    if($projetTab->dateFin < $today && $projetTab->dateFin!==null){
       Configure::write('estExpire', true);
     }
 

@@ -150,6 +150,9 @@ class NotificationController extends AppController
       ->first();
 
       $notification->etat = 'Refusé';
+      $notification->vue = 1;
+
+      $this->Flash->default(__('La tâche n\'a pas été supprimée'));
 
       $vue_notifications->save($notification);
 
