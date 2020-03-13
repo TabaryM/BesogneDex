@@ -27,7 +27,7 @@
                       if ($dateFin !== null) echo $dateFin->nice('Europe/Paris', 'fr-FR') ?>
               </td>
               <td>
-                <?= $this->Html->link($tache->leProjet->titre, ['controller' => 'Projet', 'action' => 'details', $tache->leProjet->idProjet]) ?>
+                <?= $this->Html->link($tache->leProjet->titre, ['controller' => 'tache', 'action' => 'index', $tache->leProjet->idProjet]) ?>
               </td>
             </tr>
           <?php endforeach; ?>
