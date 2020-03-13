@@ -159,7 +159,7 @@ class NotificationController extends AppController
         $this->redirect($this->referer());
     }
 
-    public function supprimerTache($idNotifTache){
+    public function refuserSuppressionTache($idNotifTache){
       // On récupère l'id de l'utilisateur connecté
       $session = $this->request->getSession();
       $idUtilisateur = $session->read('Auth.User.idUtilisateur');
