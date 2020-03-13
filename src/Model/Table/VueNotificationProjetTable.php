@@ -13,9 +13,12 @@ class VueNotificationProjetTable extends Table {
       'propertyName' => 'un_utilisateur'
     ]);
 
-    $this->belongsTo('NotificationProjet', [
-      'foreignKey' => 'idNotifProjet',
-      'propertyName' => 'une_notification'
+    $this->hasMany('NotificationProjet', [
+      'bindingKey' => 'idNotifProjet',
+      'foreignKey' => 'idNotificationProjet',
+      'propertyName' => 'une_notification_utilisateur',
+        'dependent' => true,
+        'cascadeCallbacks' => true
     ]);
 
   }
