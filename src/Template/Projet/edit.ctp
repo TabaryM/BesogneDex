@@ -1,3 +1,9 @@
+<!-- Début modification header -->
+  <?php
+    use Cake\Core\Configure;
+    Configure::write('titre_header_tache', $projet->titre);
+  ?>
+<!-- Fin modification header -->
 <!-- Début titre -->
 <div class="row" style="margin-right: 60px;margin-left: 60px;margin-top: 20px;">
     <div class="col">
