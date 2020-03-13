@@ -253,6 +253,7 @@ class MembreController extends AppController
           //Envoie une notification à un utilisateur pour lui demander de rejoindre son projet
           envoyerNotificationProjet(1, "Le propriétaire vous demande de rejoindre son projet " . $nomProjet, $idProjet, $idUtilisateur);
 
+          //TODO: A CHANGER
           $this->sauvegarderMembre($idUtilisateur, $idProjet);
 
         // Si les vérifications ont été fausses, on affiche les messages d'erreur selon les cas.
@@ -295,6 +296,14 @@ class MembreController extends AppController
 
       // Si l'utilisateur à supprimer du projet n'en est pas propriétaire, on peut le supprimer.
       if (!$estProprietaire && $estMembre){
+
+        //On récupère la table des projets
+        $projets = TableRegistry::getTableLocator()->get('Projet');
+        $projet = $projets->find()->where(['idProjet' => $idProjet])->first();
+        $nomProjet = $projet['titre'];
+
+        envoyerNotificationProjet(0, "Le propriétaire vous a exclu du projet " . $nomProjet, $idProjet, $idUtilisateur);
+
         $this->supprimerMembre($idUtilisateur, $idProjet);
 
       // Si l'utilisateur à supprimer du projet en est le propriétaire, on ne peut pas le supprimer.
