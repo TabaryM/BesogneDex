@@ -35,7 +35,7 @@ class TacheController extends AppController
     Configure::write('estExpire', false);
 
     $today = Time::now();
-    if($projetTab->dateFin < $today){
+    if($projetTab->dateFin < $today && $projetTab->dateFin!==null){
       Configure::write('estExpire', true);
     }
 
@@ -293,7 +293,7 @@ class TacheController extends AppController
             $vue_not->idNotifTache = $idNot;
             $vue_notifications->save($vue_not);
 
-            //TODO pour PE: supprimer les notifs en lien avec la tache pour eviter les conflits de DB            
+            //TODO pour PE: supprimer les notifs en lien avec la tache pour eviter les conflits de DB
 
             $query = $tacheTab->query();
             $query->delete()->where(['idTache' => $idTache])->execute();
