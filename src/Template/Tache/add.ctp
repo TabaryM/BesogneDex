@@ -1,3 +1,10 @@
+<!-- Début modification header -->
+<?php
+  use Cake\Core\Configure;
+  Configure::write('titre_header_tache', $titreProjet);
+?>
+<!-- Fin modification header -->
+
 <div class="container form-addTache" style="margin-top: 50px;">
       <div class="row">
           <div class="col-xl-12 offset-xl-0"><h1>Ajouter une tâche</h1></div>

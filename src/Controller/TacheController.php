@@ -135,7 +135,12 @@ class TacheController extends AppController
         }
       }
     }
-    $this->set(compact('idProjet'));
+
+    $projets = TableRegistry::getTableLocator()->get('Projet');
+    $projet = $projets->find()->where(['idProjet' => $idProjet])->first();
+    $titreProjet = $projet['titre'];
+
+    $this->set(compact('idProjet', 'titreProjet'));
   }
 
   /**

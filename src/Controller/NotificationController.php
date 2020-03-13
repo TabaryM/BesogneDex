@@ -200,13 +200,16 @@ class NotificationController extends AppController
       $session = $this->request->getSession();
       $idUtilisateur = $session->read('Auth.User.idUtilisateur');
 
+      // Informations nécessaires pour la suppression
       if ($not[1] == 'Tache'){
+        // Si on supprime une notification liée à une tâche
         $id = 'idNotifTache';
         $table = 'Vue_notification_tache';
         $id_suppr = 'idNotificationTache';
         $suppr = 'Notification_tache';
 
       } else if ($not[1] == 'Projet'){
+        // Si on supprime une notification liée à un projet
         $id = 'idNotifProjet';
         $table = 'Vue_notification_projet';
         $id_suppr = 'idNotificationProjet';
@@ -222,22 +225,25 @@ class NotificationController extends AppController
       ->where([$id => intval($not[0])])
       ->first();
 
-
       // On supprime la notification
       $vue_notifications->delete($notification);
 
-
+      // On compte le nombre de vues liées à la notification correspondate
       $count = $vue_notifications->find()
       ->where([$id => intval($not[0])])
       ->count();
 
+      // Si il n'y a plus de vues liées à cette notification, on supprime la notification
       if ($count == 0){
+        // On récupère la table des notifications
         $notifications = TableRegistry::getTableLocator()->get($suppr);
 
+        //On récupère la notification
         $notification = $notifications->find()
         ->where([$id_suppr => intval($not[0])])
         ->first();
 
+        // On supprime la notification
         $notifications->delete($notification);
       }
 

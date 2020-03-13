@@ -314,22 +314,30 @@ class ProjetController extends AppController
 
           /**
           * @author Théo Roton
+          * @param idProjet : id u projet que l'on veut désarchiver
+          * Cette fonction permet de désarchiver un projet qui a été précédemment
+          * archivé à l'aide de son id.
+          * On renvoie l'utilisateur sur sa liste de projets (non archivés) une fois
+          * que celui-ci est désarchivé.
           */
           public function desarchive($idProjet) {
+            // On récupère le projet
             $projet = $this->Projet->get($idProjet);
 
             $session = $this->request->getSession();
             if ($session->check('Auth.User.idUtilisateur')) {
               $user = $session->read('Auth.User.idUtilisateur');
               if ($user === $projet->idProprietaire) {
+                // On passe le projet a expiré et on enlève la date d'archivage
                 $projet->etat = "Expire";
                 $projet->dateArchivage = NULL;
+                // On met à jour le projet
                 $this->Projet->save($projet);
 
-                // Projet archivé
+                // Projet désarchivé avec succès
                 $this->Flash->success(__("Projet désarchivé avec succès"));
                 $this->redirect(['action' => 'index']);
-              } else { // Pas le propriétaire
+              } else {
                 $this->Flash->error(__("Seul le propriétaire est en mesure de désarchiver le projet."));
                 $this->redirect($this->referer());
               }
