@@ -551,7 +551,7 @@ class ProjetController extends AppController
             // redirection vers la page d'accueil des projets
 
             //Envoie un notification au nouveau propriétaire
-            envoyerNotificationProjet(0,"Vous êtes devenu le propriétaire de " .$nomProjet, $idProjet, $idMembre)
+            envoyerNotificationProjet(0,"Vous êtes devenu le propriétaire de " .$nomProjet, $idProjet, $idMembre);
 
             $this->Flash->set('Le propriétaire a bien été modifié.', ['element' => 'success']);
             return $this->redirect(['controller'=>'Projet', 'action'=> 'index']);
