@@ -3,6 +3,8 @@ namespace App\Controller;
 
 require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'VerificationChamps.php');
 require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'ModificationsProjet.php');
+require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'Notifications.php');
+
 use Cake\ORM\TableRegistry;
 use Cake\I18n\Time;
 
