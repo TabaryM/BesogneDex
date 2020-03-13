@@ -1,3 +1,8 @@
+<?php
+ use Cake\Core\Configure;
+ Configure::write('titre_header_tache', $titre);
+?>
+
 <div class="container d-flex flex-column justify-content-start" style="height: 80vh;margin-top: 20px;">
   <!-- Début description du projet -->
   <div class="row" style="margin-top: 50px;">
