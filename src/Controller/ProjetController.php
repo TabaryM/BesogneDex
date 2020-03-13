@@ -381,8 +381,6 @@ class ProjetController extends AppController
             ->where(['idProjet' => $receivedData['id']])
             ->first();
 
-            echo "<pre>" , var_dump($projet->etat) , "</pre>";
-
             $erreur = false;
 
             // Si on a modifié le titre
@@ -437,6 +435,8 @@ class ProjetController extends AppController
                   // Si le projet était archivé ou expiré, et que la nouvelle date de fin est après aujourd'hui, on met le projet en cours
                   if (($projet->etat == 'Archive' || $projet->etat == 'Expire') && verificationDates($today, $receivedData['dateFin'])) {
                     $projet->etat = 'En cours';
+
+                  //Sinon le projet est expiré
                   } else {
                     $projet->etat = 'Expire';
                   }
@@ -512,9 +512,11 @@ class ProjetController extends AppController
               foreach ($membres as $m) {
                 $idUtil = $m->un_utilisateur->idUtilisateur;
 
+                // Création de la notification
                 $vue_not = $vue_notifications->newEntity();
                 $vue_not->idUtilisateur = $idUtil;
                 $vue_not->idNotifProjet = $idNot;
+                // Sauvegarde de la notification
                 $vue_notifications->save($vue_not);
               }
 
