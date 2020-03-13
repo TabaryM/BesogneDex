@@ -301,13 +301,12 @@ class ProjetController extends AppController
                   // Projet archivé
                   $this->Flash->success(__("Projet archivé avec succès"));
                   $this->redirect(['action' => 'archives']);
-
+                  }
                   // Projet non expiré
-                }else {
+                } else {
                   $this->Flash->error(__("Le projet doit être expiré pour pouvoir l'archiver."));
                   $this->redirect($this->referer());
                 }
-              }
             }
           }
 
