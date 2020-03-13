@@ -9,7 +9,9 @@
  */
 function nettoyerTexte($texte) {
     $texte = filter_var($texte, FILTER_SANITIZE_STRING);
-    return htmlspecialchars($texte);
+    $texte = htmlspecialchars($texte);
+    $texte = str_replace("&#39;","'", $texte);
+    return $texte;
 }
 
 /**
