@@ -42,7 +42,7 @@
 
                   <?php if ($notif->une_notification->a_valider && $notif->etat == 'En attente'): ?>
                     <?= $this->Html->link("Accepter", ['action'=> '#'], ['class' => 'btn btn-primary']); ?>
-                    <?= $this->Html->link("Refuser", ['controller' => 'notification', 'action'=> 'supprimerTache', $notif->idNotifTache], ['class' => 'btn btn btn-danger']); ?>
+                    <?= $this->Html->link("Refuser", ['controller' => 'notification', 'action'=> 'refuserSuppressionTache', $notif->idNotifTache], ['class' => 'btn btn btn-danger']); ?>
 
                   <?php elseif ($notif->une_notification->a_valider && $notif->etat=="Accepté"): ?>
                     <button class="btn btn-primary" disabled="true"> Tâche supprimée </button>
