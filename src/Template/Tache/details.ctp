@@ -42,12 +42,7 @@
       - $idProjet : id du projet à afficher
       -->
       <?= $this->Html->link("Retour", array('controller' => 'Tache', 'action'=> 'index', $idProjet), array( 'class' => 'btn btn-primary')); ?>
-      <!-- Bouton 'Projets' qui renvoie sur la liste des projets
-      - nom : Projets
-      - controller : Projet
-      - action : index
-      -->
-      <?= $this->Html->link("Projets", array('controller' => 'Projet', 'action'=> 'index'), array( 'class' => 'btn btn-primary')); ?>
+    
     </div>
   </div>
   <!-- Fin Boutons 'Retour' & 'Projets' -->
