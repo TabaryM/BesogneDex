@@ -136,7 +136,7 @@ class NotificationController extends AppController
         $this->redirect($this->referer());
     }
 
-    
+
     public function acceptInvitation($idNotifProjet) {
         $idUtilisateur = $this->autorisation(); // On récupère l'id utilisateur (et verifie si il est tjrs connecté)
         $vueNotificationProjetTable = TableRegistry::getTableLocator()->get('VueNotificationProjet');
