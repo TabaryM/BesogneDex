@@ -20,9 +20,8 @@
                     <?= $this->Form->control('email', array('label' => 'E-mail :', 'class' => 'label')); ?>
                   </div>
                   <div class="form-check">
+                    <?=  $this->Form->control('resterConnecte', array('label'=>' Rester connecté', 'type'=>'checkbox')) ?>
 
-                    <input class="form-check-input" type="checkbox" id="formCheck-1">
-                    <label class="form-check-label" for="formCheck-1">Rester connecté</label>
                   </div>
               </div>
               <div class="d-flex flex-column mdp_div_header">

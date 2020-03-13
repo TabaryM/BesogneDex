@@ -61,7 +61,7 @@
                   $not = array($notif->idNotifProjet, 'Projet');
                 }
                 ?>
-                <?php if ($notif->vue != 0  || !$notif->une_notification->a_valider): ?>
+                <?php if ($notif->vue  || !$notif->une_notification->a_valider): ?>
                   <?= $this->Html->link("Supprimer","", ['class' => 'btn btn-danger shadow', 'data-toggle' => 'modal', 'data-target' => '#deleteModal' . $not[0]]) ?>
                 <?php endif; ?>
               </td>
