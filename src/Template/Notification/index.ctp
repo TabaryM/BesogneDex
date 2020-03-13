@@ -17,8 +17,8 @@
 
                   <?php if ($notif->une_notification->a_valider && $notif->etat=="En attente"): ?>
 
-                    <!-- TODO: Fonction accepter / refuser invitation -->
-                    <?= $this->Html->link("Accepter", ['action'=> '#'], ['class' => 'btn btn-primary']); ?>
+                    <!-- TODO: Fonction accepter invitation -->
+                    <?= $this->Html->link("Accepter", ['controller'=> 'notification', 'action'=> 'acceptInvitation', $notif->idNotifProjet], ['class' => 'btn btn-primary']); ?>
                     <?= $this->Html->link("Refuser", ['controller' => 'notification', 'action'=> 'declineInvitation', $notif->idNotifProjet], ['class' => 'btn btn btn-danger']); ?>
 
                   <?php elseif ($notif->une_notification->a_valider && $notif->etat=="Accepté"): ?>
@@ -61,7 +61,7 @@
                   $not = array($notif->idNotifProjet, 'Projet');
                 }
                 ?>
-                <?php if ($notif->vue != 0  || !$notif->une_notification->a_valider): ?>
+                <?php if ($notif->vue  || !$notif->une_notification->a_valider): ?>
                   <?= $this->Html->link("Supprimer","", ['class' => 'btn btn-danger shadow', 'data-toggle' => 'modal', 'data-target' => '#deleteModal' . $not[0]]) ?>
                 <?php endif; ?>
               </td>

@@ -136,6 +136,29 @@ class NotificationController extends AppController
         $this->redirect($this->referer());
     }
 
+    
+    public function acceptInvitation($idNotifProjet) {
+        $idUtilisateur = $this->autorisation(); // On récupère l'id utilisateur (et verifie si il est tjrs connecté)
+        $vueNotificationProjetTable = TableRegistry::getTableLocator()->get('VueNotificationProjet');
+        $notificationProjet = $vueNotificationProjetTable->find()
+        ->where(['idUtilisateur' => $idUtilisateur, 'idNotifProjet' => $idNotifProjet])
+        ->first();
+
+        if($notificationProjet) { // Si la notification existe
+            if($notificationProjet->etat == 'En attente') { // S'il n'a pas déjà répondu a la notif
+              $notificationProjet->vue = 1; // La notification a ete vue puisqu'il a repondu
+              $notificationProjet->etat = 'Accepté'; // Il refuse la notification
+              $vueNotificationProjetTable->save($notificationProjet); // On sauvegarde les changements
+              $this->Flash->success(__('Vous avez répondu à la notification.'));
+            } else {
+                $this->Flash->error(__("Vous avez déjà répondu à cette notification."));
+            }
+        } else {
+            $this->Flash->error(__("La notification à laquelle vous essayez d'accéder n'existe pas."));
+        }
+        $this->redirect($this->referer());
+    }
+
     public function supprimerTache($idNotifTache){
       // On récupère l'id de l'utilisateur connecté
       $session = $this->request->getSession();
@@ -150,6 +173,9 @@ class NotificationController extends AppController
       ->first();
 
       $notification->etat = 'Refusé';
+      $notification->vue = 1;
+
+      $this->Flash->default(__('La tâche n\'a pas été supprimée'));
 
       $vue_notifications->save($notification);
 

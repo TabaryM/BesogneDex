@@ -80,8 +80,14 @@
                     <div class="dropdown">
                       <a class="test" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">●●●</a>
                       <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        <?= $this->Html->link("Supprimer la tâche", array('controller' => 'Tache', 'action'=> 'index', $idProjet), array('class' => 'dropdown-item', 'data-toggle' => 'modal', 'data-target' => '#deleteModal' . $tache->idTache)); ?>
-                        <?= $this->Html->link("Modifier la tâche", array('controller' => 'Tache', 'action'=> 'edit', $idProjet, $tache->idTache), array( 'class' => 'dropdown-item'));?>
+                        <?php if (isset ($user)) {
+                            if ($tache->idResponsable == $user || $estProprietaire){
+                            echo $this->Html->link("Supprimer la tâche", array('controller' => 'Tache', 'action'=> 'index', $idProjet), array('class' => 'dropdown-item', 'data-toggle' => 'modal', 'data-target' => '#deleteModal' . $tache->idTache));
+                            echo $this->Html->link("Modifier la tâche", array('controller' => 'Tache', 'action'=> 'edit', $idProjet, $tache->idTache), array( 'class' => 'dropdown-item'));
+                          }
+                          } // fin if isset
+                        ?>
+
                         <?php
                         if (isset ($user) && isset($tache->responsable)) {
                             if($tache->idResponsable == $user) {

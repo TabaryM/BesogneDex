@@ -35,7 +35,7 @@ class TacheController extends AppController
     Configure::write('estExpire', false);
 
     $today = Time::now();
-    if($projetTab->dateFin < $today){
+    if($projetTab->dateFin < $today && $projetTab->dateFin!==null){
       Configure::write('estExpire', true);
     }
 
@@ -71,6 +71,7 @@ class TacheController extends AppController
     $projet = $projets->find()->where(['idProjet' => $idProjet])->first();
     //On récupère la description du projet
     $desc = $projet->description;
+    $titre = $projet->titre;
 
     //On récupère la table des membres
     $membres = TableRegistry::getTableLocator()->get('Membre');
@@ -83,7 +84,7 @@ class TacheController extends AppController
       array_push($mbs,$m->un_utilisateur->pseudo);
     }
 
-    $this->set(compact('desc', 'idProjet', 'mbs'));
+    $this->set(compact('desc', 'idProjet', 'mbs', 'titre'));
   }
 
   /**
@@ -293,18 +294,19 @@ class TacheController extends AppController
             $vue_not->idNotifTache = $idNot;
             $vue_notifications->save($vue_not);
 
-            //TODO pour PE: supprimer les notifs en lien avec la tache pour eviter les conflits de DB            
+            //TODO pour PE: supprimer les notifs en lien avec la tache pour eviter les conflits de DB
 
-            $query = $tacheTab->query();
-            $query->delete()->where(['idTache' => $idTache])->execute();
+
           }
+          $query = $tacheTab->query();
+          $query->delete()->where(['idTache' => $idTache])->execute();
         }
         else{
           //sinon envoyer une demande de confirmation au proprio et si il accepte, la supprimer
           //On crée une nouvelle notification pour le projet courant
           $notification = $notifications->newEntity();
           $notification->a_valider = 1;
-          $notification->contenu = $session->read('Auth.User.pseudo')." veut supprimer la tâche ".$tache->titre.".";
+          $notification->contenu = $session->read('Auth.User.pseudo')." veut supprimer la tâche ".$tache->titre." du projet ".$projetTab->titre.".";
           $notification->idTache = $idTache;
           $notifications->save($notification);
           $idNot = $notification->idNotificationTache;
@@ -312,6 +314,9 @@ class TacheController extends AppController
           $vue_not = $vue_notifications->newEntity();
           $vue_not->idUtilisateur = $projetTab->idProprietaire;
           $vue_not->idNotifTache = $idNot;
+
+          $this->Flash->default(__('Une demande pour supprimer cette tâche à été envoyé au propriétaire.'));
+
           $vue_notifications->save($vue_not);
         }
       }

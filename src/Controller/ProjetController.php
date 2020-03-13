@@ -3,6 +3,8 @@ namespace App\Controller;
 
 require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'VerificationChamps.php');
 require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'ModificationsProjet.php');
+require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'Notifications.php');
+
 use Cake\ORM\TableRegistry;
 use Cake\I18n\Time;
 
@@ -549,6 +551,14 @@ class ProjetController extends AppController
             ->set(['idProprietaire' => $idMembre])
             ->where(['idProjet' => $idProjet])->execute();
             // redirection vers la page d'accueil des projets
+
+            //On récupère la table des projets
+            $projets = TableRegistry::getTableLocator()->get('Projet');
+            $projet = $projets->find()->where(['idProjet' => $idProjet])->first();
+            $nomProjet = $projet['titre'];
+
+            //Envoie un notification au nouveau propriétaire
+            envoyerNotificationProjet(0,"Vous êtes devenu le propriétaire de " .$nomProjet, $idProjet, $idMembre);
 
             $this->Flash->set('Le propriétaire a bien été modifié.', ['element' => 'success']);
             return $this->redirect(['controller'=>'Projet', 'action'=> 'index']);
