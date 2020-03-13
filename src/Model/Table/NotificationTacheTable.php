@@ -15,8 +15,10 @@ class NotificationTacheTable extends Table {
 
     $this->hasMany('VueNotificationTache', [
       'bindingKey' => 'idNotifTache',
-      'foreignKey' => 'idNotificationProjet',
-      'propertyName' => 'une_notification'
+      'foreignKey' => 'idNotificationTache',
+      'propertyName' => 'une_notification',
+        'dependent' => true,
+        'cascadeCallbacks' =>true
     ]);
 
   }

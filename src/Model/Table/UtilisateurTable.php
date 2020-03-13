@@ -39,8 +39,9 @@ class UtilisateurTable extends Table{
           'className' => 'VueNotificationTache',
           'foreignKey'=> 'idUtilisateur',
           'dependent' => true,
-          'cascadeCallbbacks' =>true
+          'cascadeCallbacks' =>true
       ]);
+
   }
 
 /**
