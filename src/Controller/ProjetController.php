@@ -552,6 +552,11 @@ class ProjetController extends AppController
             ->where(['idProjet' => $idProjet])->execute();
             // redirection vers la page d'accueil des projets
 
+            //On récupère la table des projets
+            $projets = TableRegistry::getTableLocator()->get('Projet');
+            $projet = $projets->find()->where(['idProjet' => $idProjet])->first();
+            $nomProjet = $projet['titre'];
+
             //Envoie un notification au nouveau propriétaire
             envoyerNotificationProjet(0,"Vous êtes devenu le propriétaire de " .$nomProjet, $idProjet, $idMembre);
 
