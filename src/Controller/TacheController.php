@@ -295,16 +295,17 @@ class TacheController extends AppController
 
             //TODO pour PE: supprimer les notifs en lien avec la tache pour eviter les conflits de DB
 
-            $query = $tacheTab->query();
-            $query->delete()->where(['idTache' => $idTache])->execute();
+
           }
+          $query = $tacheTab->query();
+          $query->delete()->where(['idTache' => $idTache])->execute();
         }
         else{
           //sinon envoyer une demande de confirmation au proprio et si il accepte, la supprimer
           //On crée une nouvelle notification pour le projet courant
           $notification = $notifications->newEntity();
           $notification->a_valider = 1;
-          $notification->contenu = $session->read('Auth.User.pseudo')." veut supprimer la tâche ".$tache->titre.".";
+          $notification->contenu = $session->read('Auth.User.pseudo')." veut supprimer la tâche ".$tache->titre." du projet ".$projetTab->titre.".";
           $notification->idTache = $idTache;
           $notifications->save($notification);
           $idNot = $notification->idNotificationTache;
