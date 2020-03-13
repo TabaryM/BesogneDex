@@ -312,6 +312,9 @@ class TacheController extends AppController
           $vue_not = $vue_notifications->newEntity();
           $vue_not->idUtilisateur = $projetTab->idProprietaire;
           $vue_not->idNotifTache = $idNot;
+
+          $this->Flash->default(__('Une demande pour supprimer cette tâche à été envoyé au propriétaire.'));
+
           $vue_notifications->save($vue_not);
         }
       }
