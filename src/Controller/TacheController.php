@@ -71,6 +71,7 @@ class TacheController extends AppController
     $projet = $projets->find()->where(['idProjet' => $idProjet])->first();
     //On récupère la description du projet
     $desc = $projet->description;
+    $titre = $projet->titre;
 
     //On récupère la table des membres
     $membres = TableRegistry::getTableLocator()->get('Membre');
@@ -83,7 +84,7 @@ class TacheController extends AppController
       array_push($mbs,$m->un_utilisateur->pseudo);
     }
 
-    $this->set(compact('desc', 'idProjet', 'mbs'));
+    $this->set(compact('desc', 'idProjet', 'mbs', 'titre'));
   }
 
   /**
@@ -215,7 +216,11 @@ class TacheController extends AppController
       return $this->redirect(['action'=> 'index', $idProjet]);
     }
 
-    $this->set(compact('idProjet', 'idTache', 'titre', 'description'));
+    $projets = TableRegistry::getTableLocator()->get('Projet');
+    $projet = $projets->find()->where(['idProjet' => $idProjet])->first();
+    $titreProjet = $projet['titre'];
+
+    $this->set(compact('idProjet', 'idTache', 'titre', 'description', 'titreProjet'));
   }
 
     /**

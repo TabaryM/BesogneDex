@@ -199,7 +199,10 @@ class MembreController extends AppController
       $membres = $this->Paginator->paginate($this->Membre->find()
           ->contain(['Utilisateur'])
           ->where(['idProjet' => $idProjet]));
-      $this->set(compact('membres', 'idProjet'));
+      $projets = TableRegistry::getTableLocator()->get('Projet');
+      $projet = $projets->find()->where(['idProjet' => $idProjet])->first();
+      $titreProjet = $projet['titre'];
+      $this->set(compact('membres', 'idProjet', 'titreProjet'));
     }
 
     /**
@@ -252,9 +255,6 @@ class MembreController extends AppController
 
           //Envoie une notification à un utilisateur pour lui demander de rejoindre son projet
           envoyerNotificationProjet(1, "Le propriétaire vous demande de rejoindre son projet " . $nomProjet, $idProjet, $idUtilisateur);
-
-          //TODO: A CHANGER
-          $this->sauvegarderMembre($idUtilisateur, $idProjet);
 
         // Si les vérifications ont été fausses, on affiche les messages d'erreur selon les cas.
         }else{
