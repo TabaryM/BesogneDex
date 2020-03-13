@@ -159,6 +159,14 @@ class NotificationController extends AppController
         $this->redirect($this->referer());
     }
 
+    /**
+    * @author Théo Roton
+    * @param idNotifTache : id de la notification
+    *
+    * Cette fonction permet de refuser la suppression d'une tâche.
+    * Une fois la notification refusée, on renvoie l'utilisateur
+    * sur la liste de ses notifications.
+    */
     public function refuserSuppressionTache($idNotifTache){
       // On récupère l'id de l'utilisateur connecté
       $session = $this->request->getSession();
@@ -172,11 +180,14 @@ class NotificationController extends AppController
       ->where(['idNotifTache' => $idNotifTache])
       ->first();
 
+      // On change l'état de la vue à réfusé
       $notification->etat = 'Refusé';
+      // On indique que la notification a été vue
       $notification->vue = 1;
 
       $this->Flash->default(__('La tâche n\'a pas été supprimée'));
 
+      // On met à jour la notification
       $vue_notifications->save($notification);
 
       // On redirige l'utilisateur sur la liste de ses notifications
