@@ -1,3 +1,10 @@
+<!-- Début modification header -->
+  <?php
+    use Cake\Core\Configure;
+    Configure::write('titre_header_tache', $titreProjet);
+  ?>
+<!-- Fin modification header -->
+
 <?php use Cake\Routing\Router;
 // TODO: Ajouter une icône de recherche avec la ligne en dessous
 ?>
