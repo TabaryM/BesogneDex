@@ -14,10 +14,11 @@ class NotificationProjetTable extends Table {
     ]);
 
 
-        $this->belongsTo( 'VueNotificationProjet', [
-            'foreignKey' => 'idNotifProjet',
-            'propertyName' => 'une_notification'
-        ]);
+    $this->hasMany('VueNotificationProjet', [
+      'bindingKey' => 'idNotifProjet',
+      'foreignKey' => 'idNotificationProjet',
+      'propertyName' => 'une_notification'
+    ]);
   }
 
 }
