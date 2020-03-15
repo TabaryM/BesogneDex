@@ -4,7 +4,6 @@ namespace App\Controller;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
-
 class NotificationController extends AppController
 {
 
@@ -24,50 +23,6 @@ class NotificationController extends AppController
       $this->redirect($this->referer());
     }
   }
-
-  /**
-  * Supprime toutes les notifications associées à un projet et à ses tâches.
-  *
-  * @param idProjet : id du projet
-  * @return /
-  *
-  * Redirection : /
-  *
-  * @author POP Diana
-  */
-  public function supprimerToutesNotifications($idProjet){
-    // On récupère toutes les tables nécessaires .
-    $projets = TableRegistry::getTableLocator()->get('Projet');
-    $taches = TableRegistry::getTableLocator()->get('Tache');
-    $vuesNotificationsTaches = TableRegistry::getTableLocator()->get('VueNotificationTache');
-    $vuesNotificationsProjets = TableRegistry::getTableLocator()->get('VueNotificationProjet');
-    $notificationsProjets = TableRegistry::getTableLocator()->get('NotificationProjet');
-    $notificationsTaches = TableRegistry::getTableLocator()->get('NotificationTache');
-
-    // On va commencer par supprimer toutes les notifications tâches.
-    // On cherche toutes les tâches du projet pour avoir leur ids.
-    $toutesTaches = $taches->find()->where(['idProjet' => $idProjet]);
-
-    // On va aller voir chacune de ces tâches.
-    foreach ($toutesTaches as $tache){
-      debug($tache);
-      $idTache = $tache->idTache;
-
-      // Pour chacune, on trouve les notifications associées.
-      $toutesNotifsTache = $notificationsTaches->find()->where(['idTache' => $idTache]);
-
-      // On va aller voir chacune de ces notifications tâche.
-      foreach ($toutesNotifsTache as $notifTache){
-        // Pour chacune, on va supprimer les vues notifs tâches associées.
-        $idNotifTache = $notifTache->idNotificationTache;
-        $query = $vuesNotificationsTaches->query()->delete()->where(['idNotifTache' => $idNotifTache])->execute();
-      } // fin foreach $toutesNotifsTache
-
-      // Maintenant que ses notifications sont supprimées, on peut supprimer la tâche.
-      $query = $taches->query()->delete()->where(['idTache' => $idTache])->execute();
-    } // fin foreach $toutesTaches
-
-  }// fin fonction
 
   /**
   * Les notifications non-vues et non à valider deviennent vues lorsque l'utilisateur va voir ses notifications.
