@@ -13,12 +13,12 @@ class NotificationProjetTable extends Table {
       'propertyName' => 'projet_liee'
     ]);
 
+
     $this->hasMany('VueNotificationProjet', [
       'bindingKey' => 'idNotifProjet',
       'foreignKey' => 'idNotificationProjet',
       'propertyName' => 'une_notification'
     ]);
-
   }
 
 }

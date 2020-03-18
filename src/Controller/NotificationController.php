@@ -4,7 +4,6 @@ namespace App\Controller;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
-
 class NotificationController extends AppController
 {
 
@@ -136,7 +135,7 @@ class NotificationController extends AppController
         $this->redirect($this->referer());
     }
 
-    
+
     public function acceptInvitation($idNotifProjet) {
         $idUtilisateur = $this->autorisation(); // On récupère l'id utilisateur (et verifie si il est tjrs connecté)
         $vueNotificationProjetTable = TableRegistry::getTableLocator()->get('VueNotificationProjet');
@@ -159,7 +158,15 @@ class NotificationController extends AppController
         $this->redirect($this->referer());
     }
 
-    public function supprimerTache($idNotifTache){
+    /**
+    * @author Théo Roton
+    * @param idNotifTache : id de la notification
+    *
+    * Cette fonction permet de refuser la suppression d'une tâche.
+    * Une fois la notification refusée, on renvoie l'utilisateur
+    * sur la liste de ses notifications.
+    */
+    public function refuserSuppressionTache($idNotifTache){
       // On récupère l'id de l'utilisateur connecté
       $session = $this->request->getSession();
       $idUtilisateur = $session->read('Auth.User.idUtilisateur');
@@ -172,11 +179,14 @@ class NotificationController extends AppController
       ->where(['idNotifTache' => $idNotifTache])
       ->first();
 
+      // On change l'état de la vue à réfusé
       $notification->etat = 'Refusé';
+      // On indique que la notification a été vue
       $notification->vue = 1;
 
       $this->Flash->default(__('La tâche n\'a pas été supprimée'));
 
+      // On met à jour la notification
       $vue_notifications->save($notification);
 
       // On redirige l'utilisateur sur la liste de ses notifications
@@ -200,13 +210,16 @@ class NotificationController extends AppController
       $session = $this->request->getSession();
       $idUtilisateur = $session->read('Auth.User.idUtilisateur');
 
+      // Informations nécessaires pour la suppression
       if ($not[1] == 'Tache'){
+        // Si on supprime une notification liée à une tâche
         $id = 'idNotifTache';
         $table = 'Vue_notification_tache';
         $id_suppr = 'idNotificationTache';
         $suppr = 'Notification_tache';
 
       } else if ($not[1] == 'Projet'){
+        // Si on supprime une notification liée à un projet
         $id = 'idNotifProjet';
         $table = 'Vue_notification_projet';
         $id_suppr = 'idNotificationProjet';
@@ -222,22 +235,25 @@ class NotificationController extends AppController
       ->where([$id => intval($not[0])])
       ->first();
 
-
       // On supprime la notification
       $vue_notifications->delete($notification);
 
-
+      // On compte le nombre de vues liées à la notification correspondate
       $count = $vue_notifications->find()
       ->where([$id => intval($not[0])])
       ->count();
 
+      // Si il n'y a plus de vues liées à cette notification, on supprime la notification
       if ($count == 0){
+        // On récupère la table des notifications
         $notifications = TableRegistry::getTableLocator()->get($suppr);
 
+        //On récupère la notification
         $notification = $notifications->find()
         ->where([$id_suppr => intval($not[0])])
         ->first();
 
+        // On supprime la notification
         $notifications->delete($notification);
       }
 

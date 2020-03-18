@@ -17,7 +17,6 @@ class VueNotificationProjetTable extends Table {
       'foreignKey' => 'idNotifProjet',
       'propertyName' => 'une_notification'
     ]);
-
   }
 
 }

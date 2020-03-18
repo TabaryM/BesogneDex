@@ -5,6 +5,7 @@ require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'Ver
 require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'ModificationsProjet.php');
 require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'Notifications.php');
 
+
 use Cake\ORM\TableRegistry;
 use Cake\I18n\Time;
 
@@ -76,6 +77,62 @@ class ProjetController extends AppController
     return $this->redirect(['controller'=>'Accueil', 'action'=>'index']);
   }
 
+
+    /**
+    * Supprime toutes les notifications associées à un projet et à ses tâches.
+    *
+    * @param idProjet : id du projet
+    * @return /
+    *
+    * Redirection : /
+    *
+    * @author POP Diana
+    */
+    private function supprimerToutesNotifications($idProjet){
+      // On récupère toutes les tables nécessaires .
+      $taches = TableRegistry::getTableLocator()->get('Tache');
+      $vuesNotificationsTaches = TableRegistry::getTableLocator()->get('VueNotificationTache');
+      $vuesNotificationsProjets = TableRegistry::getTableLocator()->get('VueNotificationProjet');
+      $notificationsProjets = TableRegistry::getTableLocator()->get('NotificationProjet');
+      $notificationsTaches = TableRegistry::getTableLocator()->get('NotificationTache');
+
+      /* NOTIFICATIONS TACHES */
+      // On va commencer par supprimer toutes les notifications tâches.
+      // On cherche toutes les tâches du projet pour avoir leur ids.
+      $toutesTaches = $taches->find()->where(['idProjet' => $idProjet]);
+
+      // On va aller voir chacune de ces tâches.
+      foreach ($toutesTaches as $tache){
+        $idTache = $tache->idTache;
+
+        // Pour chacune, on trouve les notifications associées.
+        $toutesNotifsTache = $notificationsTaches->find()->where(['idTache' => $idTache]);
+
+        // On va aller voir chacune de ces notifications tâche.
+        foreach ($toutesNotifsTache as $notifTache){
+          // Pour chacune, on va supprimer les vues notifs tâche associées.
+          $idNotifTache = $notifTache->idNotificationTache;
+          $query = $vuesNotificationsTaches->query()->delete()->where(['idNotifTache' => $idNotifTache])->execute();
+
+          // Maintenant que toutes les vues notifs tâches associées ont été supprimées, on peut effacer la notif tâche.
+          $query = $notificationsTaches->query()->delete()->where(['idNotificationTache' => $idNotifTache])->execute();
+        } // fin foreach $toutesNotifsTache
+      } // fin foreach $toutesTaches
+
+      /* NOTIFICATIONS PROJET */
+      $toutesNotifsProjet = $notificationsProjets->find()->where(['idProjet'=> $idProjet]);
+
+      foreach ($toutesNotifsProjet as $notifProjet){
+        // Pour chacune, on va supprimer les vues notifs projet associées.
+        $idNotifProjet = $notifProjet->idNotificationProjet;
+        $query = $vuesNotificationsProjets->query()->delete()->where(['idNotifProjet' => $idNotifProjet])->execute();
+
+        // Maintenant que toutes les vues notifs projet associées ont été supprimées, on peut effacer la notif projet.
+        $query = $notificationsProjets->query()->delete()->where(['idNotificationProjet' => $idNotifProjet])->execute();
+      }// fin foreach $toutesNotifsProjet
+
+
+    }// fin fonction
 
 
   /**
@@ -239,8 +296,7 @@ class ProjetController extends AppController
                 $query = $membres->query();
                 $query->delete()->where(['idProjet' => $idProjet])->execute();
 
-                //TODO pour PE: supprimer les notifs en lien avec les taches du projets pour eviter les conflits de DB
-                //TODO pour PE: supprimer les notifs en lien avec le projet pour eviter les conflits de DB
+                $this->supprimerToutesNotifications($idProjet);
 
                 //supprime les taches du projet
                 $taches = TableRegistry::getTableLocator()->get('Tache');
@@ -303,34 +359,41 @@ class ProjetController extends AppController
                   // Projet archivé
                   $this->Flash->success(__("Projet archivé avec succès"));
                   $this->redirect(['action' => 'archives']);
-
+                  }
                   // Projet non expiré
-                }else {
+                } else {
                   $this->Flash->error(__("Le projet doit être expiré pour pouvoir l'archiver."));
                   $this->redirect($this->referer());
                 }
-              }
             }
           }
 
           /**
           * @author Théo Roton
+          * @param idProjet : id u projet que l'on veut désarchiver
+          * Cette fonction permet de désarchiver un projet qui a été précédemment
+          * archivé à l'aide de son id.
+          * On renvoie l'utilisateur sur sa liste de projets (non archivés) une fois
+          * que celui-ci est désarchivé.
           */
           public function desarchive($idProjet) {
+            // On récupère le projet
             $projet = $this->Projet->get($idProjet);
 
             $session = $this->request->getSession();
             if ($session->check('Auth.User.idUtilisateur')) {
               $user = $session->read('Auth.User.idUtilisateur');
               if ($user === $projet->idProprietaire) {
+                // On passe le projet a expiré et on enlève la date d'archivage
                 $projet->etat = "Expire";
                 $projet->dateArchivage = NULL;
+                // On met à jour le projet
                 $this->Projet->save($projet);
 
-                // Projet archivé
+                // Projet désarchivé avec succès
                 $this->Flash->success(__("Projet désarchivé avec succès"));
                 $this->redirect(['action' => 'index']);
-              } else { // Pas le propriétaire
+              } else {
                 $this->Flash->error(__("Seul le propriétaire est en mesure de désarchiver le projet."));
                 $this->redirect($this->referer());
               }
@@ -381,8 +444,6 @@ class ProjetController extends AppController
             $projet = $projets->find()
             ->where(['idProjet' => $receivedData['id']])
             ->first();
-
-            echo "<pre>" , var_dump($projet->etat) , "</pre>";
 
             $erreur = false;
 
@@ -438,6 +499,8 @@ class ProjetController extends AppController
                   // Si le projet était archivé ou expiré, et que la nouvelle date de fin est après aujourd'hui, on met le projet en cours
                   if (($projet->etat == 'Archive' || $projet->etat == 'Expire') && verificationDates($today, $receivedData['dateFin'])) {
                     $projet->etat = 'En cours';
+
+                  //Sinon le projet est expiré
                   } else {
                     $projet->etat = 'Expire';
                   }
@@ -513,9 +576,11 @@ class ProjetController extends AppController
               foreach ($membres as $m) {
                 $idUtil = $m->un_utilisateur->idUtilisateur;
 
+                // Création de la notification
                 $vue_not = $vue_notifications->newEntity();
                 $vue_not->idUtilisateur = $idUtil;
                 $vue_not->idNotifProjet = $idNot;
+                // Sauvegarde de la notification
                 $vue_notifications->save($vue_not);
               }
 

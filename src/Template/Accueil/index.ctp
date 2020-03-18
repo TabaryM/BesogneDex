@@ -58,8 +58,9 @@
                   //Affichage de la notification
                   ?>
                   <tr>
-                    <td><?= $notifs[$nbLigne]->une_notification->contenu ?></td>
-                    <td><?= $notifs[$nbLigne]->une_notification->date->nice('Europe/Paris', 'fr-FR') ?></td>
+                    <?php // Mis en commentaire parce que cassé et casse l'accueil ?>
+                    <td><?php //$notifs[$nbLigne]->une_notification->contenu ?></td>
+                    <td><?php // $notifs[$nbLigne]->une_notification->date->nice('Europe/Paris', 'fr-FR') ?></td>
                   </tr>
                   <?php
                 }else{

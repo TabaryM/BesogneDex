@@ -36,7 +36,7 @@ class ProjetTable extends Table{
           'className' => 'Notification_projet',
           'foreignKey'=> 'idProjet',
           'dependent' => true,
-          'cascadeCallbbacks' =>true
+          'cascadeCallbacks' =>true
       ]);
 
   }
