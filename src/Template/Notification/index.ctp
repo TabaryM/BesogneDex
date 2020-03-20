@@ -4,8 +4,14 @@
     <div class="table-responsive">
       <table class="table table-borderless table-bleu">
         <tbody>
+          <?php if (sizeof($notifs) == 0): ?>
+              <td class="d-flex justify-content-center">
+                <?php echo 'Aucune notification' ?>
+              </td>
+          <?php endif; ?>
+          
           <?php foreach ($notifs as $notif): ?>
-            <tr <?php if (!$notif->vue) echo 'class="font-weight-bold"'; ?>>
+              <tr <?php if (!$notif->vue) echo 'class="font-weight-bold"'; ?>>
               <td>
                 <?= $notif->une_notification->contenu ?>
               </td>
