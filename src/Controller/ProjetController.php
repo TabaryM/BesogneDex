@@ -553,19 +553,20 @@ class ProjetController extends AppController
               // On indique que la modification a réussie
               $this->Flash->success(__('Votre projet a été modifé.'));
 
-              //On récupère la table des notifications des projets
-              $notifications = TableRegistry::getTableLocator()->get('Notification_projet');
+              //On récupère la table des notifications
+              $notifications = TableRegistry::getTableLocator()->get('Notification');
 
               //On crée une nouvelle notification pour le projet courant
               $notification = $notifications->newEntity();
               $notification->a_valider = 0;
               $notification->contenu = "Le projet ".$projet->titre." a été modifié.";
               $notification->idProjet = $receivedData['id'];
+              $notification->idTache = null;
               $notifications->save($notification);
-              $idNot = $notification->idNotificationProjet;
+              $idNot = $notification->idNotification;
 
-              //On récupère la table de vue des notifications des projets
-              $vue_notifications = TableRegistry::getTableLocator()->get('Vue_notification_projet');
+              //On récupère la table de vue des notifications
+              $vue_notifications = TableRegistry::getTableLocator()->get('Vue_notification');
 
               //On récupère les membres du projet
               $membres = TableRegistry::getTableLocator()->get('Membre');
@@ -579,7 +580,7 @@ class ProjetController extends AppController
                 // Création de la notification
                 $vue_not = $vue_notifications->newEntity();
                 $vue_not->idUtilisateur = $idUtil;
-                $vue_not->idNotifProjet = $idNot;
+                $vue_not->idNotification = $idNot;
                 // Sauvegarde de la notification
                 $vue_notifications->save($vue_not);
               }
