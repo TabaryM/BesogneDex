@@ -14,7 +14,7 @@
     </div>
     <?php   if(!$loggedIn):  ?>
           <div class="d-flex justify-content-end align-items-center div_mail_mdp_header">
-              <div class="d-flex flex-column mail_div_header">
+              <div class="d-flex flex-column mail_div_header" style='margin-bottom:25px'>
                   <div>
                     <?= $this->Form->create(null, ['url' => ['controller' => 'Utilisateur', 'action' => 'login']] ); ?>
                     <?= $this->Form->control('email', array('label' => 'E-mail :', 'class' => 'label')); ?>
