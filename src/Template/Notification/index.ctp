@@ -13,11 +13,11 @@
 
                   <?php if ($notif->une_notification->a_valider): ?>
 
-                      <?php if ($notif->une_notification->type = 'Invitation'): ?>
+                      <?php if ($notif->une_notification->type == 'Invitation'): ?>
 
                           <?php if ($notif->etat == 'En attente'): ?>
-                              <?= $this->Html->link("Accepter", ['controller'=> 'notification', 'action'=> 'acceptInvitation', $notif->idNotifProjet], ['class' => 'btn btn-primary']); ?>
-                              <?= $this->Html->link("Refuser", ['controller' => 'notification', 'action'=> 'declineInvitation', $notif->idNotifProjet], ['class' => 'btn btn btn-danger']); ?>
+                              <?= $this->Html->link("Accepter", ['controller'=> 'notification', 'action'=> 'acceptInvitation', $notif->idNotification], ['class' => 'btn btn-primary']); ?>
+                              <?= $this->Html->link("Refuser", ['controller' => 'notification', 'action'=> 'declineInvitation', $notif->idNotification], ['class' => 'btn btn btn-danger']); ?>
 
                           <?php elseif ($notif->etat == 'Accepté'): ?>
                               <button class="btn btn-primary" disabled="true"> Invitation acceptée </button>
@@ -27,7 +27,7 @@
 
                           <?php endif; ?>
 
-                      <?php elseif ($notif->une_notification->type = 'Suppression'): ?>
+                      <?php elseif ($notif->une_notification->type == 'Suppression'): ?>
 
                           <?php if ($notif->etat == 'En attente'): ?>
                               <?= $this->Html->link("Accepter", ['action'=> '#'], ['class' => 'btn btn-primary']); ?>
