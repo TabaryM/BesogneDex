@@ -56,7 +56,7 @@ $Sql="
 		FOREIGN KEY (idUtilisateur) REFERENCES Utilisateur(idUtilisateur),
 		FOREIGN KEY (idProjet) REFERENCES Projet(idProjet)
 	);
-	
+
 	CREATE TABLE Notification (
 		idNotification INT NOT NULL AUTO_INCREMENT,
 		a_valider BOOLEAN NOT NULL,
@@ -64,11 +64,13 @@ $Sql="
 		date DATE DEFAULT NOW(),
 		idProjet INT,
 		idTache INT,
+		idExpediteur INT,
 		PRIMARY KEY (idNotification),
 		FOREIGN KEY (idProjet) REFERENCES Projet(idProjet),
-		FOREIGN KEY (idTache) REFERENCES Tache(idTache)
+		FOREIGN KEY (idTache) REFERENCES Tache(idTache),
+		FOREIGN KEY (idExpediteur) REFERENCES Utilisateur(idUtilisateur)
 	);
-	
+
 	CREATE TABLE Vue_Notification (
 		idUtilisateur INT NOT NULL,
 		idNotification INT NOT NULL,
