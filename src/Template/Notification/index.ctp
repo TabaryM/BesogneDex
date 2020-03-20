@@ -9,50 +9,48 @@
               <td>
                 <?= $notif->une_notification->contenu ?>
               </td>
-              <td>
-                <?= $notif->une_notification->date->nice('Europe/Paris', 'fr-FR') ?>
-              </td>
               <td class="d-flex justify-content-center">
-                <?php if (isset($notif->idNotifProjet)): ?>
 
-                  <?php if ($notif->une_notification->a_valider && $notif->etat=="En attente"): ?>
+                  <?php if ($notif->une_notification->a_valider): ?>
 
-                    <!-- TODO: Fonction accepter invitation -->
-                    <?= $this->Html->link("Accepter", ['controller'=> 'notification', 'action'=> 'acceptInvitation', $notif->idNotifProjet], ['class' => 'btn btn-primary']); ?>
-                    <?= $this->Html->link("Refuser", ['controller' => 'notification', 'action'=> 'declineInvitation', $notif->idNotifProjet], ['class' => 'btn btn btn-danger']); ?>
+                      <?php if ($notif->une_notification->type = 'Invitation'): ?>
 
-                  <?php elseif ($notif->une_notification->a_valider && $notif->etat=="Accepté"): ?>
-                    <button class="btn btn-primary" disabled="true"> Invitation acceptée </button>
+                          <?php if ($notif->etat == 'En attente'): ?>
+                              <?= $this->Html->link("Accepter", ['controller'=> 'notification', 'action'=> 'acceptInvitation', $notif->idNotifProjet], ['class' => 'btn btn-primary']); ?>
+                              <?= $this->Html->link("Refuser", ['controller' => 'notification', 'action'=> 'declineInvitation', $notif->idNotifProjet], ['class' => 'btn btn btn-danger']); ?>
 
-                  <?php elseif ($notif->une_notification->a_valider && $notif->etat=="Refusé"): ?>
-                    <button class="btn btn-danger" disabled="true"> Invitation refusée </button>
+                          <?php elseif ($notif->etat == 'Accepté'): ?>
+                              <button class="btn btn-primary" disabled="true"> Invitation acceptée </button>
 
-                  <?php else : ?>
+                          <?php else: ?>
+                              <button class="btn btn-danger" disabled="true"> Invitation refusée </button>
 
-                    <?php if ($notif->une_notification->idProjet == null): ?>
-                      <button class="btn btn-primary" disabled="true"> Projet indisponible </button>
+                          <?php endif; ?>
 
-                    <?php else : ?>
-                    <?= $this->Html->link("Consulter le projet", ['controller' => 'tache', 'action'=> 'index', $notif->une_notification->idProjet], ['class' => 'btn btn-primary']); ?>
-                    <?php endif; ?>
+                      <?php elseif ($notif->une_notification->type = 'Suppression'): ?>
+
+                          <?php if ($notif->etat == 'En attente'): ?>
+                              <?= $this->Html->link("Accepter", ['action'=> '#'], ['class' => 'btn btn-primary']); ?>
+                              <?= $this->Html->link("Refuser", ['controller' => 'notification', 'action'=> 'refuserSuppressionTache', $notif->idNotifTache], ['class' => 'btn btn btn-danger']); ?>
+
+                          <?php elseif ($notif->etat == 'Accepté'): ?>
+                              <button class="btn btn-primary" disabled="true"> Tâche supprimée </button>
+
+                          <?php else: ?>
+                              <button class="btn btn-danger" disabled="true"> Tâche non supprimée </button>
+
+                          <?php endif; ?>
+
+                      <?php else: ?>
+                        <!-- @TODO Changement de propriétaire -->
+
+                      <?php endif; ?>
+
+                  <?php else: ?>
+
+                      <?= $this->Html->link("Consulter le projet", ['controller' => 'tache', 'action'=> 'index', $notif->une_notification->idProjet], ['class' => 'btn btn-primary']); ?>
+
                   <?php endif; ?>
-
-                <!-- Suppression de tâche -->
-                <?php elseif (isset($notif->idNotifTache)): ?>
-
-                  <?php if ($notif->une_notification->a_valider && $notif->etat == 'En attente'): ?>
-                    <?= $this->Html->link("Accepter", ['action'=> '#'], ['class' => 'btn btn-primary']); ?>
-                    <?= $this->Html->link("Refuser", ['controller' => 'notification', 'action'=> 'refuserSuppressionTache', $notif->idNotifTache], ['class' => 'btn btn btn-danger']); ?>
-
-                  <?php elseif ($notif->une_notification->a_valider && $notif->etat=="Accepté"): ?>
-                    <button class="btn btn-primary" disabled="true"> Tâche supprimée </button>
-
-                  <?php elseif ($notif->une_notification->a_valider && $notif->etat=="Refusé"): ?>
-                    <button class="btn btn-danger" disabled="true"> Tâche non supprimée </button>
-
-                  <?php endif ; ?>
-
-                <?php endif ; ?>
 
                 <?php
                 if(isset($notif->idNotifTache)){

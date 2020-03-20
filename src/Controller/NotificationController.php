@@ -76,23 +76,19 @@ class NotificationController extends AppController
     $idUtilisateur= $this->autorisation();
 
     // Initialisation des tables
-    $tableNotificationsProjet = TableRegistry::getTableLocator()->get('VueNotificationProjet');
-    $tableNotificationsTache = TableRegistry::getTableLocator()->get('VueNotificationTache');
-
-    // Récupération des notifications de projet
-    $notificationsProjet = $tableNotificationsProjet->find()->contain(['NotificationProjet'])->where(['idUtilisateur' => $idUtilisateur])->toArray();
-    $notificationsTache = $tableNotificationsTache->find()->contain(['NotificationTache'])->where(['idUtilisateur' => $idUtilisateur])->toArray();
-
-    // On merge en une seule array les résultats des deux requêtes.
-    $notifs = array_merge($notificationsProjet, $notificationsTache);
-    //echo "<pre>" , var_dump($notifs) , "</pre>";
+    $tableNotifications = TableRegistry::getTableLocator()->get('VueNotification');
+    // Récupération des notifications
+    $notifs = $tableNotifications->find()->contain('Notification')->where(['idUtilisateur' => $idUtilisateur])->toArray();
 
     // On trie l'array résultante. Le tri est déjà sur la date, puis sur si la notification est à valider.
     $notifs = Hash::sort($notifs, '{n}.une_notification.Date','asc');
     $notifs = Hash::sort($notifs, '{n}.une_notification.a_valider', 'desc');
 
     // On met à jour les notifications vues seulement après leur affichage.
-    $this->updateNotificationsVues($tableNotificationsProjet, $tableNotificationsTache, $idUtilisateur);
+    //$this->updateNotificationsVues($tableNotifications, $idUtilisateur);
+
+
+    //echo "<pre>" , var_dump($notifs[0]->une_notification) , "</pre>";
 
     // Donne aux ctp les variables nécessaires
     $this->set(compact('notifs'));
