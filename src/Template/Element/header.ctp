@@ -19,10 +19,6 @@
                     <?= $this->Form->create(null, ['url' => ['controller' => 'Utilisateur', 'action' => 'login']] ); ?>
                     <?= $this->Form->control('email', array('label' => 'E-mail :', 'class' => 'label')); ?>
                   </div>
-                  <div class="form-check">
-                    <?=  $this->Form->control('resterConnecte', array('label'=>' Rester connecté', 'type'=>'checkbox')) ?>
-
-                  </div>
               </div>
               <div class="d-flex flex-column mdp_div_header">
                   <div>
