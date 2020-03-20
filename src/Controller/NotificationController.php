@@ -19,7 +19,7 @@ class NotificationController extends AppController
     if ($session->check('Auth.User.idUtilisateur')){
       return $session->read('Auth.User.idUtilisateur');
     }else{
-      $this->Flash->error(_('Vous devez être connecté pour accéder à vos notifications.'));
+      $this->Flash->error(_('Vous devez être connecté/e pour accéder à vos notifications.'));
       $this->redirect($this->referer());
     }
   }

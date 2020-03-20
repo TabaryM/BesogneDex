@@ -324,7 +324,7 @@ class TacheController extends AppController
           $vue_not->idUtilisateur = $projetTab->idProprietaire;
           $vue_not->idNotifTache = $idNot;
 
-          $this->Flash->default(__('Une demande pour supprimer cette tâche à été envoyé au propriétaire.'));
+          $this->Flash->default(__('Une demande pour supprimer cette tâche à été envoyé au/à la propriétaire.'));
 
           $vue_notifications->save($vue_not);
         }
@@ -372,10 +372,10 @@ class TacheController extends AppController
         //TODO: NOTIF A FAIRE A ENVOYER A TOUS LES MEMBRES VVALIDER UNETACHE
         $this->Tache->save($tache);
       } else {
-        $this->Flash->error(__('Seul le responsable de la tâche peut changer l\'état de celle-ci.'));
+        $this->Flash->error(__('Seul le/a responsable de la tâche peut changer l\'état de celle-ci.'));
       }
     } else {
-      $this->Flash->error(__('Vous devez être connecté pour changer l\'état d\'une tâche.'));
+      $this->Flash->error(__('Vous devez être connecté/e pour changer l\'état d\'une tâche.'));
     }
 
   }

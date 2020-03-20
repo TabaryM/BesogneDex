@@ -55,7 +55,7 @@ class UtilisateurController extends AppController
         if ($this->request->getData(['resterConnecte'])==1){
           Configure::write('Session', ['timeout' => 24*60*30 ]);
         }
-        $this->Flash->success(__('Vous êtes connecté !'));
+        $this->Flash->success(__('Vous êtes connecté/e !'));
         return $this->redirect(['controller' => 'Accueil', 'action' => 'index']);
       }else{
         $this->Flash->error(__('E-mail ou mot de passe incorrects'));
@@ -202,7 +202,7 @@ class UtilisateurController extends AppController
             $this->afficherErreurs($erreurs);
 
           }else{
-            $this->Flash->error(__('La confirmation de mot de passe est erroné.'));
+            $this->Flash->error(__('La confirmation de mot de passe est erronée.'));
           }
         }
       }else{
@@ -228,7 +228,7 @@ class UtilisateurController extends AppController
     $utilisateur = $this->Utilisateur->get($currentUserId);
 
     if(empty($utilisateur)) {
-      $this->Flash->error(__('Impossible de supprimer votre compte utilisateur : vérifiez qu\'il existe et que vous êtes bien connecté.'));
+      $this->Flash->error(__('Impossible de supprimer votre compte utilisateur : vérifiez qu\'il existe et que vous êtes bien connecté/e.'));
     } else {
 
       // Unassign user from tasks where he was assigned
