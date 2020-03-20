@@ -31,7 +31,7 @@
 
                           <?php if ($notif->etat == 'En attente'): ?>
                               <?= $this->Html->link("Accepter", ['action'=> '#'], ['class' => 'btn btn-primary']); ?>
-                              <?= $this->Html->link("Refuser", ['controller' => 'notification', 'action'=> 'refuserSuppressionTache', $notif->idNotifTache], ['class' => 'btn btn btn-danger']); ?>
+                              <?= $this->Html->link("Refuser", ['controller' => 'notification', 'action'=> 'refuserSuppressionTache', $notif->idNotification], ['class' => 'btn btn btn-danger']); ?>
 
                           <?php elseif ($notif->etat == 'Accepté'): ?>
                               <button class="btn btn-primary" disabled="true"> Tâche supprimée </button>
@@ -42,32 +42,30 @@
                           <?php endif; ?>
 
                       <?php else: ?>
+
                         <!-- @TODO Changement de propriétaire -->
 
                       <?php endif; ?>
 
                   <?php else: ?>
 
-                      <?= $this->Html->link("Consulter le projet", ['controller' => 'tache', 'action'=> 'index', $notif->une_notification->idProjet], ['class' => 'btn btn-primary']); ?>
+                      <?php if ($notif->une_notification->idProjet != null): ?>
+                          <?= $this->Html->link("Consulter le projet", ['controller' => 'tache', 'action'=> 'index', $notif->une_notification->idProjet], ['class' => 'btn btn-primary']); ?>
+                      <?php endif; ?>
 
                   <?php endif; ?>
 
-                <?php
-                if(isset($notif->idNotifTache)){
-                  $not = array($notif->idNotifTache, 'Tache');
-                } else {
-                  $not = array($notif->idNotifProjet, 'Projet');
-                }
-                ?>
-                <?php if ($notif->vue  || !$notif->une_notification->a_valider): ?>
-                  <?= $this->Html->link("Supprimer","", ['class' => 'btn btn-danger shadow', 'data-toggle' => 'modal', 'data-target' => '#deleteModal' . $not[0]]) ?>
-                <?php endif; ?>
+                  <?php if ($notif->vue  || !($notif->une_notification->a_valider)): ?>
+
+                    <?= $this->Html->link("Supprimer","", ['class' => 'btn btn-danger shadow', 'data-toggle' => 'modal', 'data-target' => '#deleteModal' . $notif->idNotification]) ?>
+
+                  <?php endif; ?>
               </td>
             </tr>
 
 
             <!-- Début modal Supprimer une notification : -->
-            <div class="modal fade" id=<?= "deleteModal" . $not[0] ?>>
+            <div class="modal fade" id=<?= "deleteModal" . $notif->idNotification ?>>
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -83,7 +81,7 @@
                                       <?= $this->Html->link("Non", array('controller' => 'Notification', 'action'=> 'index'), array( 'button class' => 'btn btn-primary', 'data-dismiss' => 'modal'));?>
                                     </div>
                                     <div class="col text-left">
-                                      <?= $this->Html->link("Oui", array('controller' => 'Notification', 'action'=> 'supprimerNotification',  implode("_", $not)), array( 'button class' => 'btn btn-danger'));?>
+                                      <?= $this->Html->link("Oui", array('controller' => 'Notification', 'action'=> 'supprimerNotification',  $notif->idNotification), array( 'button class' => 'btn btn-danger'));?>
                                     </div>
                                 </div>
                             </div>
