@@ -555,22 +555,22 @@ class ProjetController extends AppController
               // On indique que la modification a réussie
               $this->Flash->success(__('Votre projet a été modifé.'));
 
-              //On récupère la table des notifications
-              $notifications = TableRegistry::getTableLocator()->get('Notification');
-
+              //Contenu de la notification à envoyer
               $contenu = "Le projet ".$projet->titre." a été modifié.";
 
+              //On récupère les membres du projet afin de les notifier
               $membres = TableRegistry::getTableLocator()->get('Membre');
               $membres = $membres->find()->contain('Utilisateur')
               ->where(['idProjet' => $receivedData['id']]);
 
+              //On récupère les id des membres du projet
               $destinataires = array();
               foreach ($membres as $m) {
                 $idUtil = $m->un_utilisateur->idUtilisateur;
                 array_push($destinataires, $idUtil);
               }
 
-              var_dump($destinataires);
+              //On appelle la fonction pour envoyer la notification
               envoyerNotification(0, 'Informative', $contenu, $receivedData['id'], null, $idUtilisateur, $destinataires);
 
               // On redirige l'utilisateur sur le projet avec les informations mises à jour
