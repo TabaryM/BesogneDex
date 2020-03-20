@@ -439,6 +439,9 @@ class ProjetController extends AppController
           public function modifierInfos(){
             $receivedData = $this->request->getData();
 
+            $session = $this->request->getSession();
+            $idUtilisateur = $session->read('Auth.User.idUtilisateur');
+
             // On récupère le projet pour avoir les anciennes informations
             $projets = TableRegistry::getTableLocator()->get('projet');
             $projet = $projets->find()
@@ -453,9 +456,8 @@ class ProjetController extends AppController
               if (verificationTitre($receivedData['titre'])){
 
                 // On vérifie si le nouveau titre n'est pas pris par un autre projet de l'utilisateur
-                $session = $this->request->getSession();
                 $existe_deja = $projets->find()
-                ->where(['idProprietaire' => $session->read('Auth.User.idUtilisateur')])
+                ->where(['idProprietaire' => $idUtilisateur])
                 ->where(['titre' => $receivedData['titre']])
                 ->count();
 
@@ -556,36 +558,20 @@ class ProjetController extends AppController
               //On récupère la table des notifications
               $notifications = TableRegistry::getTableLocator()->get('Notification');
 
-              //On crée une nouvelle notification pour le projet courant
-              $notification = $notifications->newEntity();
-              $notification->a_valider = 0;
-              $notification->type = 'Informative';
-              $notification->contenu = "Le projet ".$projet->titre." a été modifié.";
-              $notification->date = date('Y-m-d');
-              $notification->idProjet = $receivedData['id'];
-              $notification->idTache = null;
-              $notifications->save($notification);
-              $idNot = $notification->idNotification;
+              $contenu = "Le projet ".$projet->titre." a été modifié.";
 
-              //On récupère la table de vue des notifications
-              $vue_notifications = TableRegistry::getTableLocator()->get('Vue_notification');
-
-              //On récupère les membres du projet
               $membres = TableRegistry::getTableLocator()->get('Membre');
               $membres = $membres->find()->contain('Utilisateur')
               ->where(['idProjet' => $receivedData['id']]);
 
-              //Pour chaque membre du projet, on envoie une notification à celui-ci
+              $destinataires = array();
               foreach ($membres as $m) {
                 $idUtil = $m->un_utilisateur->idUtilisateur;
-
-                // Création de la notification
-                $vue_not = $vue_notifications->newEntity();
-                $vue_not->idUtilisateur = $idUtil;
-                $vue_not->idNotification = $idNot;
-                // Sauvegarde de la notification
-                $vue_notifications->save($vue_not);
+                array_push($destinataires, $idUtil);
               }
+
+              var_dump($destinataires);
+              envoyerNotification(0, 'Informative', $contenu, $receivedData['id'], null, $idUtilisateur, $destinataires);
 
               // On redirige l'utilisateur sur le projet avec les informations mises à jour
               return $this->redirect(
