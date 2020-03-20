@@ -40,23 +40,13 @@ class NotificationController extends AppController
   *
   * @author POP Diana
   */
-  private function updateNotificationsVues($tableNotificationsProjet, $tableNotificationsTache, $idUtilisateur){
-    // On commence par les notifications de projet.
-    $notificationsProjetVues = $tableNotificationsProjet->find()->contain('NotificationProjet')->where(['idUtilisateur'=>$idUtilisateur, 'a_valider'=>0])->toArray();
-    if ($notificationsProjetVues){
-      foreach($notificationsProjetVues as $notification){
-        $notification->vue = 1;
-        $tableNotificationsProjet->save($notification);
-      }
-
-      // Maintenant, on fait les notifications de tâche.
-      $notificationsTacheVues = $tableNotificationsTache->find()->contain('NotificationTache')->where(['idUtilisateur'=>$idUtilisateur, 'a_valider'=>0])->toArray();
-      if ($notificationsTacheVues){
-        foreach($notificationsTacheVues as $notification){
-          $notification->vue = 1;
-          $tableNotificationsTache->save($notification);
-        }
-
+  private function updateNotificationsVues($idUtilisateur){
+    $tableNotifications = TableRegistry::getTableLocator()->get('VueNotification');
+    $notificationsVues = $tableNotifications->find()->contain('Notification')->where(['idUtilisateur'=>$idUtilisateur, 'a_valider'=>0])->toArray();
+    if ($notificationsVues){
+      foreach($notificationsVues as $notif){
+        $notif->vue = 1;
+        $tableNotifications->save($notif);
       }
     }
   }
@@ -70,7 +60,7 @@ class NotificationController extends AppController
    * @return /
    *
    * Redirection : si l'utilisateur n'est pas connecté, renvoie à la page d'inscription.
-   * @author POP Diana, SOUSA RIBIERO Pedro
+   * @author POP Diana, SOUSA RIBIERO Pedro, ROTON Théo
    */
   public function index(){
     $idUtilisateur= $this->autorisation();
@@ -85,7 +75,7 @@ class NotificationController extends AppController
     $notifs = Hash::sort($notifs, '{n}.une_notification.a_valider', 'desc');
 
     // On met à jour les notifications vues seulement après leur affichage.
-    //$this->updateNotificationsVues($tableNotifications, $idUtilisateur);
+    $this->updateNotificationsVues($idUtilisateur);
 
 
     //echo "<pre>" , var_dump($notifs[0]->une_notification) , "</pre>";
