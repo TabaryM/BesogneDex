@@ -49,7 +49,7 @@
                     <div class="modal-header">
                         <h4 class="modal-title"></h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
                     <div class="modal-body">
-                        <p style="width: 477px;text-align:center;">Êtes-vous sûr de vouloir vous déconnecter ?</p>
+                        <p style="width: 477px;text-align:center;">Êtes-vous sûr/e de vouloir vous déconnecter ?</p>
                     </div>
                     <div class="modal-footer text-center">
                         <div class="row text-center" style="width: 484px;">
