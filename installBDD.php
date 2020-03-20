@@ -60,6 +60,7 @@ $Sql="
 	CREATE TABLE Notification (
 		idNotification INT NOT NULL AUTO_INCREMENT,
 		a_valider BOOLEAN NOT NULL,
+		type VARCHAR(20) NOT NULL,
 		contenu VARCHAR(500),
 		date DATE DEFAULT NOW(),
 		idProjet INT,
