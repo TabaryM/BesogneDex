@@ -7,7 +7,7 @@
     <div class="row">
         <div class="col-xl-12 text-center">
             <h3 class="text-center">Supprimer mon compte</h3>
-            <p style="margin-top:40px;font-size:20px;"> La suppression de votre compte entraînera la suppression de tous les projets que vous avez créés ainsi que toutes vos données utilisateur.<br/> Êtes-vous sûr de vouloir continuer ? </p>
+            <p style="margin-top:40px;font-size:20px;"> La suppression de votre compte entraînera la suppression de tous les projets que vous avez créés ainsi que toutes vos données utilisateur.<br/> Êtes-vous sûr/e de vouloir continuer ? </p>
         </div>
     </div>
 

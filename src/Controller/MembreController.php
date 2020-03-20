@@ -260,7 +260,7 @@ class MembreController extends AppController
         }else{
           if(!$existeUtilisateur) $this->Flash->error(__('Ce membre n\'existe pas.'));
 
-          if ($estProprietaire) $this->Flash->error(__('Vous êtes le propriétaire de ce projet et faites donc déjà partie de ce projet.'));
+          if ($estProprietaire) $this->Flash->error(__('Vous êtes le/a propriétaire de ce projet et faites donc déjà partie de ce projet.'));
 
           if ($estDejaMembre && !$estProprietaire) $this->Flash->error(__('Ce membre est déjà dans le projet.'));
 
@@ -312,7 +312,7 @@ class MembreController extends AppController
 
       // Si l'utilisateur à supprimer du projet n'en est pas membre, on ne peut pas le supprimer (empêche une grosse erreur avec delete(entity) de CakePhp).
       }else{
-        $this->Flash->set('Cet utilisateur n\'est pas membre du projet.', ['element' => 'error']);
+        $this->Flash->set('Cet utilisateur/trice n\'est pas membre du projet.', ['element' => 'error']);
       }
 
       // Dans tous les cas, on redirige à l'index.

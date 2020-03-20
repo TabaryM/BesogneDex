@@ -6,7 +6,7 @@
                 <li class="nav-item" role="presentation"><?= $this->Html->link("Accueil", ['controller' => 'Accueil', 'action' => 'index'], ['class' => 'nav-link']) ?></li>
                 <li class="nav-item" role="presentation"><?= $this->Html->link("Mes projets", ['controller' => 'Projet', 'action' => 'index'], ['class' => 'nav-link']) ?></li>
                 <li class="nav-item" role="presentation"><?= $this->Html->link("Mes tâches", ['controller' => 'Tache', 'action' => 'my'], ['class' => 'nav-link']) ?></li>
-                <li class="nav-item" role="presentation"><?= $this->Html->link("A propos", ['controller' => 'Erreur', 'action' => 'inProgress'], ['class' => 'nav-link']) ?></li>
+                <li class="nav-item" role="presentation"><?= $this->Html->link("À propos", ['controller' => 'Erreur', 'action' => 'inProgress'], ['class' => 'nav-link']) ?></li>
             </ul>
         </div>
     </div>

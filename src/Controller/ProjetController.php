@@ -38,7 +38,7 @@ class ProjetController extends AppController
     }
 
     // Si l'utilisateur n'est pas le propriétaire ou si ce projet n'existe pas
-    $this->Flash->error(__('Vous n\'êtes pas le propriétaire de ce projet ou ce projet n\'existe pas.'));
+    $this->Flash->error(__('Vous n\'êtes pas le/a propriétaire de ce projet ou ce projet n\'existe pas.'));
     $this->redirect(['controller'=>'Accueil', 'action'=>'index']);
   }
 
@@ -394,11 +394,11 @@ class ProjetController extends AppController
                 $this->Flash->success(__("Projet désarchivé avec succès"));
                 $this->redirect(['action' => 'index']);
               } else {
-                $this->Flash->error(__("Seul le propriétaire est en mesure de désarchiver le projet."));
+                $this->Flash->error(__("Seul le/a propriétaire est en mesure de désarchiver le projet."));
                 $this->redirect($this->referer());
               }
             } else {
-              $this->Flash->error(__("Vous devez être connecté pour désarchiver un projet."));
+              $this->Flash->error(__("Vous devez être connecté/e pour désarchiver un projet."));
               $this->redirect($this->referer());
             }
           }
@@ -626,7 +626,7 @@ class ProjetController extends AppController
             //Envoie un notification au nouveau propriétaire
             envoyerNotificationProjet(0,"Vous êtes devenu le propriétaire de " .$nomProjet, $idProjet, $idMembre);
 
-            $this->Flash->set('Le propriétaire a bien été modifié.', ['element' => 'success']);
+            $this->Flash->set('Le/a propriétaire a bien été modifié/e.', ['element' => 'success']);
             return $this->redirect(['controller'=>'Projet', 'action'=> 'index']);
           }
 
