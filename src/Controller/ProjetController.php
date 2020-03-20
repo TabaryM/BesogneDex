@@ -559,7 +559,9 @@ class ProjetController extends AppController
               //On crée une nouvelle notification pour le projet courant
               $notification = $notifications->newEntity();
               $notification->a_valider = 0;
+              $notification->type = 'Informative';
               $notification->contenu = "Le projet ".$projet->titre." a été modifié.";
+              $notification->date = date('Y-m-d');
               $notification->idProjet = $receivedData['id'];
               $notification->idTache = null;
               $notifications->save($notification);
