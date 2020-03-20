@@ -56,45 +56,27 @@ $Sql="
 		FOREIGN KEY (idUtilisateur) REFERENCES Utilisateur(idUtilisateur),
 		FOREIGN KEY (idProjet) REFERENCES Projet(idProjet)
 	);
-
-	CREATE TABLE NotificationProjet (
-		idNotificationProjet INT NOT NULL AUTO_INCREMENT,
+	
+	CREATE TABLE Notification (
+		idNotification INT NOT NULL AUTO_INCREMENT,
 		a_valider BOOLEAN NOT NULL,
 		contenu VARCHAR(500),
 		date DATE DEFAULT NOW(),
-		idProjet INT NOT NULL,
-		PRIMARY KEY (idNotificationProjet),
-		FOREIGN KEY (idProjet) REFERENCES Projet(idProjet)
-	);
-
-	CREATE TABLE NotificationTache (
-		idNotificationTache INT NOT NULL AUTO_INCREMENT,
-		a_valider BOOLEAN NOT NULL,
-		contenu VARCHAR(500),
-		date DATE DEFAULT NOW(),
-		idTache INT NOT NULL,
-		PRIMARY KEY (idNotificationTache),
+		idProjet INT,
+		idTache INT,
+		PRIMARY KEY (idNotification),
+		FOREIGN KEY (idProjet) REFERENCES Projet(idProjet),
 		FOREIGN KEY (idTache) REFERENCES Tache(idTache)
 	);
-
-	CREATE TABLE VueNotificationProjet (
+	
+	CREATE TABLE Vue_Notification (
 		idUtilisateur INT NOT NULL,
-		idNotifProjet INT NOT NULL,
-		vue BOOLEAN DEFAULT 0,
+		idNotification INT NOT NULL,
+		vue BOOLEAN DEFAULT 0 NOT NULL,
 		etat VARCHAR(50) NOT NULL DEFAULT 'En attente',
-		PRIMARY KEY (idUtilisateur, idNotifProjet),
+		PRIMARY KEY (idUtilisateur, idNotification),
 		FOREIGN KEY (idUtilisateur) REFERENCES Utilisateur(idUtilisateur),
-		FOREIGN KEY (idNotifProjet) REFERENCES NotificationProjet(idNotificationProjet)
-	);
-
-	CREATE TABLE VueNotificationTache (
-		idUtilisateur INT NOT NULL,
-		idNotifTache INT NOT NULL,
-		vue BOOLEAN DEFAULT 0,
-		etat VARCHAR(50) NOT NULL DEFAULT 'En attente',
-		PRIMARY KEY (idUtilisateur, idNotifTache),
-		FOREIGN KEY (idUtilisateur) REFERENCES Utilisateur(idUtilisateur),
-		FOREIGN KEY (idNotifTache) REFERENCES NotificationTache(idNotificationTache)
+		FOREIGN KEY (idNotification) REFERENCES Notification(idNotification)
 	)";
 
 foreach(explode(';',$Sql) as $Requete){
