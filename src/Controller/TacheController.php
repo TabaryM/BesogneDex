@@ -2,6 +2,7 @@
 namespace App\Controller;
 require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'VerificationChamps.php');
 require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'listeErreursVersString.php');
+require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'Notifications.php');
 use App\Controller\AppController;
 use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
@@ -282,12 +283,7 @@ class TacheController extends AppController
         if($projetTab->idProprietaire == $user){
 
           //On crée une nouvelle notification pour le projet courant
-          $notification = $notifications->newEntity();
-          $notification->a_valider = 0;
-          $notification->contenu = "La tâche ".$tache->titre." a été supprimée.";
-          $notification->idTache = null;
-          $notifications->save($notification);
-          $idNot = $notification->idNotificationTache;
+          $contenu = "La tâche ".$tache->titre." a été supprimée.";
 
           //On récupère les membres du projet
           $membres = TableRegistry::getTableLocator()->get('Membre');
@@ -295,38 +291,27 @@ class TacheController extends AppController
           ->where(['idProjet' => $idProjet]);
 
           //Pour chaque membre du projet, on envoie une notification à celui-ci
+          $destinataires = array();
           foreach ($membres as $m) {
             $idUtil = $m->un_utilisateur->idUtilisateur;
-
-            $vue_not = $vue_notifications->newEntity();
-            $vue_not->idUtilisateur = $idUtil;
-            $vue_not->idNotifTache = $idNot;
-            $vue_notifications->save($vue_not);
+            array_push($destinataires, $idUtil);
 
             //TODO pour PE: supprimer les notifs en lien avec la tache pour eviter les conflits de DB
-
-
           }
+
+          envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $user, $destinataires);
+
           $query = $tacheTab->query();
           $query->delete()->where(['idTache' => $idTache])->execute();
-        }
-        else{
+
+        } else {
           //sinon envoyer une demande de confirmation au proprio et si il accepte, la supprimer
           //On crée une nouvelle notification pour le projet courant
-          $notification = $notifications->newEntity();
-          $notification->a_valider = 1;
-          $notification->contenu = $session->read('Auth.User.pseudo')." veut supprimer la tâche ".$tache->titre." du projet ".$projetTab->titre.".";
-          $notification->idTache = $idTache;
-          $notifications->save($notification);
-          $idNot = $notification->idNotificationTache;
+          $contenu = $session->read('Auth.User.pseudo')." veut supprimer la tâche ".$tache->titre." du projet ".$projetTab->titre.".";
 
-          $vue_not = $vue_notifications->newEntity();
-          $vue_not->idUtilisateur = $projetTab->idProprietaire;
-          $vue_not->idNotifTache = $idNot;
+          envoyerNotification(1, 'Suppression', $contenu, $idProjet, $idTache, $user, array($projetTab->idProprietaire));
 
           $this->Flash->default(__('Une demande pour supprimer cette tâche à été envoyé au/à la propriétaire.'));
-
-          $vue_notifications->save($vue_not);
         }
       }
     }
