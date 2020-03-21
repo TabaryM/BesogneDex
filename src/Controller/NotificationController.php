@@ -94,7 +94,7 @@ class NotificationController extends AppController
      * @param $idNotifProjet : id du projet dans la table VueNotificationProjet
      * @author PALMIERI Adrien
      */
-    public function declineInvitation($idNotifProjet) {
+    public function decline($idNotifProjet) {
         $idUtilisateur = $this->autorisation(); // On récupère l'id utilisateur (et verifie si il est tjrs connecté)
         $vueNotificationProjetTable = TableRegistry::getTableLocator()->get('VueNotification');
         $notificationProjet = $vueNotificationProjetTable->find()

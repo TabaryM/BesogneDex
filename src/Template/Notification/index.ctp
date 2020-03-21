@@ -34,7 +34,7 @@
                               <!-- Fonction pour accepter l'invitation -->
                               <?= $this->Html->link("Accepter", ['controller'=> 'notification', 'action'=> 'acceptInvitation', $notif->idNotification], ['class' => 'btn btn-primary']); ?>
                               <!-- Fonction pour refuser l'invitation -->
-                              <?= $this->Html->link("Refuser", ['controller' => 'notification', 'action'=> 'declineInvitation', $notif->idNotification], ['class' => 'btn btn btn-danger']); ?>
+                              <?= $this->Html->link("Refuser", ['controller' => 'notification', 'action'=> 'decline', $notif->idNotification], ['class' => 'btn btn btn-danger']); ?>
 
                           <!-- Si la notification a été acceptée -->
                           <?php elseif ($notif->etat == 'Accepté'): ?>
