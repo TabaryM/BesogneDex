@@ -309,7 +309,9 @@ class ProjetController extends AppController
                 $query->delete()->where(['idProjet' => $idProjet])->execute();
 
 
-                //TODO pour PE: Envoyer une notif de suppression a tout les membres comme quoi le projet à été supprimé
+                //TODO a remplacer id par le nom de l'utilisateur
+                //Contenu de la notification à envoyer
+                $contenu = $idUser . " a supprimé le projet " . $projetTab->titre;
 
               }
               //sinon si c'est un invité on le retire dans la table membre
@@ -327,9 +329,27 @@ class ProjetController extends AppController
                 $query = $membres->query();
                 $query->delete()->where(['idProjet' => $idProjet, 'idUtilisateur' => $idUser])->execute();
 
-                //TODO pour PE: Envoyer une notif comme quoi X a quitté le projet a tout les membres
+                //TODO a remplacer id par le nom de l'utilisateur
+                //Contenu de la notification à envoyer
+                $contenu = $idUser . " a quitté le projet " . $projetTab->titre;
+
               }
             }
+
+            //On récupère les membres du projet afin de les notifier
+            $membres = TableRegistry::getTableLocator()->get('Membre');
+            $membres = $membres->find()->contain('Utilisateur')
+            ->where(['idProjet' => $idProjet]);
+
+            //On récupère les id des membres du projet
+            $destinataires = array();
+            foreach ($membres as $m) {
+              $idUtil = $m->un_utilisateur->idUtilisateur;
+              array_push($destinataires, $idUtil);
+            }
+
+            //On appelle la fonction pour envoyer la notification
+            envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $user, $destinataires);
 
             return $this->redirect(['action'=> 'index']);
           }
@@ -376,10 +396,11 @@ class ProjetController extends AppController
                   }
 
                   //On appelle la fonction pour envoyer la notification
-                  envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $idUtilisateur, $destinataires);
+                  envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $user, $destinataires);
 
                   }
-                  // Projet non expiré
+
+                // Projet non expiré
                 } else {
                   $this->Flash->error(__("Le projet doit être expiré pour pouvoir l'archiver."));
                   $this->redirect($this->referer());
@@ -408,6 +429,24 @@ class ProjetController extends AppController
                 $projet->dateArchivage = NULL;
                 // On met à jour le projet
                 $this->Projet->save($projet);
+
+                //Contenu de la notification à envoyer
+                $contenu = "Le projet ".$projet->titre." a été désarchivé.";
+
+                //On récupère les membres du projet afin de les notifier
+                $membres = TableRegistry::getTableLocator()->get('Membre');
+                $membres = $membres->find()->contain('Utilisateur')
+                ->where(['idProjet' => $idProjet]);
+
+                //On récupère les id des membres du projet
+                $destinataires = array();
+                foreach ($membres as $m) {
+                  $idUtil = $m->un_utilisateur->idUtilisateur;
+                  array_push($destinataires, $idUtil);
+                }
+
+                //On appelle la fonction pour envoyer la notification
+                envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $user, $destinataires);
 
                 // Projet désarchivé avec succès
                 $this->Flash->success(__("Projet désarchivé avec succès"));
