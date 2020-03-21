@@ -263,11 +263,30 @@ class TacheController extends AppController
      */
   public function devenirResponsable($idProjet, $idTache) {
     $session = $this->request->getSession();
+    $user = $session->read('Auth.User.idUtilisateur');
     $tache = $this->Tache->get($idTache);
-    $tache->idResponsable = $session->read('Auth.User.idUtilisateur');
+    $tache->idResponsable = $user;
     $this->Tache->save($tache);
-    // TODO: Envoyer notification aux autres membres du projet
-    //TODO: NOTIF A FAIRE A ENVOYER A TOUS LES MEMBRES
+
+    //On ajoute le contenu de la notification
+    //TODO A changer avec le pseudo
+    $contenu =  $session->read('Auth.User.idUtilisateur') . " est devenu(e) responsable de la tâche - " . $tache->titre;
+
+    //On récupère les membres du projet afin de les notifier
+    $membres = TableRegistry::getTableLocator()->get('Membre');
+    $membres = $membres->find()->contain('Utilisateur')
+    ->where(['idProjet' => $idProjet]);
+
+    //On récupère les id des membres du projet
+    $destinataires = array();
+    foreach ($membres as $m) {
+      $idUtil = $m->un_utilisateur->idUtilisateur;
+      array_push($destinataires, $idUtil);
+    }
+
+    //On appelle la fonction pour envoyer la notification
+    envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $user, $destinataires);
+
     return $this->redirect(['action' => 'index', $idProjet]);
   }
 
@@ -351,8 +370,28 @@ class TacheController extends AppController
     $tache = $this->Tache->get($idTache);
     $tache->idResponsable = NULL;
     $this->Tache->save($tache);
-    //Pour chaque membre du projet, on envoie une notification à celui-ci
-    //TODO: NOTIF A FAIRE A ENVOYER A TOUS LES MEMBRES
+    $session = $this->request->getSession();
+    $user = $session->read('Auth.User.idUtilisateur');
+
+    //On ajoute le contenu de la notification
+    //TODO A changer avec le pseudo
+    $contenu =  $session->read('Auth.User.idUtilisateur') . " n'est plus responsable de la tâche - " . $tache->titre;
+
+    //On récupère les membres du projet afin de les notifier
+    $membres = TableRegistry::getTableLocator()->get('Membre');
+    $membres = $membres->find()->contain('Utilisateur')
+    ->where(['idProjet' => $idProjet]);
+
+    //On récupère les id des membres du projet
+    $destinataires = array();
+    foreach ($membres as $m) {
+      $idUtil = $m->un_utilisateur->idUtilisateur;
+      array_push($destinataires, $idUtil);
+    }
+
+    //On appelle la fonction pour envoyer la notification
+    envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $user, $destinataires);
+
     return $this->redirect(['action' => 'index', $idProjet]);
   }
 
