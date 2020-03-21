@@ -636,7 +636,7 @@ class ProjetController extends AppController
           * Change le propriétaire d'un projet
           * @param   $idMembre id du membre qui devient propriétaire du projet
           * @param   $idProjet id du projet
-          * @author  Clément Colné
+          * @author  Clément Colné, Diana Pop (envoi notif)
           */
           function changerProprietaire($idMembre, $idProjet) {
             $idProprietaire = $this->autorisationProprietaire($idProjet);
@@ -649,21 +649,37 @@ class ProjetController extends AppController
             // on récupère l'ID du propriétaire
             $projet = $projets->find()->where(['idProjet'=>$idProjet])->first();
             // mise à jour du nouveau propriétaire dans la DB
+            /* EXECUTER SI INVITATION ACCEPTEE
+
             $query = $projets->query();
             $query->update()
             ->set(['idProprietaire' => $idMembre])
             ->where(['idProjet' => $idProjet])->execute();
+            */
             // redirection vers la page d'accueil des projets
 
-            //On récupère la table des projets
+            // On récupère la table des projets
             $projets = TableRegistry::getTableLocator()->get('Projet');
             $projet = $projets->find()->where(['idProjet' => $idProjet])->first();
             $nomProjet = $projet['titre'];
 
-            //Envoie un notification au nouveau propriétaire
-            envoyerNotificationProjet(0,"Vous êtes devenu le propriétaire de " .$nomProjet, $idProjet, $idMembre);
+            // Envoie un notification au nouveau propriétaire
+            $destinataires = array();
+            //On met l'utilisateur invité en tant que destinataire
+            array_push($destinataires, $idMembre);
 
-            $this->Flash->set('Le/a propriétaire a bien été modifié/e.', ['element' => 'success']);
+            // On get la session pour avoir l'id de l'expediteur
+            $session = $this->request->getSession();
+            // On récupère l'id de la session
+            $idSession = $session->read('Auth.User.idUtilisateur');
+
+            // On remplit le contenu de la notification
+            $contenu = "Voulez-vous devenir le propriétaire du projet " . $nomProjet . " ?";
+
+            // Envoie une notification à un utilisateur pour le notifier qu'il a été exclu du projet
+            envoyerNotification(1, 'Proprietaire', $contenu, $idProjet, null, $idSession, $destinataires);
+
+            $this->Flash->set('Une notification a été envoyée pour changer de propriétaire.', ['element' => 'success']);
             return $this->redirect(['controller'=>'Projet', 'action'=> 'index']);
           }
 
