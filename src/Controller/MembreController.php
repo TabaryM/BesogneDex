@@ -347,7 +347,7 @@ class MembreController extends AppController
         $contenu = "Le propriétaire vous a exclu du projet " . $nomProjet;
 
         //Envoie une notification à un utilisateur pour le notifier qu'il a été exclu du projet
-        envoyerNotification(1, 'ExclusionProjet', $contenu, $idProjet, null, $idSession, $destinataires);
+        envoyerNotification(1, 'Informative', $contenu, $idProjet, null, $idSession, $destinataires);
 
         $this->supprimerMembre($idUtilisateur, $idProjet);
 
