@@ -91,46 +91,37 @@ class ProjetController extends AppController
     private function supprimerToutesNotifications($idProjet){
       // On récupère toutes les tables nécessaires .
       $taches = TableRegistry::getTableLocator()->get('Tache');
-      $vuesNotificationsTaches = TableRegistry::getTableLocator()->get('VueNotificationTache');
-      $vuesNotificationsProjets = TableRegistry::getTableLocator()->get('VueNotificationProjet');
-      $notificationsProjets = TableRegistry::getTableLocator()->get('NotificationProjet');
-      $notificationsTaches = TableRegistry::getTableLocator()->get('NotificationTache');
+      $vuesNotification = TableRegistry::getTableLocator()->get('VueNotification');
+      $notifications = TableRegistry::getTableLocator()->get('Notification');
 
-      /* NOTIFICATIONS TACHES */
-      // On va commencer par supprimer toutes les notifications tâches.
-      // On cherche toutes les tâches du projet pour avoir leur ids.
       $toutesTaches = $taches->find()->where(['idProjet' => $idProjet]);
 
-      // On va aller voir chacune de ces tâches.
+
+      // Suppression des notifications avec un idTache.
       foreach ($toutesTaches as $tache){
         $idTache = $tache->idTache;
 
-        // Pour chacune, on trouve les notifications associées.
-        $toutesNotifsTache = $notificationsTaches->find()->where(['idTache' => $idTache]);
+        $toutesNotifications = $notifications->find()->where(['idTache' => $idTache]);
 
-        // On va aller voir chacune de ces notifications tâche.
-        foreach ($toutesNotifsTache as $notifTache){
-          // Pour chacune, on va supprimer les vues notifs tâche associées.
-          $idNotifTache = $notifTache->idNotificationTache;
-          $query = $vuesNotificationsTaches->query()->delete()->where(['idNotifTache' => $idNotifTache])->execute();
+        foreach ($toutesNotifications as $notification){
+          $idNotification = $notification->idNotification;
+          $query = $vuesNotification->query()->delete()->where(['idNotification' => $idNotification])->execute();
 
-          // Maintenant que toutes les vues notifs tâches associées ont été supprimées, on peut effacer la notif tâche.
-          $query = $notificationsTaches->query()->delete()->where(['idNotificationTache' => $idNotifTache])->execute();
-        } // fin foreach $toutesNotifsTache
-      } // fin foreach $toutesTaches
+          // Maintenant que toutes les vues ont été supprimées, on supprime la notification.
+          $query = $notifications->query()->delete()->where(['idNotification' => $idNotification])->execute();
+        }
+      }
 
-      /* NOTIFICATIONS PROJET */
-      $toutesNotifsProjet = $notificationsProjets->find()->where(['idProjet'=> $idProjet]);
+      // Suppression des notifications avec un idProjet.
+      $toutesNotifications = $notifications->find()->where(['idProjet' => $idProjet]);
 
-      foreach ($toutesNotifsProjet as $notifProjet){
-        // Pour chacune, on va supprimer les vues notifs projet associées.
-        $idNotifProjet = $notifProjet->idNotificationProjet;
-        $query = $vuesNotificationsProjets->query()->delete()->where(['idNotifProjet' => $idNotifProjet])->execute();
+      foreach ($toutesNotifications as $notification){
+        $idNotification = $notification->idNotification;
+        $query = $vuesNotification->query()->delete()->where(['idNotification' => $idNotification])->execute();
 
-        // Maintenant que toutes les vues notifs projet associées ont été supprimées, on peut effacer la notif projet.
-        $query = $notificationsProjets->query()->delete()->where(['idNotificationProjet' => $idNotifProjet])->execute();
-      }// fin foreach $toutesNotifsProjet
-
+        // Maintenant que toutes les vues ont été supprimées, on supprime la Notification.
+        $query = $notifications->query()->delete()->where(['idNotification' => $idNotification])->execute();
+      }
 
     }// fin fonction
 

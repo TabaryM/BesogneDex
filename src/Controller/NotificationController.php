@@ -76,8 +76,6 @@ class NotificationController extends AppController
     $this->updateNotificationsVues($idUtilisateur);
 
 
-    //echo "<pre>" , var_dump($notifs[0]->une_notification) , "</pre>";
-
     // Donne aux ctp les variables nécessaires
     $this->set(compact('notifs'));
 
