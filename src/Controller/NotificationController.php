@@ -96,9 +96,9 @@ class NotificationController extends AppController
      */
     public function declineInvitation($idNotifProjet) {
         $idUtilisateur = $this->autorisation(); // On récupère l'id utilisateur (et verifie si il est tjrs connecté)
-        $vueNotificationProjetTable = TableRegistry::getTableLocator()->get('VueNotificationProjet');
+        $vueNotificationProjetTable = TableRegistry::getTableLocator()->get('VueNotification');
         $notificationProjet = $vueNotificationProjetTable->find()
-        ->where(['idUtilisateur' => $idUtilisateur, 'idNotifProjet' => $idNotifProjet])
+        ->where(['idUtilisateur' => $idUtilisateur, 'idNotification' => $idNotifProjet])
         ->first();
 
         if($notificationProjet) { // Si la notification existe
