@@ -14,7 +14,7 @@
     </div>
     <?php   if(!$loggedIn):  ?>
           <div class="d-flex justify-content-end align-items-center div_mail_mdp_header">
-              <div class="d-flex flex-column mail_div_header" style='margin-bottom:25px'>
+              <div class="d-flex flex-column mail_div_header">
                   <div>
                     <?= $this->Form->create(null, ['url' => ['controller' => 'Utilisateur', 'action' => 'login']] ); ?>
                     <?= $this->Form->control('email', array('label' => 'E-mail :', 'class' => 'label')); ?>
@@ -24,7 +24,6 @@
                   <div>
                     <?= $this->Form->control('mdp', array('label' => 'Mot de passe :', 'class' => 'label', 'type'=>'password')); ?>
                   </div>
-                  <a href="#">Mot de passe oublié ?</a>
               </div>
 
               <?= $this->Form->submit('Se connecter', array('class' => 'btn btn-primary')) ?>
