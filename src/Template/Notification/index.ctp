@@ -55,7 +55,7 @@
                           <!-- Si la notification n'a pas reçu de réponse -->
                           <?php if ($notif->etat == 'En attente'): ?>
                               <!-- Fonction pour accepter la suppression -->
-                              <?= $this->Html->link("Accepter", ['action'=> '#'], ['class' => 'btn btn-primary']); ?>
+                              <?= $this->Html->link("Accepter", ['controller' => 'notification', 'action'=> 'accepterSuppressionTache', $notif->idNotification], ['class' => 'btn btn-primary']); ?>
                               <!-- Fonction pour refuser la suppression -->
                               <?= $this->Html->link("Refuser", ['controller' => 'notification', 'action'=> 'refuserSuppressionTache', $notif->idNotification], ['class' => 'btn btn btn-danger']); ?>
 

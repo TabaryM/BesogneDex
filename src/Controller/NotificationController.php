@@ -1,6 +1,6 @@
 <?php
 namespace App\Controller;
-
+require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'Notifications.php');
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
@@ -143,6 +143,62 @@ class NotificationController extends AppController
         $this->redirect($this->referer());
     }
 
+
+    public function accepterSuppressionTache($idNotification){
+      // On récupère l'id de l'utilisateur connecté
+      $session = $this->request->getSession();
+      $idUtilisateur = $session->read('Auth.User.idUtilisateur');
+
+      $notifications = TableRegistry::getTableLocator()->get('Notification');
+      $vue_notifications = TableRegistry::getTableLocator()->get('VueNotification');
+      $taches = TableRegistry::getTableLocator()->get('Tache');
+
+      $notification = $notifications->find()
+      ->where(['idNotification' => $idNotification])
+      ->first();
+      $idTache = $notification->idTache;
+
+      $notifications_supprs = $notifications->find()->contain('VueNotification')
+      ->where(['idTache' => $idTache])
+      ->toArray();
+
+      foreach ($notifications_supprs as $not) {
+        foreach ($not->notifications as $v) {
+          $vue_notifications->delete($v);
+        }
+        $notifications->delete($not);
+      }
+
+      $tache = $taches->find()
+      ->where(['idTache' => $idTache])
+      ->first();
+
+      $contenu = "La tâche ".$tache->titre." a été supprimée.";
+      $idProjet = $tache->idProjet;
+
+      //On récupère les membres du projet
+      $membres = TableRegistry::getTableLocator()->get('Membre');
+      $membres = $membres->find()->contain('Utilisateur')
+      ->where(['idProjet' => $idProjet]);
+
+      //Pour chaque membre du projet, on envoie une notification à celui-ci
+      $destinataires = array();
+      foreach ($membres as $m) {
+        $idUtil = $m->un_utilisateur->idUtilisateur;
+        array_push($destinataires, $idUtil);
+      }
+
+      $taches->delete($tache);
+
+      envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $idUtilisateur, $destinataires);
+
+      $this->Flash->success(__('La tâche a été supprimée'));
+
+      // On redirige l'utilisateur sur la liste de ses notifications
+      $this->redirect($this->referer());
+    }
+
+
     /**
     * @author Théo Roton
     * @param idNotification : id de la notification
@@ -177,6 +233,8 @@ class NotificationController extends AppController
       // On redirige l'utilisateur sur la liste de ses notifications
       $this->redirect($this->referer());
     }
+
+
 
     /**
     * @author Théo Roton

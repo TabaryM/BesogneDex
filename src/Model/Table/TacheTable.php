@@ -23,8 +23,8 @@ class TacheTable extends Table{
       'propertyName' => 'leProjet'
     ]);
 
-      $this->hasMany('NotificationTache', [
-          'className' => 'NotificationTache',
+      $this->hasMany('Notification', [
+          'className' => 'Notification',
           'foreignKey'=> 'idTache',
           'dependent' => true,
           'cascadeCallbacks' =>true
