@@ -144,52 +144,73 @@ class NotificationController extends AppController
     }
 
 
+    /**
+    * @author Théo Roton
+    * @param idNotification : id de la notification
+    *
+    * Cette fonction permet d'accepter la suppression d'une tâche.
+    * Une fois la notification acceptée, on va supprimer la tâche
+    * et toutes les notifications qui lui sont liées.
+    * On redirige à la fin l'utilisateur sur sa liste de notifications.
+    */
     public function accepterSuppressionTache($idNotification){
       // On récupère l'id de l'utilisateur connecté
       $session = $this->request->getSession();
       $idUtilisateur = $session->read('Auth.User.idUtilisateur');
 
+      // On récupère les tables nécessaires à l'opération
       $notifications = TableRegistry::getTableLocator()->get('Notification');
       $vue_notifications = TableRegistry::getTableLocator()->get('VueNotification');
       $taches = TableRegistry::getTableLocator()->get('Tache');
 
+      // On récupère la notificaiton correspondant à la demande de suppression
       $notification = $notifications->find()
       ->where(['idNotification' => $idNotification])
       ->first();
+      // On récupère l'id de la tâche à supprimer
       $idTache = $notification->idTache;
 
+      // On récupère les notifications liés à la tâche pour les supprimer
       $notifications_supprs = $notifications->find()->contain('VueNotification')
       ->where(['idTache' => $idTache])
       ->toArray();
 
+      // Pour chaque notification
       foreach ($notifications_supprs as $not) {
-        foreach ($not->notifications as $v) {
-          $vue_notifications->delete($v);
+        // Pour chaque vue d'une notification
+        foreach ($not->notifications as $vue) {
+          // On supprime la vue
+          $vue_notifications->delete($vue);
         }
+        // On supprime la notification
         $notifications->delete($not);
       }
 
+      // On récupère la tâche à supprimer
       $tache = $taches->find()
       ->where(['idTache' => $idTache])
       ->first();
 
+      // On récupère les informations de la tâche pour envoyer une notification
       $contenu = "La tâche ".$tache->titre." a été supprimée.";
       $idProjet = $tache->idProjet;
 
-      //On récupère les membres du projet
+      // On récupère les membres du projet
       $membres = TableRegistry::getTableLocator()->get('Membre');
       $membres = $membres->find()->contain('Utilisateur')
       ->where(['idProjet' => $idProjet]);
 
-      //Pour chaque membre du projet, on envoie une notification à celui-ci
+      // Pour chaque membre du projet, on envoie une notification à celui-ci
       $destinataires = array();
       foreach ($membres as $m) {
         $idUtil = $m->un_utilisateur->idUtilisateur;
         array_push($destinataires, $idUtil);
       }
 
+      // On supprime la tâche
       $taches->delete($tache);
 
+      // On envoie une notification à tous les membres du projet de la tâche supprimer
       envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $idUtilisateur, $destinataires);
 
       $this->Flash->success(__('La tâche a été supprimée'));
