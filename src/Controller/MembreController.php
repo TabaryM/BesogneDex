@@ -155,22 +155,6 @@ class MembreController extends AppController
       $membre = $this->Membre->find()->where(['idUtilisateur'=>$idUtilisateur, 'idProjet'=>$idProjet])->first();
 
       if ($this->Membre->delete($membre)){
-
-
-        $contenu =
-
-        //On récupère les membres du projet afin de les notifier
-        $membres = TableRegistry::getTableLocator()->get('Membre');
-        $membres = $membres->find()->contain('Utilisateur')
-        ->where(['idProjet' => $idProjet]);
-
-        //On récupère les id des membres du projet
-        $destinataires = array();
-        array_push($destinataires, $idUtilisateur);
-
-        //On appelle la fonction pour envoyer la notification
-        envoyerNotification(0, 'SupprimerMembre', $contenu, $idProjet, null, $user, $destinataires);
-
         $this->Flash->set('Le membre a été supprimé du projet.', ['element' => 'success']);
       }else{
         $this->Flash->set('Impossible de supprimer ce membre.', ['element' => 'success']);
@@ -237,7 +221,7 @@ class MembreController extends AppController
     *
     * Redirection : index de ce controller.
     *
-    * @author POP Diana, ROSSI Djessy
+    * @author POP Diana
     */
     public function add($idProjet){
       $this->autorisation($idProjet);
@@ -284,8 +268,6 @@ class MembreController extends AppController
 
           //Envoie une notification à un utilisateur pour lui demander de rejoindre son projet
           envoyerNotification(1, 'Invitation', $contenu, $idProjet, null, $idSession, $destinataires);
-
-          $this->sauvegarderMembre($idUtilisateur, $idProjet);
 
         // Si les vérifications ont été fausses, on affiche les messages d'erreur selon les cas.
         }else{
