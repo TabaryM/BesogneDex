@@ -346,7 +346,7 @@ class MembreController extends AppController
         //TODO A remplacer l'id session par le nom de l'expediteur
         $contenu = "Le propriétaire vous a exclu du projet " . $nomProjet;
 
-        //Envoie une notification à un utilisateur pour lui demander de rejoindre son projet
+        //Envoie une notification à un utilisateur pour le notifier qu'il a été exclu du projet
         envoyerNotification(1, 'ExclusionProjet', $contenu, $idProjet, null, $idSession, $destinataires);
 
         $this->supprimerMembre($idUtilisateur, $idProjet);
