@@ -285,7 +285,7 @@ class MembreController extends AppController
           //Envoie une notification à un utilisateur pour lui demander de rejoindre son projet
           envoyerNotification(1, 'Invitation', $contenu, $idProjet, null, $idSession, $destinataires);
 
-          $this->Membre->sauvegarderMembre($idUtilisateur, $idProjet);
+          $this->sauvegarderMembre($idUtilisateur, $idProjet);
 
         // Si les vérifications ont été fausses, on affiche les messages d'erreur selon les cas.
         }else{
@@ -333,7 +333,21 @@ class MembreController extends AppController
         $projet = $projets->find()->where(['idProjet' => $idProjet])->first();
         $nomProjet = $projet['titre'];
 
-        envoyerNotificationProjet(0, "Le propriétaire vous a exclu du projet " . $nomProjet, $idProjet, $idUtilisateur);
+        $destinataires = array();
+        //On met l'utilisateur invité en tant que destinataire
+        array_push($destinataires, $idUtilisateur);
+
+        //On get la session pour avoir l'id de l'expediteur
+        $session = $this->request->getSession();
+        //On récupère l'id de la session
+        $idSession = $session->read('Auth.User.idUtilisateur');
+
+        //On remplit le contenu de la notification
+        //TODO A remplacer l'id session par le nom de l'expediteur
+        $contenu = "Le propriétaire vous a exclu du projet " . $nomProjet;
+
+        //Envoie une notification à un utilisateur pour lui demander de rejoindre son projet
+        envoyerNotification(1, 'ExclusionProjet', $contenu, $idProjet, null, $idSession, $destinataires);
 
         $this->supprimerMembre($idUtilisateur, $idProjet);
 
