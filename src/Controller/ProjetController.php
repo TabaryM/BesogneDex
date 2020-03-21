@@ -359,6 +359,25 @@ class ProjetController extends AppController
                   // Projet archivé
                   $this->Flash->success(__("Projet archivé avec succès"));
                   $this->redirect(['action' => 'archives']);
+
+                  //Contenu de la notification à envoyer
+                  $contenu = "Le projet ".$projet->titre." a été archivé.";
+
+                  //On récupère les membres du projet afin de les notifier
+                  $membres = TableRegistry::getTableLocator()->get('Membre');
+                  $membres = $membres->find()->contain('Utilisateur')
+                  ->where(['idProjet' => $idProjet]);
+
+                  //On récupère les id des membres du projet
+                  $destinataires = array();
+                  foreach ($membres as $m) {
+                    $idUtil = $m->un_utilisateur->idUtilisateur;
+                    array_push($destinataires, $idUtil);
+                  }
+
+                  //On appelle la fonction pour envoyer la notification
+                  envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $idUtilisateur, $destinataires);
+
                   }
                   // Projet non expiré
                 } else {
