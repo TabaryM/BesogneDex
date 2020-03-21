@@ -119,27 +119,89 @@ class NotificationController extends AppController
     }
 
 
-    public function acceptInvitation($idNotifProjet) {
+    /**
+    * Accepte une notification et exécute l'action selon son type.
+    *
+    * @author Clément Colne, Diana Pop
+    */
+    public function accept($idVueNotification) {
         $idUtilisateur = $this->autorisation(); // On récupère l'id utilisateur (et verifie si il est tjrs connecté)
-        $vueNotificationProjetTable = TableRegistry::getTableLocator()->get('VueNotificationProjet');
-        $notificationProjet = $vueNotificationProjetTable->find()
-        ->where(['idUtilisateur' => $idUtilisateur, 'idNotifProjet' => $idNotifProjet])
+
+        $notifications = TableRegistry::getTableLocator()->get('Notification');
+        $vuesNotifications= TableRegistry::getTableLocator()->get('VueNotification');
+
+        $vueNotification = $vuesNotifications
+        ->find()
+        ->where(['idUtilisateur' => $idUtilisateur, 'idNotification' => $idVueNotification])
         ->first();
 
-        if($notificationProjet) { // Si la notification existe
-            if($notificationProjet->etat == 'En attente') { // S'il n'a pas déjà répondu a la notif
-              $notificationProjet->vue = 1; // La notification a ete vue puisqu'il a repondu
-              $notificationProjet->etat = 'Accepté'; // Il refuse la notification
-              $vueNotificationProjetTable->save($notificationProjet); // On sauvegarde les changements
-              $this->Flash->success(__('Vous avez répondu à la notification.'));
-            } else {
+        $notification = $notifications
+        ->find()
+        ->where(['idNotification'=>$idNotification])
+        ->first();
+
+        // Si la notification existe
+        if($notification) {
+            $type = $notification->type;
+            $etat = $notification->etat;
+
+             // Si l'utilisateur n'a pas déjà répondu à la notification
+            if($etat == 'En attente') {
+              if ($type=='Proprietaire') $resultat = $this->proprietaire($idUtilisateur, $notification);
+
+              /* Changements de la vue notification */
+              $vueNotification->vue = 1; // La vue notification est vue
+              $vueNotification->etat = 'Accepté';
+              $vuesNotifications->save($vueNotification);
+
+              // Si l'action s'est bien déroulée
+              if ($resultat==0){
+                  $this->Flash->success(__('Vous avez répondu à la notification.'));
+              // Sinon
+              }else{
+                $this->Flash->success(__('Une erreur s\'est produite.'));
+              }
+
+            // Si l'utilisateur a déjà répondu à la notification
+            }else{
                 $this->Flash->error(__("Vous avez déjà répondu à cette notification."));
             }
+
+        // Si la notification n'existe pas
         } else {
             $this->Flash->error(__("La notification à laquelle vous essayez d'accéder n'existe pas."));
         }
         $this->redirect($this->referer());
     }
+
+    /**
+    * Fonction appelée si on accepte une notification de type 'Proprietaire'.
+    * L'utilisateur connecté devient le propriétaire du projet de la notification.
+    *
+    * @param idUtilisateur : id de l'utilisateur connecté
+    * @param notification : notification concernée
+    * @return 0 si tout est ok, 1 sinon
+    *
+    * @author Pop Diana
+    */
+    private function proprietaire($idUtilisateur, $notification){
+      $idProjet = $notification->idProjet;
+      $resultat = 1;
+
+      // Si la notification a bien un idProjet avec elle
+      if ($idProjet!==null){
+        $resultat = 0;
+        $projets = TableRegistry::getTableLocator()->get('Projet');
+
+        $query = $projets->query();
+        $query->update()
+        ->set(['idProprietaire' => $idUtilisateur])
+        ->where(['idProjet' => $idProjet])->execute();
+      }
+
+      return $resultat;
+    }
+
 
 
     /**

@@ -32,7 +32,7 @@
                           <!-- Si la notification n'a pas reçu de réponse -->
                           <?php if ($notif->etat == 'En attente'): ?>
                               <!-- Fonction pour accepter l'invitation -->
-                              <?= $this->Html->link("Accepter", ['controller'=> 'notification', 'action'=> 'acceptInvitation', $notif->idNotification], ['class' => 'btn btn-primary']); ?>
+                              <?= $this->Html->link("Accepter", ['controller'=> 'notification', 'action'=> 'accept', $notif->idNotification], ['class' => 'btn btn-primary']); ?>
                               <!-- Fonction pour refuser l'invitation -->
                               <?= $this->Html->link("Refuser", ['controller' => 'notification', 'action'=> 'declineInvitation', $notif->idNotification], ['class' => 'btn btn btn-danger']); ?>
 
