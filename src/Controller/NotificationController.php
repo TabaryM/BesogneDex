@@ -92,7 +92,7 @@ class NotificationController extends AppController
      * que l'utilisateur a déjà accepté ou refusée), celle-ci renvoie une erreur.
      *
      * @param $idNotifProjet : id du projet dans la table VueNotificationProjet
-     * @author PALMIERI Adrien
+     * @author PALMIERI Adrien, ROSSI Djessy, POP Diana (a_valider à 0)
      */
     public function decline($idNotifProjet) {
         $idUtilisateur = $this->autorisation(); // On récupère l'id utilisateur (et verifie si il est tjrs connecté)
@@ -101,10 +101,15 @@ class NotificationController extends AppController
         ->where(['idUtilisateur' => $idUtilisateur, 'idNotification' => $idNotifProjet])
         ->first();
 
-        if($notificationProjet) { // Si la notification existe
+        /* On doit mettre l'attribut 'a_valider' de la notification à 0. */
+        $notifications = TableRegistry::getTableLocator()->get('Notification');
+        $notification = $notifications->find()->where(['idNotification'=>$idNotifProjet])->first();
+
+        if($notificationProjet && $notification) { // Si la notification existe
             if($notificationProjet->etat == 'En attente') { // S'il n'a pas déjà répondu a la notif
                 $notificationProjet->vue = 1; // La notification a ete vue puisqu'il a repondu
                $notificationProjet->etat = 'Refusé'; // Il refuse la notification
+               $notification->a_valider = 0;
                $vueNotificationProjetTable->save($notificationProjet); // On sauvegarde les changements
                // TODO || Voir avec les gens du front pour qu'ils mettent juste à jour l'interface
                // TODO || quand on a répondu a une notif au lieu de faire un flash
@@ -141,7 +146,7 @@ class NotificationController extends AppController
         ->first();
 
         // Si la notification existe
-        if($notification) {
+        if($notification && $vueNotification) {
             $type = $notification->type;
             $etat = $vueNotification->etat;
 
@@ -152,6 +157,7 @@ class NotificationController extends AppController
               /* Changements de la vue notification */
               $vueNotification->vue = 1; // La vue notification est vue
               $vueNotification->etat = 'Accepté';
+              $notification->a_valider = 0;
               $vuesNotifications->save($vueNotification);
 
               // Si l'action s'est bien déroulée

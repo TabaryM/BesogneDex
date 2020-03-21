@@ -23,10 +23,8 @@
               <td class="d-flex justify-content-center">
 
                   <!-- Si la notification est une notification à valider -->
-                  <?php if ($notif->une_notification->a_valider): ?>
 
-                      <!-- Début notification INVITATION -->
-                      <!-- Si c'est une invitation à un projet -->
+                      <!-- Début notification à valider  -->
                       <?php if ($notif->une_notification->type !== 'Informative'): ?>
 
                           <!-- Si la notification n'a pas reçu de réponse -->
@@ -45,39 +43,7 @@
                               <button class="btn btn-danger" disabled="true"> Invitation refusée </button>
 
                           <?php endif; ?>
-                      <!-- Fin notification INVITATION -->
-
-
-                      <!-- Début notification SUPPRESSION -->
-                      <!-- Si c'est une demande de suppression de tâche -->
-                      <?php elseif ($notif->une_notification->type == 'Suppression'): ?>
-
-                          <!-- Si la notification n'a pas reçu de réponse -->
-                          <?php if ($notif->etat == 'En attente'): ?>
-                              <!-- Fonction pour accepter la suppression -->
-                              <?= $this->Html->link("Accepter", ['controller' => 'notification', 'action'=> 'accepterSuppressionTache', $notif->idNotification], ['class' => 'btn btn-primary']); ?>
-                              <!-- Fonction pour refuser la suppression -->
-                              <?= $this->Html->link("Refuser", ['controller' => 'notification', 'action'=> 'refuserSuppressionTache', $notif->idNotification], ['class' => 'btn btn btn-danger']); ?>
-
-                          <!-- Si la notification a été acceptée -->
-                          <?php elseif ($notif->etat == 'Accepté'): ?>
-                              <button class="btn btn-primary" disabled="true"> Tâche supprimée </button>
-
-                          <!-- Si la notification a été refusée -->
-                          <?php else: ?>
-                              <button class="btn btn-danger" disabled="true"> Tâche non supprimée </button>
-
-                          <?php endif; ?>
-                      <!-- Fin notification SUPPRESSION -->
-
-
-                      <!-- Début notification PROPRIETAIRE -->
-                      <!-- Si c'est une demande de changement de propriétaire -->
-                      <?php else: ?>
-
-                        <!-- @TODO Changement de propriétaire -->
-
-                      <?php endif; ?>
+                      <!-- Fin notification à valider -->
 
                   <!-- Si la notification est une notification à voir -->
                   <?php else: ?>
