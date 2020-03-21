@@ -648,14 +648,7 @@ class ProjetController extends AppController
             }
             // on récupère l'ID du propriétaire
             $projet = $projets->find()->where(['idProjet'=>$idProjet])->first();
-            // mise à jour du nouveau propriétaire dans la DB
-            /* EXECUTER SI INVITATION ACCEPTEE
 
-            $query = $projets->query();
-            $query->update()
-            ->set(['idProprietaire' => $idMembre])
-            ->where(['idProjet' => $idProjet])->execute();
-            */
             // redirection vers la page d'accueil des projets
 
             // On récupère la table des projets
@@ -682,6 +675,8 @@ class ProjetController extends AppController
             $this->Flash->set('Une notification a été envoyée pour changer de propriétaire.', ['element' => 'success']);
             return $this->redirect(['controller'=>'Projet', 'action'=> 'index']);
           }
+
+
 
         }
         ?>

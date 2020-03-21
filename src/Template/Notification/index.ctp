@@ -27,7 +27,7 @@
 
                       <!-- Début notification INVITATION -->
                       <!-- Si c'est une invitation à un projet -->
-                      <?php if ($notif->une_notification->type == 'Invitation'): ?>
+                      <?php if ($notif->une_notification->type !== 'Informative'): ?>
 
                           <!-- Si la notification n'a pas reçu de réponse -->
                           <?php if ($notif->etat == 'En attente'): ?>

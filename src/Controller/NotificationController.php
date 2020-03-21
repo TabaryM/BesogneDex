@@ -137,13 +137,13 @@ class NotificationController extends AppController
 
         $notification = $notifications
         ->find()
-        ->where(['idNotification'=>$idNotification])
+        ->where(['idNotification'=>$idVueNotification])
         ->first();
 
         // Si la notification existe
         if($notification) {
             $type = $notification->type;
-            $etat = $notification->etat;
+            $etat = $vueNotification->etat;
 
              // Si l'utilisateur n'a pas déjà répondu à la notification
             if($etat == 'En attente') {
