@@ -659,17 +659,39 @@ class ProjetController extends AppController
           }
 
           /**
+          * Vérifie s'il y a déjà une demande de changement de propriétaire.
+          *
+          * @param idProjet : id du projet.
+          * @return Vrai si une demande est en cours.
+          *
+          * @author Pop Diana, avec l'idée originale de Thibault Choné
+          */
+          private function changementEnCours($idProjet){
+            $resultat = false;
+            $notifications = TableRegistry::get('Notification');
+
+            $query = $notifications->find()->where(['idProjet' => $idProjet, 'type' => 'Proprietaire'])->count();
+
+
+            /* S'il y a au moins une demande en cours. */
+            if ($query>0) $resultat = true;
+
+            return $resultat;
+
+          }
+
+          /**
           * Change le propriétaire d'un projet
           * @param   $idMembre id du membre qui devient propriétaire du projet
           * @param   $idProjet id du projet
-          * @author  Clément Colné, Diana Pop (envoi notif + verif que c'est un membre)
+          * @author  Clément Colné, Diana Pop
           */
           function changerProprietaire($idMembre, $idProjet) {
             $idProprietaire = $this->autorisationProprietaire($idProjet);
             $projets = TableRegistry::get('Projet');
 
-
             $estMembre = $this->estMembre($idMembre, $idProjet);
+            $existeChangementEnCours = $this->changementEnCours($idProjet);
 
             if ($idMembre == $idProprietaire){
               $this->Flash->set('Vous êtes déjà propriétaire.', ['element' => 'error']);
@@ -679,6 +701,11 @@ class ProjetController extends AppController
             // On vérifie que la personne à qui on veut donner les droits est bien membre (cas où modification url).
             if (!$estMembre){
               $this->Flash->set('Cet utilisateur n\'est pas membre du projet.', ['element' => 'error'] );
+              return $this->redirect(['controller'=>'Projet', 'action'=> 'index']);
+            }
+
+            if ($existeChangementEnCours){
+              $this->Flash->set('Une demande de changement de propriétaire est déjà en cours.', ['element' => 'error'] );
               return $this->redirect(['controller'=>'Projet', 'action'=> 'index']);
             }
             // on récupère l'ID du propriétaire
