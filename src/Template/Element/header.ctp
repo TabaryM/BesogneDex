@@ -42,9 +42,12 @@
     <a class="btn logout" data-toggle="modal" data-target="#logoutModal"></a>
     <?= $this->Html->link("", array('controller' => 'Utilisateur','action'=> 'profil'), array( 'class' => 'btn user'))?>
     <a class="btn bell notificaton" href="/BesogneDex/notification">
-      <?php if($nbNotif != 0): ?>
+      <?php if($nbNotif > 0 && $nbNotif < 10): ?>
         <span class="badge"><?= $nbNotif ?></span>
+      <?php elseif($nbNotif >= 10): ?>
+        <span class="badge">9+</span>
       <?php endif; ?>
+
     </a>
   </div>
     <?php  endif;   ?>
