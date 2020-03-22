@@ -166,7 +166,7 @@ class NotificationController extends AppController
               // Si l'action s'est bien déroulée
               if ($resultat==0){
                   $this->Flash->success(__('Vous avez répondu à la notification.'));
-                  
+
               // Sinon
               }else{
                 $this->Flash->success(__('Une erreur s\'est produite.'));
@@ -192,7 +192,7 @@ class NotificationController extends AppController
     * @param notification : notification concernée
     * @return 0 si tout est ok, 1 sinon
     *
-    * @author Pop Diana
+    * @author Pop Diana, Rossi Djessy
     */
     private function proprietaire($idUtilisateur, $notification){
       $idProjet = $notification->idProjet;
@@ -220,7 +220,7 @@ class NotificationController extends AppController
     * @param notification : notification concernée
     * @return 0 si tout est ok, 1 sinon
     *
-    * @author Pop Diana
+    * @author Pop Diana, Rossi Djessy
     */
     private function invitation($idUtilisateur, $notification){
       $idProjet = $notification->idProjet;
@@ -230,11 +230,29 @@ class NotificationController extends AppController
       if ($idProjet!==null){
         $resultat = 0;
         $membres = TableRegistry::getTableLocator()->get('Membre');
+        $session = $this->request->getSession();
 
         /* On crée notre nouveau petit membre. */
         $membre = $membres->newEntity();
         $membre->idUtilisateur = $idUtilisateur;
         $membre->idProjet = $idProjet;
+
+
+        //On récupère le projet concerné pour le nom
+        $projet = $projets->find()->where(['idProjet' => $notification->idProjet]);
+
+        // On récupère les informations de la tâche pour envoyer une notification
+        $contenu = $session->read('Auth.User.pseudo') . " a accepté(e) votre invitation à rejoindre le projet " . $projet->titre;
+
+        // On récupère les membres du projet
+        $membres = $membres->find()->contain('Utilisateur')->where(['idProjet' => $idProjet]);
+
+        // Pour chaque membre du projet, on envoie une notification à celui-ci
+        $destinataires = array();
+        array_push($destinataires, $notification->idExpediteur);
+
+        // On envoie une notification à tous les membres du projet de la tâche supprimer
+        envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $notification->idExpediteur, $destinataires);
 
         /* On le sauvegarde. */
         $estSauvegarde = $membres->save($membre);
