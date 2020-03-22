@@ -43,7 +43,7 @@ class ProjetController extends AppController
   }
 
   /**
-  * Vérifie si l'utilisateur est propriétaire ou membre du projet donné.
+  * Vérifie si l'utilisateur connecté est propriétaire ou membre du projet donné.
   *
   * @param idProjet : id du projet
   * @return Vrai si l'utilisateur est propriétaire ou membre du projet donné
@@ -53,13 +53,13 @@ class ProjetController extends AppController
   * @author Diana POP
   **/
   private function autorisationMembre($idProjet){
-    $projetTab = $this->Projet->find()->where(['idProjet' => $idProjet])->first();
+    $projet = $this->Projet->find()->where(['idProjet' => $idProjet])->first();
 
     $session = $this->request->getSession();
     if ($session->check('Auth.User.idUtilisateur')) {
       $user = $session->read('Auth.User.idUtilisateur');
       // L'utilisateur est-il propriétaire ?
-      if($projetTab->idProprietaire == $user){
+      if($projet>idProprietaire == $user){
         return true;
 
         // S'il n'est pas propriétaire, est-il membre ?
@@ -77,6 +77,34 @@ class ProjetController extends AppController
     return $this->redirect(['controller'=>'Accueil', 'action'=>'index']);
   }
 
+  /**
+  * Vérifie si l'utilisateur dont l'id est donné est membre du projet donné.
+  * Pour vérifier si l'utilisateur CONNECTÉ est membre, voir fonction 'autorisationMembre($idProjet)'.
+  *
+  * @param idUtilisateur : id de l'utilisateur dont on veut savoir s'il est membre.
+  * @param idProjet : id du projet
+  *
+  * @return Vrai s'il est membre du projet
+  * Redirection /
+  *
+  * @author Diana Pop
+  */
+  private function estMembre($idUtilisateur, $idProjet){
+    $resultat = false;
+    $projet = $this->Projet->find()->where(['idProjet' => $idProjet])->first();
+
+    /* Si le projet existe bien. */
+    if ($projet){
+      $membres = TableRegistry::get('Membre');
+      $query = $membres->find()->select(['idUtilisateur'])->where(['idUtilisateur' => $idUtilisateur, 'idProjet' => $idProjet])->count();
+
+      /* Si l'utilisateur est bien membre du projet. */
+      if ($query >0){
+        $resultat = true;
+      }
+    }
+    return $resultat;
+  }
 
     /**
     * Supprime toutes les notifications associées à un projet et à ses tâches.
@@ -634,14 +662,23 @@ class ProjetController extends AppController
           * Change le propriétaire d'un projet
           * @param   $idMembre id du membre qui devient propriétaire du projet
           * @param   $idProjet id du projet
-          * @author  Clément Colné, Diana Pop (envoi notif)
+          * @author  Clément Colné, Diana Pop (envoi notif + verif que c'est un membre)
           */
           function changerProprietaire($idMembre, $idProjet) {
             $idProprietaire = $this->autorisationProprietaire($idProjet);
             $projets = TableRegistry::get('Projet');
 
+
+            $estMembre = $this->estMembre($idMembre, $idProjet);
+
             if ($idMembre == $idProprietaire){
               $this->Flash->set('Vous êtes déjà propriétaire.', ['element' => 'error']);
+              return $this->redirect(['controller'=>'Projet', 'action'=> 'index']);
+            }
+
+            // On vérifie que la personne à qui on veut donner les droits est bien membre (cas où modification url).
+            if (!$estMembre){
+              $this->Flash->set('Cet utilisateur n\'est pas membre du projet.', ['element' => 'error'] );
               return $this->redirect(['controller'=>'Projet', 'action'=> 'index']);
             }
             // on récupère l'ID du propriétaire
@@ -654,7 +691,7 @@ class ProjetController extends AppController
             $projet = $projets->find()->where(['idProjet' => $idProjet])->first();
             $nomProjet = $projet['titre'];
 
-            // Envoie un notification au nouveau propriétaire
+            /* ENVOI DE NOTIFICATION */
             $destinataires = array();
             //On met l'utilisateur invité en tant que destinataire
             array_push($destinataires, $idMembre);

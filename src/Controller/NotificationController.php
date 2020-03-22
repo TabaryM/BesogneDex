@@ -130,6 +130,7 @@ class NotificationController extends AppController
     * @author Clément Colne, Diana Pop
     */
     public function accept($idVueNotification) {
+        $resultat = 1;
         $idUtilisateur = $this->autorisation(); // On récupère l'id utilisateur (et verifie si il est tjrs connecté)
 
         $notifications = TableRegistry::getTableLocator()->get('Notification');
@@ -153,6 +154,8 @@ class NotificationController extends AppController
              // Si l'utilisateur n'a pas déjà répondu à la notification
             if($etat == 'En attente') {
               if ($type=='Proprietaire') $resultat = $this->proprietaire($idUtilisateur, $notification);
+              if ($type=='Invitation') $resultat = $this->invitation($idUtilisateur, $notification);
+              if ($type=='Supression') $resultat = $this->accepterSuppressionTache($idVueNotification);
 
               /* Changements de la vue notification */
               $vueNotification->vue = 1; // La vue notification est vue
@@ -163,6 +166,7 @@ class NotificationController extends AppController
               // Si l'action s'est bien déroulée
               if ($resultat==0){
                   $this->Flash->success(__('Vous avez répondu à la notification.'));
+                  
               // Sinon
               }else{
                 $this->Flash->success(__('Une erreur s\'est produite.'));
@@ -208,6 +212,39 @@ class NotificationController extends AppController
       return $resultat;
     }
 
+    /**
+    * Fonction appelée si on appelle une notification de type 'Invitation'.
+    * L'utilisateur connecté est ajouté dans les membres du projet de la notification.
+    *
+    * @param idUtilisateur : id de l'utilisateur connecté
+    * @param notification : notification concernée
+    * @return 0 si tout est ok, 1 sinon
+    *
+    * @author Pop Diana
+    */
+    private function invitation($idUtilisateur, $notification){
+      $idProjet = $notification->idProjet;
+      $resultat = 1;
+
+      // Si la notification a bien un idProjet avec elle
+      if ($idProjet!==null){
+        $resultat = 0;
+        $membres = TableRegistry::getTableLocator()->get('Membre');
+
+        /* On crée notre nouveau petit membre. */
+        $membre = $membres->newEntity();
+        $membre->idUtilisateur = $idUtilisateur;
+        $membre->idProjet = $idProjet;
+
+        /* On le sauvegarde. */
+        $estSauvegarde = $membres->save($membre);
+
+        /* On vérifie qu'il n'y a pas eu d'erreurs à la sauvegarde. */
+        if (!$estSauvegarde) $resultat = 1;
+      }
+      return $resultat;
+    }
+
 
 
     /**
@@ -220,6 +257,7 @@ class NotificationController extends AppController
     * On redirige à la fin l'utilisateur sur sa liste de notifications.
     */
     public function accepterSuppressionTache($idNotification){
+
       // On récupère l'id de l'utilisateur connecté
       $session = $this->request->getSession();
       $idUtilisateur = $session->read('Auth.User.idUtilisateur');
@@ -280,6 +318,8 @@ class NotificationController extends AppController
       envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $idUtilisateur, $destinataires);
 
       $this->Flash->success(__('La tâche a été supprimée'));
+      $resultat = 0;
+      return $resultat;
 
       // On redirige l'utilisateur sur la liste de ses notifications
       $this->redirect($this->referer());
@@ -317,8 +357,12 @@ class NotificationController extends AppController
       // On met à jour la notification
       $vue_notifications->save($notification);
 
+      $resultat = 0;
+      return $resultat;
+
       // On redirige l'utilisateur sur la liste de ses notifications
       $this->redirect($this->referer());
+
     }
 
 
