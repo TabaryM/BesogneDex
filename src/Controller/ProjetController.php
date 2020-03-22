@@ -734,7 +734,7 @@ class ProjetController extends AppController
             // Envoie une notification à un utilisateur pour le notifier qu'il a été exclu du projet
             envoyerNotification(1, 'Proprietaire', $contenu, $idProjet, null, $idSession, $destinataires);
 
-            $this->Flash->set('Une notification a été envoyée pour changer de propriétaire.', ['element' => 'success']);
+            $this->Flash->set('Une demande de changement de propriétaire a été envoyée.', ['element' => 'success']);
             return $this->redirect(['controller'=>'Projet', 'action'=> 'index']);
           }
 
