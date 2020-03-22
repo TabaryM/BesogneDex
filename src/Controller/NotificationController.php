@@ -100,6 +100,8 @@ class NotificationController extends AppController
         $notificationProjet = $vueNotificationProjetTable->find()
         ->where(['idUtilisateur' => $idUtilisateur, 'idNotification' => $idNotifProjet])
         ->first();
+        $projets = TableRegistry::getTableLocator()->get('Projet');
+        $session = $this->request->getSession();
 
         /* On doit mettre l'attribut 'a_valider' de la notification à 0. */
         $notifications = TableRegistry::getTableLocator()->get('Notification');
@@ -113,6 +115,20 @@ class NotificationController extends AppController
                $vueNotificationProjetTable->save($notificationProjet); // On sauvegarde les changements
                // TODO || Voir avec les gens du front pour qu'ils mettent juste à jour l'interface
                // TODO || quand on a répondu a une notif au lieu de faire un flash
+               //On récupère le projet concerné pour le nom
+
+               $projet = $projets->find()->where(['idProjet' => $notification->idProjet])->first();
+
+               // On récupère les informations de la tâche pour envoyer une notification
+               $contenu = $session->read('Auth.User.pseudo') . " a refusé(e) votre invitation à rejoindre le projet " . $projet['titre'];
+
+               // Pour chaque membre du projet, on envoie une notification à celui-ci
+               $destinataires = array();
+               array_push($destinataires, $notification->idExpediteur);
+
+               // On envoie une notification à tous les membres du projet de la tâche supprimer
+               envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $notification->idExpediteur, $destinataires);
+
                 $this->Flash->success(__('Vous avez répondu à la notification.'));
             } else {
                 $this->Flash->error(__("Vous avez déjà répondu à cette notification."));
