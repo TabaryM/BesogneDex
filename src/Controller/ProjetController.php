@@ -300,9 +300,8 @@ class ProjetController extends AppController
                 $query->delete()->where(['idProjet' => $idProjet])->execute();
 
 
-                //TODO a remplacer id par le nom de l'utilisateur
                 //Contenu de la notification à envoyer
-                $contenu = $idUser . " a supprimé le projet " . $projetTab->titre;
+                $contenu = $session->read('Auth.User.pseudo') . " a supprimé le projet " . $projetTab->titre;
 
               }
               //sinon si c'est un invité on le retire dans la table membre
@@ -320,9 +319,8 @@ class ProjetController extends AppController
                 $query = $membres->query();
                 $query->delete()->where(['idProjet' => $idProjet, 'idUtilisateur' => $idUser])->execute();
 
-                //TODO a remplacer id par le nom de l'utilisateur
                 //Contenu de la notification à envoyer
-                $contenu = $idUser . " a quitté le projet " . $projetTab->titre;
+                $contenu = $session->read('Auth.User.pseudo') . " a quitté le projet " . $projetTab->titre;
 
               }
             }

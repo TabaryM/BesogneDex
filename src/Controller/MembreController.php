@@ -263,8 +263,7 @@ class MembreController extends AppController
           $idSession = $session->read('Auth.User.idUtilisateur');
 
           //On remplit le contenu de la notification
-          //TODO A remplacer l'id session par le nom de l'expediteur
-          $contenu = $idSession . " vous a demandé de rejoindre son projet " . $nomProjet;
+          $contenu = $session->read('Auth.User.pseudo') . " vous a demandé de rejoindre son projet " . $nomProjet;
 
           //Envoie une notification à un utilisateur pour lui demander de rejoindre son projet
           envoyerNotification(1, 'Invitation', $contenu, $idProjet, null, $idSession, $destinataires);
@@ -325,8 +324,7 @@ class MembreController extends AppController
         $idSession = $session->read('Auth.User.idUtilisateur');
 
         //On remplit le contenu de la notification
-        //TODO A remplacer l'id session par le nom de l'expediteur
-        $contenu = "Le propriétaire vous a exclu du projet " . $nomProjet;
+        $contenu = $session->read('Auth.User.pseudo')." vous a exclu du projet " . $nomProjet;
 
         //Envoie une notification à un utilisateur pour le notifier qu'il a été exclu du projet
         envoyerNotification(1, 'Informative', $contenu, $idProjet, null, $idSession, $destinataires);

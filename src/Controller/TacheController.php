@@ -269,8 +269,7 @@ class TacheController extends AppController
     $this->Tache->save($tache);
 
     //On ajoute le contenu de la notification
-    //TODO A changer avec le pseudo
-    $contenu =  $session->read('Auth.User.idUtilisateur') . " est devenu(e) responsable de la tâche - " . $tache->titre;
+    $contenu =  $session->read('Auth.User.pseudo') . " est devenu(e) responsable de la tâche - " . $tache->titre;
 
     //On récupère les membres du projet afin de les notifier
     $membres = TableRegistry::getTableLocator()->get('Membre');
@@ -374,8 +373,7 @@ class TacheController extends AppController
     $user = $session->read('Auth.User.idUtilisateur');
 
     //On ajoute le contenu de la notification
-    //TODO A changer avec le pseudo
-    $contenu =  $session->read('Auth.User.idUtilisateur') . " n'est plus responsable de la tâche - " . $tache->titre;
+    $contenu =  $session->read('Auth.User.pseudo') . " n'est plus responsable de la tâche - " . $tache->titre;
 
     //On récupère les membres du projet afin de les notifier
     $membres = TableRegistry::getTableLocator()->get('Membre');
