@@ -4,72 +4,69 @@
     <div class="table-responsive">
       <table class="table table-borderless table-bleu">
         <tbody>
+          <!-- Si il n'y a pas de notification on affiche un message -->
+          <?php if (sizeof($notifs) == 0): ?>
+              <td class="d-flex justify-content-center">
+                <?php echo 'Aucune notification' ?>
+              </td>
+          <?php endif; ?>
+
+          <!-- Pour chacune des notification -->
           <?php foreach ($notifs as $notif): ?>
-            <tr <?php if (!$notif->vue) echo 'class="font-weight-bold"'; ?>>
+              <!-- Si la notification n'a pas était vue, on la met en gras -->
+              <tr <?php if (!$notif->vue) echo 'class="font-weight-bold"'; ?>>
+
+              <!-- On affiche le contenu de la notification -->
               <td>
                 <?= $notif->une_notification->contenu ?>
               </td>
-              <td>
-                <?= $notif->une_notification->date->nice('Europe/Paris', 'fr-FR') ?>
-              </td>
               <td class="d-flex justify-content-center">
-                <?php if (isset($notif->idNotifProjet)): ?>
 
-                  <?php if ($notif->une_notification->a_valider && $notif->etat=="En attente"): ?>
+                  <!-- Si la notification est une notification à valider -->
 
-                    <!-- TODO: Fonction accepter invitation -->
-                    <?= $this->Html->link("Accepter", ['controller'=> 'notification', 'action'=> 'acceptInvitation', $notif->idNotifProjet], ['class' => 'btn btn-primary']); ?>
-                    <?= $this->Html->link("Refuser", ['controller' => 'notification', 'action'=> 'declineInvitation', $notif->idNotifProjet], ['class' => 'btn btn btn-danger']); ?>
+                      <!-- Début notification à valider  -->
+                      <?php if ($notif->une_notification->type !== 'Informative'): ?>
 
-                  <?php elseif ($notif->une_notification->a_valider && $notif->etat=="Accepté"): ?>
-                    <button class="btn btn-primary" disabled="true"> Invitation acceptée </button>
+                          <!-- Si la notification n'a pas reçu de réponse -->
+                          <?php if ($notif->etat == 'En attente'): ?>
+                              <!-- Fonction pour accepter l'invitation -->
+                              <?= $this->Html->link("Accepter", ['controller'=> 'notification', 'action'=> 'accept', $notif->idNotification], ['class' => 'btn btn-primary']); ?>
+                              <!-- Fonction pour refuser l'invitation -->
+                              <?= $this->Html->link("Refuser", ['controller' => 'notification', 'action'=> 'decline', $notif->idNotification], ['class' => 'btn btn btn-danger']); ?>
 
-                  <?php elseif ($notif->une_notification->a_valider && $notif->etat=="Refusé"): ?>
-                    <button class="btn btn-danger" disabled="true"> Invitation refusée </button>
+                          <!-- Si la notification a été acceptée -->
+                          <?php elseif ($notif->etat == 'Accepté'): ?>
+                              <button class="btn btn-primary" disabled="true"> Invitation acceptée </button>
 
-                  <?php else : ?>
+                          <!-- Si la notification a été refusée -->
+                          <?php else: ?>
+                              <button class="btn btn-danger" disabled="true"> Invitation refusée </button>
 
-                    <?php if ($notif->une_notification->idProjet == null): ?>
-                      <button class="btn btn-primary" disabled="true"> Projet indisponible </button>
+                          <?php endif; ?>
+                      <!-- Fin notification à valider -->
 
-                    <?php else : ?>
-                    <?= $this->Html->link("Consulter le projet", ['controller' => 'tache', 'action'=> 'index', $notif->une_notification->idProjet], ['class' => 'btn btn-primary']); ?>
-                    <?php endif; ?>
+                  <!-- Si la notification est une notification à voir -->
+                  <?php else: ?>
+
+                      <!-- Si la fonction est liée à un projet, on peut aller à ce projet -->
+                      <?php if ($notif->une_notification->idProjet != null): ?>
+                          <?= $this->Html->link("Consulter le projet", ['controller' => 'tache', 'action'=> 'index', $notif->une_notification->idProjet], ['class' => 'btn btn-primary']); ?>
+                      <?php endif; ?>
+
                   <?php endif; ?>
 
-                <!-- Suppression de tâche -->
-                <?php elseif (isset($notif->idNotifTache)): ?>
+                  <!-- Si la notification a reçu une réponse ou si c'est une notification à voir, on peut la supprimée -->
+                  <?php if ($notif->vue  || !($notif->une_notification->a_valider)): ?>
 
-                  <?php if ($notif->une_notification->a_valider && $notif->etat == 'En attente'): ?>
-                    <?= $this->Html->link("Accepter", ['action'=> '#'], ['class' => 'btn btn-primary']); ?>
-                    <?= $this->Html->link("Refuser", ['controller' => 'notification', 'action'=> 'refuserSuppressionTache', $notif->idNotifTache], ['class' => 'btn btn btn-danger']); ?>
+                    <?= $this->Html->link("Supprimer","", ['class' => 'btn btn-danger shadow', 'data-toggle' => 'modal', 'data-target' => '#deleteModal' . $notif->idNotification]) ?>
 
-                  <?php elseif ($notif->une_notification->a_valider && $notif->etat=="Accepté"): ?>
-                    <button class="btn btn-primary" disabled="true"> Tâche supprimée </button>
-
-                  <?php elseif ($notif->une_notification->a_valider && $notif->etat=="Refusé"): ?>
-                    <button class="btn btn-danger" disabled="true"> Tâche non supprimée </button>
-
-                  <?php endif ; ?>
-
-                <?php endif ; ?>
-
-                <?php
-                if(isset($notif->idNotifTache)){
-                  $not = array($notif->idNotifTache, 'Tache');
-                } else {
-                  $not = array($notif->idNotifProjet, 'Projet');
-                }
-                ?>
-                <?php if ($notif->vue  || !$notif->une_notification->a_valider): ?>
-                  <?= $this->Html->link("Supprimer","", ['class' => 'btn btn-danger shadow', 'data-toggle' => 'modal', 'data-target' => '#deleteModal' . $not[0]]) ?>
-                <?php endif; ?>
+                  <?php endif; ?>
               </td>
             </tr>
 
 
             <!-- Début modal Supprimer une notification : -->
-            <div class="modal fade" id=<?= "deleteModal" . $not[0] ?>>
+            <div class="modal fade" id=<?= "deleteModal" . $notif->idNotification ?>>
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -85,7 +82,7 @@
                                       <?= $this->Html->link("Non", array('controller' => 'Notification', 'action'=> 'index'), array( 'button class' => 'btn btn-primary', 'data-dismiss' => 'modal'));?>
                                     </div>
                                     <div class="col text-left">
-                                      <?= $this->Html->link("Oui", array('controller' => 'Notification', 'action'=> 'supprimerNotification',  implode("_", $not)), array( 'button class' => 'btn btn-danger'));?>
+                                      <?= $this->Html->link("Oui", array('controller' => 'Notification', 'action'=> 'supprimerNotification',  $notif->idNotification), array( 'button class' => 'btn btn-danger'));?>
                                     </div>
                                 </div>
                             </div>

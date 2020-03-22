@@ -253,14 +253,26 @@ class MembreController extends AppController
           $projet = $projets->find()->where(['idProjet' => $idProjet])->first();
           $nomProjet = $projet['titre'];
 
+          $destinataires = array();
+          //On met l'utilisateur invité en tant que destinataire
+          array_push($destinataires, $idUtilisateur);
+
+          //On get la session pour avoir l'id de l'expediteur
+          $session = $this->request->getSession();
+          //On récupère l'id de la session
+          $idSession = $session->read('Auth.User.idUtilisateur');
+
+          //On remplit le contenu de la notification
+          $contenu = $session->read('Auth.User.pseudo') . " vous a demandé de rejoindre son projet " . $nomProjet;
+
           //Envoie une notification à un utilisateur pour lui demander de rejoindre son projet
-          envoyerNotificationProjet(1, "Le propriétaire vous demande de rejoindre son projet " . $nomProjet, $idProjet, $idUtilisateur);
+          envoyerNotification(1, 'Invitation', $contenu, $idProjet, null, $idSession, $destinataires);
 
         // Si les vérifications ont été fausses, on affiche les messages d'erreur selon les cas.
         }else{
           if(!$existeUtilisateur) $this->Flash->error(__('Ce membre n\'existe pas.'));
 
-          if ($estProprietaire) $this->Flash->error(__('Vous êtes le propriétaire de ce projet et faites donc déjà partie de ce projet.'));
+          if ($estProprietaire) $this->Flash->error(__('Vous êtes le/a propriétaire de ce projet et faites donc déjà partie de ce projet.'));
 
           if ($estDejaMembre && !$estProprietaire) $this->Flash->error(__('Ce membre est déjà dans le projet.'));
 
@@ -302,7 +314,20 @@ class MembreController extends AppController
         $projet = $projets->find()->where(['idProjet' => $idProjet])->first();
         $nomProjet = $projet['titre'];
 
-        envoyerNotificationProjet(0, "Le propriétaire vous a exclu du projet " . $nomProjet, $idProjet, $idUtilisateur);
+        $destinataires = array();
+        //On met l'utilisateur invité en tant que destinataire
+        array_push($destinataires, $idUtilisateur);
+
+        //On get la session pour avoir l'id de l'expediteur
+        $session = $this->request->getSession();
+        //On récupère l'id de la session
+        $idSession = $session->read('Auth.User.idUtilisateur');
+
+        //On remplit le contenu de la notification
+        $contenu = $session->read('Auth.User.pseudo')." vous a exclu du projet " . $nomProjet;
+
+        //Envoie une notification à un utilisateur pour le notifier qu'il a été exclu du projet
+        envoyerNotification(1, 'Informative', $contenu, $idProjet, null, $idSession, $destinataires);
 
         $this->supprimerMembre($idUtilisateur, $idProjet);
 
@@ -312,7 +337,7 @@ class MembreController extends AppController
 
       // Si l'utilisateur à supprimer du projet n'en est pas membre, on ne peut pas le supprimer (empêche une grosse erreur avec delete(entity) de CakePhp).
       }else{
-        $this->Flash->set('Cet utilisateur n\'est pas membre du projet.', ['element' => 'error']);
+        $this->Flash->set('Cet utilisateur/trice n\'est pas membre du projet.', ['element' => 'error']);
       }
 
       // Dans tous les cas, on redirige à l'index.

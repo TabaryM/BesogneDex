@@ -49,15 +49,10 @@ class AccueilController extends AppController
 
       //on recherche les notifs d'un User
       // Initialisation des tables
-      $tableNotificationsProjet = TableRegistry::getTableLocator()->get('VueNotificationProjet');
-      $tableNotificationsTache = TableRegistry::getTableLocator()->get('VueNotificationTache');
+      $tableNotifications = TableRegistry::getTableLocator()->get('VueNotification');
 
-      // Récupération des notifications de projet
-      $notificationsProjet = $tableNotificationsProjet->find()->contain(['NotificationProjet'])->where(['idUtilisateur' => $idUtilisateur])->toArray();
-      $notificationsTache = $tableNotificationsTache->find()->contain(['NotificationTache'])->where(['idUtilisateur' => $idUtilisateur])->toArray();
-
-      // On merge en une seule array les résultats des deux requêtes.
-      $notifs = array_merge($notificationsProjet, $notificationsTache);
+      // Récupération des notifications
+      $notifs = $tableNotifications->find()->where(['idUtilisateur' => $idUtilisateur])->toArray();
 
       // On trie l'array résultante. Le tri est déjà sur la date, puis sur si la notification est à valider.
       $notifs = Hash::sort($notifs, '{n}.une_notification.Date','asc');

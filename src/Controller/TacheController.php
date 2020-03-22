@@ -2,6 +2,7 @@
 namespace App\Controller;
 require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'VerificationChamps.php');
 require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'listeErreursVersString.php');
+require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'Notifications.php');
 use App\Controller\AppController;
 use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
@@ -202,6 +203,31 @@ class TacheController extends AppController
         $data2 = $this->Tache->patchEntity($tache, $data); //On "assemble" les données entre data et une tâche
 
         if($this->Tache->save($data2)){ //On sauvegarde les données (Le vérificator passe avant)
+
+          //On récupère l'id session pour connaitre l'expediteur
+          $session = $this->request->getSession();
+          if ($session->check('Auth.User.idUtilisateur')) {
+              $user = $session->read('Auth.User.idUtilisateur');
+          }
+
+          //On ajoute le contenu de la notification
+          $contenu = "La tâche " . $tache->titre . " a été modifiée.";
+
+          //On récupère les membres du projet afin de les notifier
+          $membres = TableRegistry::getTableLocator()->get('Membre');
+          $membres = $membres->find()->contain('Utilisateur')
+          ->where(['idProjet' => $idProjet]);
+
+          //On récupère les id des membres du projet
+          $destinataires = array();
+          foreach ($membres as $m) {
+            $idUtil = $m->un_utilisateur->idUtilisateur;
+            array_push($destinataires, $idUtil);
+          }
+
+          //On appelle la fonction pour envoyer la notification
+          envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $user, $destinataires);
+
           $this->Flash->success(__('La tâche a été modifiée.'));
           $succes = true;
         }else{
@@ -237,11 +263,29 @@ class TacheController extends AppController
      */
   public function devenirResponsable($idProjet, $idTache) {
     $session = $this->request->getSession();
+    $user = $session->read('Auth.User.idUtilisateur');
     $tache = $this->Tache->get($idTache);
-    $tache->idResponsable = $session->read('Auth.User.idUtilisateur');
+    $tache->idResponsable = $user;
     $this->Tache->save($tache);
-    // TODO: Envoyer notification aux autres membres du projet
-    //TODO: NOTIF A FAIRE A ENVOYER A TOUS LES MEMBRES
+
+    //On ajoute le contenu de la notification
+    $contenu =  $session->read('Auth.User.pseudo') . " est devenu(e) responsable de la tâche - " . $tache->titre;
+
+    //On récupère les membres du projet afin de les notifier
+    $membres = TableRegistry::getTableLocator()->get('Membre');
+    $membres = $membres->find()->contain('Utilisateur')
+    ->where(['idProjet' => $idProjet]);
+
+    //On récupère les id des membres du projet
+    $destinataires = array();
+    foreach ($membres as $m) {
+      $idUtil = $m->un_utilisateur->idUtilisateur;
+      array_push($destinataires, $idUtil);
+    }
+
+    //On appelle la fonction pour envoyer la notification
+    envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $user, $destinataires);
+
     return $this->redirect(['action' => 'index', $idProjet]);
   }
 
@@ -282,12 +326,7 @@ class TacheController extends AppController
         if($projetTab->idProprietaire == $user){
 
           //On crée une nouvelle notification pour le projet courant
-          $notification = $notifications->newEntity();
-          $notification->a_valider = 0;
-          $notification->contenu = "La tâche ".$tache->titre." a été supprimée.";
-          $notification->idTache = null;
-          $notifications->save($notification);
-          $idNot = $notification->idNotificationTache;
+          $contenu = "La tâche ".$tache->titre." a été supprimée.";
 
           //On récupère les membres du projet
           $membres = TableRegistry::getTableLocator()->get('Membre');
@@ -295,38 +334,27 @@ class TacheController extends AppController
           ->where(['idProjet' => $idProjet]);
 
           //Pour chaque membre du projet, on envoie une notification à celui-ci
+          $destinataires = array();
           foreach ($membres as $m) {
             $idUtil = $m->un_utilisateur->idUtilisateur;
-
-            $vue_not = $vue_notifications->newEntity();
-            $vue_not->idUtilisateur = $idUtil;
-            $vue_not->idNotifTache = $idNot;
-            $vue_notifications->save($vue_not);
+            array_push($destinataires, $idUtil);
 
             //TODO pour PE: supprimer les notifs en lien avec la tache pour eviter les conflits de DB
-
-
           }
+
+          envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $user, $destinataires);
+
           $query = $tacheTab->query();
           $query->delete()->where(['idTache' => $idTache])->execute();
-        }
-        else{
+
+        } else {
           //sinon envoyer une demande de confirmation au proprio et si il accepte, la supprimer
           //On crée une nouvelle notification pour le projet courant
-          $notification = $notifications->newEntity();
-          $notification->a_valider = 1;
-          $notification->contenu = $session->read('Auth.User.pseudo')." veut supprimer la tâche ".$tache->titre." du projet ".$projetTab->titre.".";
-          $notification->idTache = $idTache;
-          $notifications->save($notification);
-          $idNot = $notification->idNotificationTache;
+          $contenu = $session->read('Auth.User.pseudo')." veut supprimer la tâche ".$tache->titre." du projet ".$projetTab->titre.".";
 
-          $vue_not = $vue_notifications->newEntity();
-          $vue_not->idUtilisateur = $projetTab->idProprietaire;
-          $vue_not->idNotifTache = $idNot;
+          envoyerNotification(1, 'Suppression', $contenu, $idProjet, $idTache, $user, array($projetTab->idProprietaire));
 
-          $this->Flash->default(__('Une demande pour supprimer cette tâche à été envoyé au propriétaire.'));
-
-          $vue_notifications->save($vue_not);
+          $this->Flash->default(__('Une demande pour supprimer cette tâche à été envoyé au/à la propriétaire.'));
         }
       }
     }
@@ -341,8 +369,27 @@ class TacheController extends AppController
     $tache = $this->Tache->get($idTache);
     $tache->idResponsable = NULL;
     $this->Tache->save($tache);
-    //Pour chaque membre du projet, on envoie une notification à celui-ci
-    //TODO: NOTIF A FAIRE A ENVOYER A TOUS LES MEMBRES
+    $session = $this->request->getSession();
+    $user = $session->read('Auth.User.idUtilisateur');
+
+    //On ajoute le contenu de la notification
+    $contenu =  $session->read('Auth.User.pseudo') . " n'est plus responsable de la tâche - " . $tache->titre;
+
+    //On récupère les membres du projet afin de les notifier
+    $membres = TableRegistry::getTableLocator()->get('Membre');
+    $membres = $membres->find()->contain('Utilisateur')
+    ->where(['idProjet' => $idProjet]);
+
+    //On récupère les id des membres du projet
+    $destinataires = array();
+    foreach ($membres as $m) {
+      $idUtil = $m->un_utilisateur->idUtilisateur;
+      array_push($destinataires, $idUtil);
+    }
+
+    //On appelle la fonction pour envoyer la notification
+    envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $user, $destinataires);
+
     return $this->redirect(['action' => 'index', $idProjet]);
   }
 
@@ -360,22 +407,43 @@ class TacheController extends AppController
     $this->render(false);
 
     $tache = $this->Tache->get($id);
+    $idProjet = $tache->idProjet;
     $session = $this->request->getSession();
     if ($session->check('Auth.User.idUtilisateur')) {
       $user = $session->read('Auth.User.idUtilisateur');
       if ($tache->idResponsable === $user) {
         if ($fait) {
           $tache->finie = 1;
+
+          //On ajoute le contenu de la notification
+          $contenu = "La tâche " . $tache->titre . " a été terminée.";
+
+          //On récupère les membres du projet afin de les notifier
+          $membres = TableRegistry::getTableLocator()->get('Membre');
+          $membres = $membres->find()->contain('Utilisateur')
+          ->where(['idProjet' => $idProjet]);
+
+          //On récupère les id des membres du projet
+          $destinataires = array();
+          foreach ($membres as $m) {
+            $idUtil = $m->un_utilisateur->idUtilisateur;
+            array_push($destinataires, $idUtil);
+          }
+
+          //On appelle la fonction pour envoyer la notification
+          envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $user, $destinataires);
+
         } else {
           $tache->finie = 0;
         }
-        //TODO: NOTIF A FAIRE A ENVOYER A TOUS LES MEMBRES VVALIDER UNETACHE
+
+
         $this->Tache->save($tache);
       } else {
-        $this->Flash->error(__('Seul le responsable de la tâche peut changer l\'état de celle-ci.'));
+        $this->Flash->error(__('Seul le/a responsable de la tâche peut changer l\'état de celle-ci.'));
       }
     } else {
-      $this->Flash->error(__('Vous devez être connecté pour changer l\'état d\'une tâche.'));
+      $this->Flash->error(__('Vous devez être connecté/e pour changer l\'état d\'une tâche.'));
     }
 
   }

@@ -10,6 +10,7 @@
 function nettoyerTexte($texte) {
     $texte = filter_var($texte, FILTER_SANITIZE_STRING);
     $texte = htmlspecialchars($texte);
+    //TODO fix that
     $texte = str_replace("&#39;","'", $texte);
     return $texte;
 }

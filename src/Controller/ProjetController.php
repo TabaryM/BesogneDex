@@ -38,12 +38,12 @@ class ProjetController extends AppController
     }
 
     // Si l'utilisateur n'est pas le propriétaire ou si ce projet n'existe pas
-    $this->Flash->error(__('Vous n\'êtes pas le propriétaire de ce projet ou ce projet n\'existe pas.'));
+    $this->Flash->error(__('Vous n\'êtes pas le/a propriétaire de ce projet ou ce projet n\'existe pas.'));
     $this->redirect(['controller'=>'Accueil', 'action'=>'index']);
   }
 
   /**
-  * Vérifie si l'utilisateur est propriétaire ou membre du projet donné.
+  * Vérifie si l'utilisateur connecté est propriétaire ou membre du projet donné.
   *
   * @param idProjet : id du projet
   * @return Vrai si l'utilisateur est propriétaire ou membre du projet donné
@@ -53,13 +53,13 @@ class ProjetController extends AppController
   * @author Diana POP
   **/
   private function autorisationMembre($idProjet){
-    $projetTab = $this->Projet->find()->where(['idProjet' => $idProjet])->first();
+    $projet = $this->Projet->find()->where(['idProjet' => $idProjet])->first();
 
     $session = $this->request->getSession();
     if ($session->check('Auth.User.idUtilisateur')) {
       $user = $session->read('Auth.User.idUtilisateur');
       // L'utilisateur est-il propriétaire ?
-      if($projetTab->idProprietaire == $user){
+      if($projet>idProprietaire == $user){
         return true;
 
         // S'il n'est pas propriétaire, est-il membre ?
@@ -77,6 +77,34 @@ class ProjetController extends AppController
     return $this->redirect(['controller'=>'Accueil', 'action'=>'index']);
   }
 
+  /**
+  * Vérifie si l'utilisateur dont l'id est donné est membre du projet donné.
+  * Pour vérifier si l'utilisateur CONNECTÉ est membre, voir fonction 'autorisationMembre($idProjet)'.
+  *
+  * @param idUtilisateur : id de l'utilisateur dont on veut savoir s'il est membre.
+  * @param idProjet : id du projet
+  *
+  * @return Vrai s'il est membre du projet
+  * Redirection /
+  *
+  * @author Diana Pop
+  */
+  private function estMembre($idUtilisateur, $idProjet){
+    $resultat = false;
+    $projet = $this->Projet->find()->where(['idProjet' => $idProjet])->first();
+
+    /* Si le projet existe bien. */
+    if ($projet){
+      $membres = TableRegistry::get('Membre');
+      $query = $membres->find()->select(['idUtilisateur'])->where(['idUtilisateur' => $idUtilisateur, 'idProjet' => $idProjet])->count();
+
+      /* Si l'utilisateur est bien membre du projet. */
+      if ($query >0){
+        $resultat = true;
+      }
+    }
+    return $resultat;
+  }
 
     /**
     * Supprime toutes les notifications associées à un projet et à ses tâches.
@@ -91,46 +119,37 @@ class ProjetController extends AppController
     private function supprimerToutesNotifications($idProjet){
       // On récupère toutes les tables nécessaires .
       $taches = TableRegistry::getTableLocator()->get('Tache');
-      $vuesNotificationsTaches = TableRegistry::getTableLocator()->get('VueNotificationTache');
-      $vuesNotificationsProjets = TableRegistry::getTableLocator()->get('VueNotificationProjet');
-      $notificationsProjets = TableRegistry::getTableLocator()->get('NotificationProjet');
-      $notificationsTaches = TableRegistry::getTableLocator()->get('NotificationTache');
+      $vuesNotification = TableRegistry::getTableLocator()->get('VueNotification');
+      $notifications = TableRegistry::getTableLocator()->get('Notification');
 
-      /* NOTIFICATIONS TACHES */
-      // On va commencer par supprimer toutes les notifications tâches.
-      // On cherche toutes les tâches du projet pour avoir leur ids.
       $toutesTaches = $taches->find()->where(['idProjet' => $idProjet]);
 
-      // On va aller voir chacune de ces tâches.
+
+      // Suppression des notifications avec un idTache.
       foreach ($toutesTaches as $tache){
         $idTache = $tache->idTache;
 
-        // Pour chacune, on trouve les notifications associées.
-        $toutesNotifsTache = $notificationsTaches->find()->where(['idTache' => $idTache]);
+        $toutesNotifications = $notifications->find()->where(['idTache' => $idTache]);
 
-        // On va aller voir chacune de ces notifications tâche.
-        foreach ($toutesNotifsTache as $notifTache){
-          // Pour chacune, on va supprimer les vues notifs tâche associées.
-          $idNotifTache = $notifTache->idNotificationTache;
-          $query = $vuesNotificationsTaches->query()->delete()->where(['idNotifTache' => $idNotifTache])->execute();
+        foreach ($toutesNotifications as $notification){
+          $idNotification = $notification->idNotification;
+          $query = $vuesNotification->query()->delete()->where(['idNotification' => $idNotification])->execute();
 
-          // Maintenant que toutes les vues notifs tâches associées ont été supprimées, on peut effacer la notif tâche.
-          $query = $notificationsTaches->query()->delete()->where(['idNotificationTache' => $idNotifTache])->execute();
-        } // fin foreach $toutesNotifsTache
-      } // fin foreach $toutesTaches
+          // Maintenant que toutes les vues ont été supprimées, on supprime la notification.
+          $query = $notifications->query()->delete()->where(['idNotification' => $idNotification])->execute();
+        }
+      }
 
-      /* NOTIFICATIONS PROJET */
-      $toutesNotifsProjet = $notificationsProjets->find()->where(['idProjet'=> $idProjet]);
+      // Suppression des notifications avec un idProjet.
+      $toutesNotifications = $notifications->find()->where(['idProjet' => $idProjet]);
 
-      foreach ($toutesNotifsProjet as $notifProjet){
-        // Pour chacune, on va supprimer les vues notifs projet associées.
-        $idNotifProjet = $notifProjet->idNotificationProjet;
-        $query = $vuesNotificationsProjets->query()->delete()->where(['idNotifProjet' => $idNotifProjet])->execute();
+      foreach ($toutesNotifications as $notification){
+        $idNotification = $notification->idNotification;
+        $query = $vuesNotification->query()->delete()->where(['idNotification' => $idNotification])->execute();
 
-        // Maintenant que toutes les vues notifs projet associées ont été supprimées, on peut effacer la notif projet.
-        $query = $notificationsProjets->query()->delete()->where(['idNotificationProjet' => $idNotifProjet])->execute();
-      }// fin foreach $toutesNotifsProjet
-
+        // Maintenant que toutes les vues ont été supprimées, on supprime la Notification.
+        $query = $notifications->query()->delete()->where(['idNotification' => $idNotification])->execute();
+      }
 
     }// fin fonction
 
@@ -309,7 +328,8 @@ class ProjetController extends AppController
                 $query->delete()->where(['idProjet' => $idProjet])->execute();
 
 
-                //TODO pour PE: Envoyer une notif de suppression a tout les membres comme quoi le projet à été supprimé
+                //Contenu de la notification à envoyer
+                $contenu = $session->read('Auth.User.pseudo') . " a supprimé le projet " . $projetTab->titre;
 
               }
               //sinon si c'est un invité on le retire dans la table membre
@@ -327,9 +347,26 @@ class ProjetController extends AppController
                 $query = $membres->query();
                 $query->delete()->where(['idProjet' => $idProjet, 'idUtilisateur' => $idUser])->execute();
 
-                //TODO pour PE: Envoyer une notif comme quoi X a quitté le projet a tout les membres
+                //Contenu de la notification à envoyer
+                $contenu = $session->read('Auth.User.pseudo') . " a quitté le projet " . $projetTab->titre;
+
               }
             }
+
+            //On récupère les membres du projet afin de les notifier
+            $membres = TableRegistry::getTableLocator()->get('Membre');
+            $membres = $membres->find()->contain('Utilisateur')
+            ->where(['idProjet' => $idProjet]);
+
+            //On récupère les id des membres du projet
+            $destinataires = array();
+            foreach ($membres as $m) {
+              $idUtil = $m->un_utilisateur->idUtilisateur;
+              array_push($destinataires, $idUtil);
+            }
+
+            //On appelle la fonction pour envoyer la notification
+            envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $idUser, $destinataires);
 
             return $this->redirect(['action'=> 'index']);
           }
@@ -359,8 +396,28 @@ class ProjetController extends AppController
                   // Projet archivé
                   $this->Flash->success(__("Projet archivé avec succès"));
                   $this->redirect(['action' => 'archives']);
+
+                  //Contenu de la notification à envoyer
+                  $contenu = "Le projet ".$projet->titre." a été archivé.";
+
+                  //On récupère les membres du projet afin de les notifier
+                  $membres = TableRegistry::getTableLocator()->get('Membre');
+                  $membres = $membres->find()->contain('Utilisateur')
+                  ->where(['idProjet' => $idProjet]);
+
+                  //On récupère les id des membres du projet
+                  $destinataires = array();
+                  foreach ($membres as $m) {
+                    $idUtil = $m->un_utilisateur->idUtilisateur;
+                    array_push($destinataires, $idUtil);
                   }
-                  // Projet non expiré
+
+                  //On appelle la fonction pour envoyer la notification
+                  envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $user, $destinataires);
+
+                  }
+
+                // Projet non expiré
                 } else {
                   $this->Flash->error(__("Le projet doit être expiré pour pouvoir l'archiver."));
                   $this->redirect($this->referer());
@@ -390,15 +447,33 @@ class ProjetController extends AppController
                 // On met à jour le projet
                 $this->Projet->save($projet);
 
+                //Contenu de la notification à envoyer
+                $contenu = "Le projet ".$projet->titre." a été désarchivé.";
+
+                //On récupère les membres du projet afin de les notifier
+                $membres = TableRegistry::getTableLocator()->get('Membre');
+                $membres = $membres->find()->contain('Utilisateur')
+                ->where(['idProjet' => $idProjet]);
+
+                //On récupère les id des membres du projet
+                $destinataires = array();
+                foreach ($membres as $m) {
+                  $idUtil = $m->un_utilisateur->idUtilisateur;
+                  array_push($destinataires, $idUtil);
+                }
+
+                //On appelle la fonction pour envoyer la notification
+                envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $user, $destinataires);
+
                 // Projet désarchivé avec succès
                 $this->Flash->success(__("Projet désarchivé avec succès"));
                 $this->redirect(['action' => 'index']);
               } else {
-                $this->Flash->error(__("Seul le propriétaire est en mesure de désarchiver le projet."));
+                $this->Flash->error(__("Seul le/a propriétaire est en mesure de désarchiver le projet."));
                 $this->redirect($this->referer());
               }
             } else {
-              $this->Flash->error(__("Vous devez être connecté pour désarchiver un projet."));
+              $this->Flash->error(__("Vous devez être connecté/e pour désarchiver un projet."));
               $this->redirect($this->referer());
             }
           }
@@ -439,6 +514,9 @@ class ProjetController extends AppController
           public function modifierInfos(){
             $receivedData = $this->request->getData();
 
+            $session = $this->request->getSession();
+            $idUtilisateur = $session->read('Auth.User.idUtilisateur');
+
             // On récupère le projet pour avoir les anciennes informations
             $projets = TableRegistry::getTableLocator()->get('projet');
             $projet = $projets->find()
@@ -453,9 +531,8 @@ class ProjetController extends AppController
               if (verificationTitre($receivedData['titre'])){
 
                 // On vérifie si le nouveau titre n'est pas pris par un autre projet de l'utilisateur
-                $session = $this->request->getSession();
                 $existe_deja = $projets->find()
-                ->where(['idProprietaire' => $session->read('Auth.User.idUtilisateur')])
+                ->where(['idProprietaire' => $idUtilisateur])
                 ->where(['titre' => $receivedData['titre']])
                 ->count();
 
@@ -553,36 +630,23 @@ class ProjetController extends AppController
               // On indique que la modification a réussie
               $this->Flash->success(__('Votre projet a été modifé.'));
 
-              //On récupère la table des notifications des projets
-              $notifications = TableRegistry::getTableLocator()->get('Notification_projet');
+              //Contenu de la notification à envoyer
+              $contenu = "Le projet ".$projet->titre." a été modifié.";
 
-              //On crée une nouvelle notification pour le projet courant
-              $notification = $notifications->newEntity();
-              $notification->a_valider = 0;
-              $notification->contenu = "Le projet ".$projet->titre." a été modifié.";
-              $notification->idProjet = $receivedData['id'];
-              $notifications->save($notification);
-              $idNot = $notification->idNotificationProjet;
-
-              //On récupère la table de vue des notifications des projets
-              $vue_notifications = TableRegistry::getTableLocator()->get('Vue_notification_projet');
-
-              //On récupère les membres du projet
+              //On récupère les membres du projet afin de les notifier
               $membres = TableRegistry::getTableLocator()->get('Membre');
               $membres = $membres->find()->contain('Utilisateur')
               ->where(['idProjet' => $receivedData['id']]);
 
-              //Pour chaque membre du projet, on envoie une notification à celui-ci
+              //On récupère les id des membres du projet
+              $destinataires = array();
               foreach ($membres as $m) {
                 $idUtil = $m->un_utilisateur->idUtilisateur;
-
-                // Création de la notification
-                $vue_not = $vue_notifications->newEntity();
-                $vue_not->idUtilisateur = $idUtil;
-                $vue_not->idNotifProjet = $idNot;
-                // Sauvegarde de la notification
-                $vue_notifications->save($vue_not);
+                array_push($destinataires, $idUtil);
               }
+
+              //On appelle la fonction pour envoyer la notification
+              envoyerNotification(0, 'Informative', $contenu, $receivedData['id'], null, $idUtilisateur, $destinataires);
 
               // On redirige l'utilisateur sur le projet avec les informations mises à jour
               return $this->redirect(
@@ -595,39 +659,86 @@ class ProjetController extends AppController
           }
 
           /**
+          * Vérifie s'il y a déjà une demande de changement de propriétaire.
+          *
+          * @param idProjet : id du projet.
+          * @return Vrai si une demande est en cours.
+          *
+          * @author Pop Diana, avec l'idée originale de Thibault Choné
+          */
+          private function changementEnCours($idProjet){
+            $resultat = false;
+            $notifications = TableRegistry::get('Notification');
+
+            $query = $notifications->find()->where(['idProjet' => $idProjet, 'type' => 'Proprietaire'])->count();
+
+
+            /* S'il y a au moins une demande en cours. */
+            if ($query>0) $resultat = true;
+
+            return $resultat;
+
+          }
+
+          /**
           * Change le propriétaire d'un projet
           * @param   $idMembre id du membre qui devient propriétaire du projet
           * @param   $idProjet id du projet
-          * @author  Clément Colné
+          * @author  Clément Colné, Diana Pop
           */
           function changerProprietaire($idMembre, $idProjet) {
             $idProprietaire = $this->autorisationProprietaire($idProjet);
             $projets = TableRegistry::get('Projet');
 
+            $estMembre = $this->estMembre($idMembre, $idProjet);
+            $existeChangementEnCours = $this->changementEnCours($idProjet);
+
             if ($idMembre == $idProprietaire){
               $this->Flash->set('Vous êtes déjà propriétaire.', ['element' => 'error']);
               return $this->redirect(['controller'=>'Projet', 'action'=> 'index']);
             }
+
+            // On vérifie que la personne à qui on veut donner les droits est bien membre (cas où modification url).
+            if (!$estMembre){
+              $this->Flash->set('Cet utilisateur n\'est pas membre du projet.', ['element' => 'error'] );
+              return $this->redirect(['controller'=>'Projet', 'action'=> 'index']);
+            }
+
+            if ($existeChangementEnCours){
+              $this->Flash->set('Une demande de changement de propriétaire est déjà en cours.', ['element' => 'error'] );
+              return $this->redirect(['controller'=>'Projet', 'action'=> 'index']);
+            }
             // on récupère l'ID du propriétaire
             $projet = $projets->find()->where(['idProjet'=>$idProjet])->first();
-            // mise à jour du nouveau propriétaire dans la DB
-            $query = $projets->query();
-            $query->update()
-            ->set(['idProprietaire' => $idMembre])
-            ->where(['idProjet' => $idProjet])->execute();
+
             // redirection vers la page d'accueil des projets
 
-            //On récupère la table des projets
+            // On récupère la table des projets
             $projets = TableRegistry::getTableLocator()->get('Projet');
             $projet = $projets->find()->where(['idProjet' => $idProjet])->first();
             $nomProjet = $projet['titre'];
 
-            //Envoie un notification au nouveau propriétaire
-            envoyerNotificationProjet(0,"Vous êtes devenu le propriétaire de " .$nomProjet, $idProjet, $idMembre);
+            /* ENVOI DE NOTIFICATION */
+            $destinataires = array();
+            //On met l'utilisateur invité en tant que destinataire
+            array_push($destinataires, $idMembre);
 
-            $this->Flash->set('Le propriétaire a bien été modifié.', ['element' => 'success']);
+            // On get la session pour avoir l'id de l'expediteur
+            $session = $this->request->getSession();
+            // On récupère l'id de la session
+            $idSession = $session->read('Auth.User.idUtilisateur');
+
+            // On remplit le contenu de la notification
+            $contenu = "Voulez-vous devenir le propriétaire du projet " . $nomProjet . " ?";
+
+            // Envoie une notification à un utilisateur pour le notifier qu'il a été exclu du projet
+            envoyerNotification(1, 'Proprietaire', $contenu, $idProjet, null, $idSession, $destinataires);
+
+            $this->Flash->set('Une notification a été envoyée pour changer de propriétaire.', ['element' => 'success']);
             return $this->redirect(['controller'=>'Projet', 'action'=> 'index']);
           }
+
+
 
         }
         ?>
