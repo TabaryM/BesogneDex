@@ -205,6 +205,32 @@ class MembreController extends AppController
       $this->set(compact('membres', 'idProjet', 'titreProjet'));
     }
 
+
+    /**
+    * Vérifie si une invitation a déjà été envoyée au membre.
+    *
+    * @param idUtilisateur : id de l'utilisateur à inviter
+    * @param idProjet : id du projet dans lequel on veut l'inviter
+    * @return Vrai si une invitation a déjà été envoyée
+    *
+    * @author Pop Diana
+    */
+    private function estDejaInvite($idUtilisateur, $idProjet){
+      $resultat = false;
+      $notifications = TableRegistry::getTableLocator()->get('Notification');
+      $vuesNotifications = TableRegistry::getTableLocator()->get('VueNotification');
+
+      $invitations = $notifications->find()->where(['type' => 'Invitation', 'idProjet' => $idProjet]);
+      foreach ($invitations as $invitation){
+        $idNotification = $invitation->idNotification;
+
+        $invitationAuMembre = $vuesNotifications->find()->where(['idNotification'=>$idNotification, 'idUtilisateur' => $idUtilisateur])->count();
+        if ($invitationAuMembre>0) $resultat = true;
+      }
+
+      return $resultat;
+    }
+
     /**
     * Ajoute un membre dans le projet.
     * Fonction appelée au clic sur "Inviter" dans le index.ctp de ce controller.
@@ -221,7 +247,7 @@ class MembreController extends AppController
     *
     * Redirection : index de ce controller.
     *
-    * @author POP Diana
+    * @author Pop Diana
     */
     public function add($idProjet){
       $this->autorisation($idProjet);
@@ -245,8 +271,11 @@ class MembreController extends AppController
         // Est-ce que l'utilisateur à ajouter est déjà membre ?
         $estDejaMembre = $this->estMembreDe($idProjet, $idUtilisateur);
 
+        // Est-ce que l'utilisateur à ajouter a déjà été invité ?
+        $estDejaInvite = $this->estDejaInvite($idUtilisateur, $idProjet);
+
         // Si la personne à ajouter existe, qu'elle n'est pas le propriétaire et qu'elle n'est pas déjà membre, on l'ajoute à la liste de membres.
-        if ($existeUtilisateur && !$estProprietaire && !$estDejaMembre){
+        if ($existeUtilisateur && !$estProprietaire && !$estDejaMembre && !$estDejaInvite){
 
           //On récupère la table des projets
           $projets = TableRegistry::getTableLocator()->get('Projet');
@@ -277,6 +306,8 @@ class MembreController extends AppController
           if ($estProprietaire) $this->Flash->error(__('Vous êtes le/a propriétaire de ce projet et faites donc déjà partie de ce projet.'));
 
           if ($estDejaMembre && !$estProprietaire) $this->Flash->error(__('Ce membre est déjà dans le projet.'));
+
+          if ($estDejaInvite) $this->Flash->error(__('Ce membre a déjà reçu une invitation.'));
 
       }// Fin messages des verifications
 
