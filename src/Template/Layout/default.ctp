@@ -53,12 +53,11 @@ $cakeDescription = 'BesogneDex';
     // Initialisation des tables
     $tableNotifications = TableRegistry::getTableLocator()->get('VueNotification');
     // Récupération des notifications
-    $notifs = $tableNotifications->find()->contain('Notification')->where(['idUtilisateur' => $session->read('Auth.User.id')])->toArray();
+    $notifs = $tableNotifications->find()->contain('Notification')->where(['idUtilisateur' => $session->read('Auth.User.idUtilisateur'), 'vue' => 0])->toArray();
 
-    Configure::write('nbNotif', sizeof($notifs));
-
+    $nbNotif = sizeof($notifs);
    ?>
-  <?= $this->element('header', ['titre' => Configure::read('titre_header_tache'), 'utilisateurProprietaire' => Configure::read('utilisateurProprietaire'), 'estExpire' => Configure::read('estExpire'), 'nbNotif' => Configure::read('nbNotif')]) ?>
+  <?= $this->element('header', ['titre' => Configure::read('titre_header_tache'), 'utilisateurProprietaire' => Configure::read('utilisateurProprietaire'), 'estExpire' => Configure::read('estExpire'), 'nbNotif' => $nbNotif]) ?>
   <?= $this->element('navbar') ?>
   <?= $this->Flash->render() ?>
   <?= $this->fetch('content') ?>
