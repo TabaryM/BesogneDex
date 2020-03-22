@@ -69,7 +69,7 @@ class NotificationController extends AppController
     $notifs = $tableNotifications->find()->contain('Notification')->where(['idUtilisateur' => $idUtilisateur])->toArray();
 
     // On trie l'array résultante. Le tri est déjà sur la date, puis sur si la notification est à valider.
-    $notifs = Hash::sort($notifs, '{n}.une_notification.Date','desc');
+    $notifs = Hash::sort($notifs, '{n}.une_notification.Date','asc');
     $notifs = Hash::sort($notifs, '{n}.une_notification.a_valider', 'desc');
 
     // On met à jour les notifications vues seulement après leur affichage.
@@ -121,7 +121,7 @@ class NotificationController extends AppController
                $projet = $projets->find()->where(['idProjet' => $notification->idProjet])->first();
 
                // On récupère les informations de la tâche pour envoyer une notification
-               $contenu = $session->read('Auth.User.pseudo') . " a refusé(e) votre invitation à rejoindre le projet " . $projet['titre'];
+               $contenu = $session->read('Auth.User.pseudo') . " a refusé votre invitation à rejoindre le projet '" . $projet['titre']."'.";
 
                // Pour chaque membre du projet, on envoie une notification à celui-ci
                $destinataires = array();
@@ -263,7 +263,7 @@ class NotificationController extends AppController
         $projet = $projets->find()->where(['idProjet' => $notification->idProjet])->first();
 
         // On récupère les informations de la tâche pour envoyer une notification
-        $contenu = $session->read('Auth.User.pseudo') . " a accepté(e) votre invitation à rejoindre le projet " . $projet['titre'];
+        $contenu = $session->read('Auth.User.pseudo') . " a accepté votre invitation à rejoindre le projet '" . $projet['titre']."'.";
 
         // Pour chaque membre du projet, on envoie une notification à celui-ci
         $destinataires = array();
