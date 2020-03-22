@@ -366,7 +366,7 @@ class ProjetController extends AppController
             }
 
             //On appelle la fonction pour envoyer la notification
-            envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $user, $destinataires);
+            envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $idUser, $destinataires);
 
             return $this->redirect(['action'=> 'index']);
           }
