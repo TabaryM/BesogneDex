@@ -81,10 +81,11 @@ $this->layout = false;
                                                           <div class="tooltipblblbl" style="margin-right: 4px;" >
                                                             ?
                                                           <div class="tooltiptext">
-                                                            - Votre mot de passe doit faire 8 caractères minimum </br>
-                                                            - Votre mot de passe doit contenir au moins une minuscule </br>
-                                                            - Votre mot de passe doit contenir au moins une majuscule </br>
-                                                            - Votre mot de passe doit contenir au moins un chiffre </br>
+                                                            - Votre mot de passe doit faire 8 caractères minimum. </br>
+                                                            - Votre mot de passe doit contenir au moins une minuscule. </br>
+                                                            - Votre mot de passe doit contenir au moins une majuscule. </br>
+                                                            - Votre mot de passe doit contenir au moins un chiffre. </br>
+                                                            - Pas de caractères spéciaux. </br>
                                                           </div>
                                                         </div><label class="col-form-label" style="height:38px;"> Mot de passe :</label></div>
                               </div>
