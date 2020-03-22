@@ -1,6 +1,6 @@
 <center>
 <p>
-Projet de L3 Informatique réalisé par</br>
+Projet de L3 Informatique à la FST de Nancy réalisé par</br>
 CHONE Thibault </br>
 COLNE Clément</br>
 MARISSENS Valérie</br>
@@ -10,6 +10,6 @@ ROTON Théo</br>
 SOUSA RIBEIRO Pedro</br>
 TABARY Mathieu</br>
 WATELOT Paul-Émile</br>
-pour Premiers dans l'ingénierie logicielle (PPIL).
+pour Premiers Pas dans l'Ingénierie Logicielle (PPIL).
 </p>
 </center>
