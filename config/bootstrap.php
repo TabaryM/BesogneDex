@@ -47,6 +47,8 @@ use Cake\Utility\Security;
 Configure::write('titre_header_tache','BesogneDex');
 Configure::write('utilisateurProprietaire', false);
 Configure::write('estExpire', false);
+Configure::write('nbNotif', 0);
+
 
 /**
  * Uncomment block of code below if you want to use `.env` file during development.

@@ -1,6 +1,7 @@
 <?php
 
 use Cake\Core\Configure;
+use Cake\ORM\TableRegistry;
 
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
@@ -46,8 +47,18 @@ $cakeDescription = 'BesogneDex';
 </head>
 <body class="default">
 
+  <?php
 
-  <?= $this->element('header', ['titre' => Configure::read('titre_header_tache'), 'utilisateurProprietaire' => Configure::read('utilisateurProprietaire'), 'estExpire' => Configure::read('estExpire')]) ?>
+    $session = $this->request->getSession();
+    // Initialisation des tables
+    $tableNotifications = TableRegistry::getTableLocator()->get('VueNotification');
+    // Récupération des notifications
+    $notifs = $tableNotifications->find()->contain('Notification')->where(['idUtilisateur' => $session->read('Auth.User.id')])->toArray();
+
+    Configure::write('nbNotif', sizeof($notifs));
+
+   ?>
+  <?= $this->element('header', ['titre' => Configure::read('titre_header_tache'), 'utilisateurProprietaire' => Configure::read('utilisateurProprietaire'), 'estExpire' => Configure::read('estExpire'), 'nbNotif' => Configure::read('nbNotif')]) ?>
   <?= $this->element('navbar') ?>
   <?= $this->Flash->render() ?>
   <?= $this->fetch('content') ?>
