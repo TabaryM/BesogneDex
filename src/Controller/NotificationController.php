@@ -69,7 +69,7 @@ class NotificationController extends AppController
     $notifs = $tableNotifications->find()->contain('Notification')->where(['idUtilisateur' => $idUtilisateur])->toArray();
 
     // On trie l'array résultante. Le tri est déjà sur la date, puis sur si la notification est à valider.
-    $notifs = Hash::sort($notifs, '{n}.une_notification.Date','asc');
+    $notifs = Hash::sort($notifs, '{n}.une_notification.Date','desc');
     $notifs = Hash::sort($notifs, '{n}.une_notification.a_valider', 'desc');
 
     // On met à jour les notifications vues seulement après leur affichage.

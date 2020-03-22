@@ -268,6 +268,8 @@ class MembreController extends AppController
           //Envoie une notification à un utilisateur pour lui demander de rejoindre son projet
           envoyerNotification(1, 'Invitation', $contenu, $idProjet, null, $idSession, $destinataires);
 
+          $this->Flash->success(__('Une invitation a été envoyée à ce membre.'));
+
         // Si les vérifications ont été fausses, on affiche les messages d'erreur selon les cas.
         }else{
           if(!$existeUtilisateur) $this->Flash->error(__('Ce membre n\'existe pas.'));
@@ -295,7 +297,7 @@ class MembreController extends AppController
     *
     * Redirection : index de ce controller.
     *
-    * @author POP Diana
+    * @author Pop Diana, Rossi Djessy
     */
     public function delete($idUtilisateur, $idProjet){
       $this->autorisation($idProjet);
@@ -314,6 +316,7 @@ class MembreController extends AppController
         $projet = $projets->find()->where(['idProjet' => $idProjet])->first();
         $nomProjet = $projet['titre'];
 
+        /* NOTIFICATION */
         $destinataires = array();
         //On met l'utilisateur invité en tant que destinataire
         array_push($destinataires, $idUtilisateur);
@@ -324,13 +327,12 @@ class MembreController extends AppController
         $idSession = $session->read('Auth.User.idUtilisateur');
 
         //On remplit le contenu de la notification
-        $contenu = $session->read('Auth.User.pseudo')." vous a exclu du projet " . $nomProjet;
+        $contenu = $session->read('Auth.User.pseudo')." vous a exclu(e) du projet '" . $nomProjet ."'.";
 
         //Envoie une notification à un utilisateur pour le notifier qu'il a été exclu du projet
-        envoyerNotification(1, 'Informative', $contenu, $idProjet, null, $idSession, $destinataires);
+        envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $idSession, $destinataires);
 
         $this->supprimerMembre($idUtilisateur, $idProjet);
-
       // Si l'utilisateur à supprimer du projet en est le propriétaire, on ne peut pas le supprimer.
       }else if($estProprietaire){
           $this->Flash->set('Vous êtes propriétaire de ce projet.', ['element' => 'error']);
