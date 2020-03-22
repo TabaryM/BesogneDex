@@ -240,10 +240,10 @@ class NotificationController extends AppController
 
 
         //On récupère le projet concerné pour le nom
-        $projet = $projets->find()->where(['idProjet' => $notification->idProjet]);
+        $projet = $projets->find()->where(['idProjet' => $notification->idProjet])->first();
 
         // On récupère les informations de la tâche pour envoyer une notification
-        $contenu = $session->read('Auth.User.pseudo') . " a accepté(e) votre invitation à rejoindre le projet " . $projet->titre;
+        $contenu = $session->read('Auth.User.pseudo') . " a accepté(e) votre invitation à rejoindre le projet " . $projet['titre'];
 
         // On récupère les membres du projet
         $membres = $membres->find()->contain('Utilisateur')->where(['idProjet' => $idProjet]);
