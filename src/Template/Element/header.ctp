@@ -37,7 +37,11 @@
     <div class="col d-flex flex-row-reverse justify-content-start align-items-center">
     <a class="btn logout" data-toggle="modal" data-target="#logoutModal"></a>
     <?= $this->Html->link("", array('controller' => 'Utilisateur','action'=> 'profil'), array( 'class' => 'btn user'))?>
-    <?= $this->Html->link("", array('controller' => 'Notification','action'=> 'index'), array( 'class' => 'btn bell'))?>
+    <a class="btn bell notificaton" href="/BesogneDex/notification">
+      <?php if($nbNotif != 0): ?>
+        <span class="badge"><?= $nbNotif ?></span>
+      <?php endif; ?>
+    </a>
   </div>
     <?php  endif;   ?>
 

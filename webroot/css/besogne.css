@@ -311,3 +311,17 @@ div.message.hidden {
   color:red;
   margin-left: 20px;
 }
+
+.notification {
+  position: relative;
+  display: inline-block;
+}
+
+.badge {
+  position: absolute;
+  right: -10px;
+  top: -10px;
+  border-radius: 50%;
+  background: red;
+  color: white;
+}
