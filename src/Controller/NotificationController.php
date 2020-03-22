@@ -113,7 +113,7 @@ class NotificationController extends AppController
                $notificationProjet->etat = 'Refusé'; // Il refuse la notification
                $notification->a_valider = 0;
                $vueNotificationProjetTable->save($notificationProjet); // On sauvegarde les changements
-               $notificationProjet->save($notification);
+               $notifications->save($notification);
                // TODO || Voir avec les gens du front pour qu'ils mettent juste à jour l'interface
                // TODO || quand on a répondu a une notif au lieu de faire un flash
                //On récupère le projet concerné pour le nom
