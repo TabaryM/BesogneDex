@@ -230,6 +230,7 @@ class NotificationController extends AppController
       if ($idProjet!==null){
         $resultat = 0;
         $membres = TableRegistry::getTableLocator()->get('Membre');
+        $projets = TableRegistry::getTableLocator()->get('Projet');
         $session = $this->request->getSession();
 
         /* On crée notre nouveau petit membre. */
