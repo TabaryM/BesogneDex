@@ -6,6 +6,7 @@ COLNE Clément</br>
 MARISSENS Valérie</br>
 PALMIERI Adrien</br>
 POP Diana</br>
+ROSSI Djessy </br>
 ROTON Théo</br>
 SOUSA RIBEIRO Pedro</br>
 TABARY Mathieu</br>
