@@ -347,6 +347,7 @@ class NotificationController extends AppController
         $idUtil = $m->un_utilisateur->idUtilisateur;
         array_push($destinataires, $idUtil);
       }
+      unset($destinataires[array_search($idUtilisateur, $destinataires)]);
 
       // On supprime la tâche
       $taches->delete($tache);
