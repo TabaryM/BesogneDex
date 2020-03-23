@@ -91,28 +91,30 @@ class NotificationController extends AppController
      * Si la notification n'existe pas ou n'a pas le statut 'en attente' (cela veut dire
      * que l'utilisateur a déjà accepté ou refusée), celle-ci renvoie une erreur.
      *
-     * @param $idNotifProjet : id du projet dans la table VueNotificationProjet
+     * @param $idNotification : id du projet dans la table VueNotificationProjet
      * @author PALMIERI Adrien, ROSSI Djessy, POP Diana (a_valider à 0)
      */
-    public function decline($idNotifProjet) {
+    // VueNotification (a_valider, etat)
+    // notification a_valider doit etre a 0
+    public function decline($idNotification) {
         $idUtilisateur = $this->autorisation(); // On récupère l'id utilisateur (et verifie si il est tjrs connecté)
-        $vueNotificationProjetTable = TableRegistry::getTableLocator()->get('VueNotification');
-        $notificationProjet = $vueNotificationProjetTable->find()
-        ->where(['idUtilisateur' => $idUtilisateur, 'idNotification' => $idNotifProjet])
+        $vueNotificationTable = TableRegistry::getTableLocator()->get('VueNotification');
+        $vueNotification = $vueNotificationTable->find()
+        ->where(['idUtilisateur' => $idUtilisateur, 'idNotification' => $idNotification])
         ->first();
         $projets = TableRegistry::getTableLocator()->get('Projet');
         $session = $this->request->getSession();
 
         /* On doit mettre l'attribut 'a_valider' de la notification à 0. */
         $notifications = TableRegistry::getTableLocator()->get('Notification');
-        $notification = $notifications->find()->where(['idNotification'=>$idNotifProjet])->first();
+        $notification = $notifications->find()->where(['idNotification'=>$idNotification])->first();
 
-        if($notificationProjet && $notification) { // Si la notification existe
-            if($notificationProjet->etat == 'En attente') { // S'il n'a pas déjà répondu a la notif
-                $notificationProjet->vue = 1; // La notification a ete vue puisqu'il a repondu
-               $notificationProjet->etat = 'Refusé'; // Il refuse la notification
+        if($vueNotification&& $notification) { // Si la notification existe
+            if($vueNotification->etat == 'En attente') { // S'il n'a pas déjà répondu a la notif
+                $vueNotification->vue = 1; // La notification a ete vue puisqu'il a repondu
+                $vueNotification->etat = 'Refusé'; // Il refuse la notification
                $notification->a_valider = 0;
-               $vueNotificationProjetTable->save($notificationProjet); // On sauvegarde les changements
+               $vueNotificationTable->save($vueNotification); // On sauvegarde les changements
                $notifications->save($notification);
                // TODO || Voir avec les gens du front pour qu'ils mettent juste à jour l'interface
                // TODO || quand on a répondu a une notif au lieu de faire un flash
@@ -128,9 +130,10 @@ class NotificationController extends AppController
                array_push($destinataires, $notification->idExpediteur);
 
                // On envoie une notification à tous les membres du projet de la tâche supprimer
-               envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $notification->idExpediteur, $destinataires);
+               envoyerNotification(0, 'Informative', $contenu, $projet->idProjet, null, $notification->idExpediteur, $destinataires);
 
                 $this->Flash->success(__('Vous avez répondu à la notification.'));
+
             } else {
                 $this->Flash->error(__("Vous avez déjà répondu à cette notification."));
             }
