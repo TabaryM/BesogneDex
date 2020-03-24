@@ -1,6 +1,4 @@
-console.log("Test")
 $('.checkFait').change(function() {
-  console.log("CHANGEMENT !")
   var id = $(this).val()
   if (this.checked) {
     $.get("/tache/changerEtat/" + id + "/1", function(response) {

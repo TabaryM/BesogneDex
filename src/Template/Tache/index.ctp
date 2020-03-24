@@ -44,7 +44,7 @@
               <?php
                 foreach ($taches as $tache):
                  ?>
-                <tr style="height: 50px;">
+                <tr class="ligne" id=<?= $tache->idTache ?> style="height: 50px;">
                   <!-- Début Tâche -->
                   <td>
                     <!-- TODO: changer le bouton pour "montrer" qu'on peut cliquer dessus-->
@@ -78,7 +78,7 @@
 
                   <!-- Début DropdownMenu Actions avec boutons Supprimer la tâche, Modifier la tâche, Se retirer/proposer pour la tâche -->
                   <td class="text-center">
-                    <div class="dropdown">
+                    <div class="dropdown dropdownTache" id=<?= "dropdownTache" . $tache->idTache ?> >
                       <a class="test" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">●●●</a>
                       <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                         <?php if (isset ($user)) {
@@ -226,6 +226,4 @@
   </div>
   <!-- Fin modal Quitter/Supprimer le projet -->
 
-
-  <script src="assets/js/jquery.min.js"></script>
-  <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+  <?= $this->Html->script('menuTache.js'); ?>
