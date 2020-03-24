@@ -341,7 +341,7 @@ class TacheController extends AppController
           foreach ($membres as $m) {
             $idUtil = $m->un_utilisateur->idUtilisateur;
             array_push($destinataires, $idUtil);
-            
+
           }
           unset($destinataires[array_search($user, $destinataires)]);
 
@@ -357,7 +357,7 @@ class TacheController extends AppController
 
           envoyerNotification(1, 'Suppression', $contenu, $idProjet, $idTache, $user, array($projetTab->idProprietaire));
 
-          $this->Flash->default(__('Une demande pour supprimer cette tâche à été envoyé au/à la propriétaire.'));
+          $this->Flash->default(__('Une demande pour supprimer cette tâche à été envoyée au/à la propriétaire.'));
         }
       }
     }
