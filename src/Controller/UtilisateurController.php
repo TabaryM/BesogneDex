@@ -215,9 +215,10 @@ class UtilisateurController extends AppController
 
     if($estModifie){
       $this->Flash->success(__('Votre compte est bien enregistré.'));
+        return $this->redirect(['action'=> 'profil']);
     }
 
-    $this->set(compact('utilisateur'));
+      $this->set(compact('utilisateur'));
   }
 
   /**
@@ -253,8 +254,6 @@ class UtilisateurController extends AppController
       }
     }
   }
-
-
 
 }
 
