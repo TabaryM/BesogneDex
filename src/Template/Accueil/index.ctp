@@ -43,6 +43,7 @@
     </div>
   </div>
   <!-- Fin du tableau des tâches prioritaires -->
+
   <!-- Début second tableau -->
   <div class="col-xl-6" style="margin-top: 50px;">
     <div class="card shadow" style="background-color: #6fa8dc;">
@@ -59,8 +60,8 @@
                   ?>
                   <tr>
                     <?php // Mis en commentaire parce que cassé et casse l'accueil ?>
-                    <td><?php //$notifs[$nbLigne]->une_notification->contenu ?></td>
-                    <td><?php // $notifs[$nbLigne]->une_notification->date->nice('Europe/Paris', 'fr-FR') ?></td>
+                    <td><?php $notifs[$nbLigne]->une_notification->contenu ?></td>
+                    <td><?php $notifs[$nbLigne]->une_notification->date->nice('Europe/Paris', 'fr-FR') ?></td>
                   </tr>
                   <?php
                 }else{
