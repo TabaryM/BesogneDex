@@ -19,13 +19,16 @@
     <div class="col-xl-8"><label>Liste des membres :</label>
         <div class="card shadow">
             <div class="card-body">
-
                 <?php foreach ($membres as $membre): ?>
                     <p onClick="afficherGris(<?= $membre->idUtilisateur ?>)" id=<?= $membre->idUtilisateur ?> class='ligne_membre'>
                       <?= $membre->un_utilisateur->pseudo ?>
                     </p>
                 <?php endforeach; ?>
-
+                <?php foreach ($invites as $membreInvite): ?>
+                    <p class='ligne_membre'>
+                      <?= $membreInvite->pseudo . " (En attente de réponse)" ?>
+                    </p>
+                <?php endforeach; ?>
             </div>
         </div>
     </div>

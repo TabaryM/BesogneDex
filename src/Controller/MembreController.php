@@ -195,14 +195,30 @@ class MembreController extends AppController
     public function index($idProjet){
       $this->autorisation($idProjet);
       $this->loadComponent('Paginator');
+
+      $invites = array();
       $session = $this->request->getSession();
       $membres = $this->Paginator->paginate($this->Membre->find()
           ->contain(['Utilisateur'])
           ->where(['idProjet' => $idProjet]));
+      $notifications = TableRegistry::getTableLocator()->get('Notification');
+      $vuesNotifications = TableRegistry::getTableLocator()->get('VueNotification');
+      $utilisateurs = TableRegistry::getTableLocator()->get('Utilisateur');
+      $invitations = $notifications->find()->where(['type' => 'Invitation', 'idProjet' => $idProjet]);
+      foreach ($invitations as $invitation){
+        $idNotification = $invitation->idNotification;
+
+        $invitationAuMembre = $vuesNotifications->find()->where(['idNotification'=>$idNotification], ['etat' => 'En attente'])->first();
+
+        $pseudoMembre = $utilisateurs->find()->where(['idUtilisateur' => $invitationAuMembre->idUtilisateur])->first();
+
+        array_push($invites, $pseudoMembre);
+      }
+
       $projets = TableRegistry::getTableLocator()->get('Projet');
       $projet = $projets->find()->where(['idProjet' => $idProjet])->first();
       $titreProjet = $projet['titre'];
-      $this->set(compact('membres', 'idProjet', 'titreProjet'));
+      $this->set(compact('membres', 'idProjet', 'titreProjet', 'invites'));
     }
 
 
