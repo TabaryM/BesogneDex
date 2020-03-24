@@ -315,7 +315,7 @@ class ProjetController extends AppController
             $this->supprimerToutesNotifications($idProjet);
 
             //Contenu de la notification à envoyer
-            $contenu = $session->read('Auth.User.pseudo') . " a supprimé le projet " . $projetTab->titre;
+            $contenu = $session->read('Auth.User.pseudo') . " a supprimé le projet " . "'". $projetTab->titre . "'.";
 
             //On récupère les membres du projet afin de les notifier
             $membresNotif = $membres->find()->contain('Utilisateur')
@@ -329,7 +329,7 @@ class ProjetController extends AppController
             }
 
             //On appelle la fonction pour envoyer la notification
-            envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $idUser, $destinataires);
+            envoyerNotification(0, 'Informative', $contenu, null, null, $idUser, $destinataires);
 
             //degage tout les membres du projet
             $query = $membres->query();
@@ -348,8 +348,9 @@ class ProjetController extends AppController
           }
           //sinon si c'est un invité on le retire dans la table membre
           else{
+            
             //Contenu de la notification à envoyer
-            $contenu = $session->read('Auth.User.pseudo') . " a quitté le projet " . $projetTab->titre;
+            $contenu = $session->read('Auth.User.pseudo') . " a quitté le projet " . "'". $projetTab->titre . "'.";
 
             //On récupère les membres du projet afin de les notifier
             $membres = TableRegistry::getTableLocator()->get('Membre');
@@ -364,7 +365,7 @@ class ProjetController extends AppController
             }
 
             //On appelle la fonction pour envoyer la notification
-            envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $idUser, $destinataires);
+            envoyerNotification(0, 'Informative', $contenu, null, null, $idUser, $destinataires);
 
             //retirer les responsabilités du membre dans le projet qu'il souhaite quitter
             $tachesSousResponsabilite = TableRegistry::getTableLocator()
