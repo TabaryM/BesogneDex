@@ -30,14 +30,14 @@ class AccueilController extends AppController
 
       //On recherche toute les tâches non finie des projets qui ont une date qui se finit dans moins de 7 jours, dans un projet non archivé
       $tachesResponsable = TableRegistry::getTableLocator()
-        ->get('Tache')->find()
-        ->select(['titre', 'Projet.dateFin'])
-        ->contain('Projet')
-        ->distinct()
-        ->where(['idResponsable' => $idUtilisateur, 'Projet.dateFin <' => $dateDans7Jours, function ($exp, $q) { return $exp->isNull('dateArchivage'); }, 'finie' => 0])
-        ->limit(10)
-        ->toArray()
-        ;
+          ->get('Tache')->find()
+          ->select(['titre', 'Projet.dateFin'])
+          ->contain('Projet')
+          ->distinct()
+          ->where(['idResponsable' => $idUtilisateur, 'Projet.dateFin <' => $dateDans7Jours, function ($exp, $q) { return $exp->isNull('dateArchivage'); }, 'finie' => 0])
+          ->limit(10)
+          ->toArray()
+          ;
 
       //C'est pas ultra propre mais c'est mieux pour le front,
       //Ici on refait le tableau avec de bon indices (titre, dateFin) au lieu de (titre, leProjet->dateFin)
@@ -58,15 +58,15 @@ class AccueilController extends AppController
       // Si possible recuperer les 11 premieres notifications depuis la table notification
       $notifs = null;
       for($i = 0; $i< 11; $i++){
-          if(isset($idNotifs[$i])){
-              $notifs[$i] = $tableNotifications->find()->where(['idNotification' => $idNotifs[$i]['idNotification']])->toArray();
-          }
+        if(isset($idNotifs[$i])){
+          $notifs[$i] = $tableNotifications->find()->where(['idNotification' => $idNotifs[$i]['idNotification']])->toArray();
+        }
       }
 
       if($notifs != null){
-          // On trie l'array résultante. Le tri est déjà sur la date, puis sur si la notification est à valider.
-          $notifs = Hash::sort($notifs, '{n}.une_notification.Date','asc');
-          $notifs = Hash::sort($notifs, '{n}.une_notification.a_valider', 'desc');
+        // On trie l'array résultante. Le tri est déjà sur la date, puis sur si la notification est à valider.
+        $notifs = Hash::sort($notifs, '{n}.une_notification.Date','asc');
+        $notifs = Hash::sort($notifs, '{n}.une_notification.a_valider', 'desc');
       }
 
       // Donne aux ctp les variables nécessaires

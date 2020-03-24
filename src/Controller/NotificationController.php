@@ -40,7 +40,7 @@ class NotificationController extends AppController
   */
   private function updateNotificationsVues($idUtilisateur){
     $tableNotifications = TableRegistry::getTableLocator()->get('VueNotification');
-    $notificationsVues = $tableNotifications->find()->contain('Notification')->where(['idUtilisateur'=>$idUtilisateur, 'a_valider'=>0])->toArray();
+    $notificationsVues = $tableNotifications->find()->contain('Notification')->where(['idUtilisateur' => $idUtilisateur, 'a_valider' => 0])->toArray();
     if ($notificationsVues){
       foreach($notificationsVues as $notif){
         $notif->vue = 1;
@@ -61,7 +61,7 @@ class NotificationController extends AppController
    * @author POP Diana, SOUSA RIBIERO Pedro, ROTON Théo
    */
   public function index(){
-    $idUtilisateur= $this->autorisation();
+    $idUtilisateur = $this->autorisation();
 
     // Initialisation des tables
     $tableNotifications = TableRegistry::getTableLocator()->get('VueNotification');
@@ -107,13 +107,13 @@ class NotificationController extends AppController
         $notifications = TableRegistry::getTableLocator()->get('Notification');
         $notification = $notifications->find()->where(['idNotification'=>$idNotification])->first();
 
-        if($vueNotification&& $notification) { // Si la notification existe
+        if($vueNotification && $notification) { // Si la notification existe
             if($vueNotification->etat == 'En attente') { // S'il n'a pas déjà répondu a la notif
-                $vueNotification->vue = 1; // La notification a ete vue puisqu'il a repondu
-                $vueNotification->etat = 'Refusé'; // Il refuse la notification
-               $notification->a_valider = 0;
-               $vueNotificationTable->save($vueNotification); // On sauvegarde les changements
-               $notifications->save($notification);
+              $vueNotification->vue = 1; // La notification a ete vue puisqu'il a repondu
+              $vueNotification->etat = 'Refusé'; // Il refuse la notification
+              $notification->a_valider = 0;
+              $vueNotificationTable->save($vueNotification); // On sauvegarde les changements
+              $notifications->save($notification);
                // TODO || Voir avec les gens du front pour qu'ils mettent juste à jour l'interface
                // TODO || quand on a répondu a une notif au lieu de faire un flash
                //On récupère le projet concerné pour le nom
@@ -150,8 +150,8 @@ class NotificationController extends AppController
         $idUtilisateur = $this->autorisation(); // On récupère l'id utilisateur (et verifie si il est tjrs connecté)
         $vueNotificationTable = TableRegistry::getTableLocator()->get('VueNotification');
         $vueNotification = $vueNotificationTable->find()
-        ->where(['idUtilisateur' => $idUtilisateur, 'idNotification' => $idNotification])
-        ->first();
+            ->where(['idUtilisateur' => $idUtilisateur, 'idNotification' => $idNotification])
+            ->first();
         $projets = TableRegistry::getTableLocator()->get('Projet');
         $session = $this->request->getSession();
 

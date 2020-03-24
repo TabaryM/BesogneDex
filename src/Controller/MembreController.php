@@ -94,7 +94,7 @@ class MembreController extends AppController
 
       $idUtilisateur = $query['idUtilisateur'];
 
-      return $idUtilisateur !== null;
+      return $idUtilisateur != null;
     }
 
     /**
