@@ -13,7 +13,7 @@ function nettoyerTexte($texte) {
     $texte = str_replace("<","&lt;", $texte);
     $texte = str_replace(">", "&gt;", $texte);
     echo $texte;
-   
+
     return $texte;
 }
 
