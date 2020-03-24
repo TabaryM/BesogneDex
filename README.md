@@ -1,5 +1,5 @@
 # BesogneDex
-![alt text](webroot/img/icones/rotom_dex.png "Projet Boisson Logo")
+<img src="webroot/img/icones/rotom_dex.png" width="150" />
 
 ## Procédure d'installation du projet
 ### Pré-requis
