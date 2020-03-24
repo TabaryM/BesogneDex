@@ -62,9 +62,11 @@ class AccueilController extends AppController
           }
       }
 
-      // On trie l'array résultante. Le tri est déjà sur la date, puis sur si la notification est à valider.
-      $notifs = Hash::sort($notifs, '{n}.une_notification.Date','asc');
-      $notifs = Hash::sort($notifs, '{n}.une_notification.a_valider', 'desc');
+      if($notifs != null){
+          // On trie l'array résultante. Le tri est déjà sur la date, puis sur si la notification est à valider.
+          $notifs = Hash::sort($notifs, '{n}.une_notification.Date','asc');
+          $notifs = Hash::sort($notifs, '{n}.une_notification.a_valider', 'desc');
+      }
 
       // Donne aux ctp les variables nécessaires
       $this->set(compact('notifs'));
