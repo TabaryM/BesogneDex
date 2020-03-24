@@ -247,8 +247,11 @@ class MembreController extends AppController
       foreach ($invitations as $invitation){
         $idNotification = $invitation->idNotification;
 
-        $invitationAuMembre = $vuesNotifications->find()->where(['idNotification'=>$idNotification, 'idUtilisateur' => $idUtilisateur])->count();
-        if ($invitationAuMembre>0) $resultat = true;
+        $invitationsAuMembre = $vuesNotifications->find()->where(['idNotification'=>$idNotification, 'idUtilisateur' => $idUtilisateur]);
+        foreach ($invitationsAuMembre as $invitationAuMembre){
+          debug($invitationAuMembre);
+          if (!$invitationAuMembre->etat == 'En attente') $resultat = true;
+        }
       }
 
       return $resultat;
