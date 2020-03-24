@@ -49,10 +49,18 @@ class AccueilController extends AppController
 
       //on recherche les notifs d'un User
       // Initialisation des tables
-      $tableNotifications = TableRegistry::getTableLocator()->get('VueNotification');
+      $tableVueNotifications = TableRegistry::getTableLocator()->get('VueNotification');
+      $tableNotifications = TableRegistry::getTableLocator()->get('Notification');
+      // Récupération les id de notifications
+      $idNotifs = $tableVueNotifications->find()->select(['idNotification'])->where(['idUtilisateur' => $idUtilisateur])->toArray();
 
-      // Récupération des notifications
-      $notifs = $tableNotifications->find()->where(['idUtilisateur' => $idUtilisateur])->toArray();
+      //si possible recuperer les 11 premieres notifications depuis la table notification
+      $notifs = null;
+      for($i = 0; $i< 11; $i++){
+          if(isset($idNotifs[$i])){
+              $notifs[$i] = $tableNotifications->find()->where(['idNotification' => $idNotifs[$i]['idNotification']])->toArray();
+          }
+      }
 
       // On trie l'array résultante. Le tri est déjà sur la date, puis sur si la notification est à valider.
       $notifs = Hash::sort($notifs, '{n}.une_notification.Date','asc');
