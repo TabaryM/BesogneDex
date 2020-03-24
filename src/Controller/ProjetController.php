@@ -316,8 +316,7 @@ class ProjetController extends AppController
             $contenu = $session->read('Auth.User.pseudo') . " a supprimé le projet " . $projetTab->titre;
 
             //On récupère les membres du projet afin de les notifier
-            $membresNotif = TableRegistry::getTableLocator()->get('Membre');
-            $membresNotif = $membresNotif->find()->contain('Utilisateur')
+            $membresNotif = $membres->find()->contain('Utilisateur')
             ->where(['idProjet' => $idProjet]);
 
             //On récupère les id des membres du projet
