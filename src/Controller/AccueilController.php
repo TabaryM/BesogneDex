@@ -17,6 +17,7 @@ class AccueilController extends AppController
   {
     $session = $this->request->getSession();
     if ($session->check('Auth.User.idUtilisateur')) {
+      //On récupère l'id Utilisateur
       $idUtilisateur = $session->read('Auth.User.idUtilisateur');
 
       $dateDans7Jours = Time::now();
@@ -47,14 +48,14 @@ class AccueilController extends AppController
 
       $this->set(compact('tachesPrioritaires'));
 
-      //on recherche les notifs d'un User
+      // On recherche les notifs d'un User
       // Initialisation des tables
       $tableVueNotifications = TableRegistry::getTableLocator()->get('VueNotification');
       $tableNotifications = TableRegistry::getTableLocator()->get('Notification');
       // Récupération les id de notifications
       $idNotifs = $tableVueNotifications->find()->select(['idNotification'])->where(['idUtilisateur' => $idUtilisateur])->toArray();
 
-      //si possible recuperer les 11 premieres notifications depuis la table notification
+      // Si possible recuperer les 11 premieres notifications depuis la table notification
       $notifs = null;
       for($i = 0; $i< 11; $i++){
           if(isset($idNotifs[$i])){

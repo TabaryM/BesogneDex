@@ -179,8 +179,8 @@ class UtilisateurController extends AppController
 
 
     if(!empty($data)){
-      if(!empty($data['mdpActu'])){
-        if((new DefaultPasswordHasher)->check($data['mdpActu'], $utilisateur['mdp'])) {
+      if(!empty($data['mdpActu'])){ //Si le mdp actuel est vide => erreur
+        if((new DefaultPasswordHasher)->check($data['mdpActu'], $utilisateur['mdp'])) { //Si le mdp actuel hashé != du mdp du comtpe => erreur
           if($data['mdpNew'] == $data['mdpNewConf']) {
 
             if($utilisateur['pseudo'] == $data['pseudo']){ //Si le pseudo n'a pas changé alors on a pas besoin de préciser la modification
@@ -215,10 +215,10 @@ class UtilisateurController extends AppController
 
     if($estModifie){
       $this->Flash->success(__('Votre compte est bien enregistré.'));
-        return $this->redirect(['action'=> 'profil']);
+      return $this->redirect(['action'=> 'profil']);
     }
 
-      $this->set(compact('utilisateur'));
+    $this->set(compact('utilisateur'));
   }
 
   /**

@@ -23,17 +23,19 @@ class MembreController extends AppController
     private function estProprietaireDe($idProjet){
       // On récupère le Projet pour en extraire les informations.
       $tableProjet = TableRegistry::getTableLocator()
-        ->get('Projet')->find()
-        ->where(['idProjet' => $idProjet])
-        ->first();
+          ->get('Projet')->find()
+          ->where(['idProjet' => $idProjet])
+          ->first();
+
 
       $idUtilisateur = null;
 
+      //On récupère l'id de l'Utilisateur
       $session = $this->request->getSession();
       if ($session->check('Auth.User.idUtilisateur')) $idUtilisateur = $session->read('Auth.User.idUtilisateur') ;
 
-      $estProprietaire = false;
-      if($tableProjet->idProprietaire == $idUtilisateur){ $estProprietaire = true; }
+      $estProprietaire = ($tableProjet->idProprietaire == $idUtilisateur);
+
       return $estProprietaire;
     }
 
@@ -52,9 +54,9 @@ class MembreController extends AppController
     private function estProprietaire($idProjet, $idUtilisateur){
       // On récupère le Projet pour en extraire les informations.
       $tableProjet = TableRegistry::getTableLocator()->get('Projet');
-      $query = $tableProjet->find()->where(['idProjet' => $idProjet, 'idProprietaire'=>$idUtilisateur])->first();
+      $query = $tableProjet->find()->where(['idProjet' => $idProjet, 'idProprietaire' => $idUtilisateur])->first();
 
-      return ($query!==null);
+      return ($query != null);
     }
 
     /**
@@ -70,7 +72,7 @@ class MembreController extends AppController
     */
     private function estMembreDe($idProjet, $idUtilisateur){
       $count = $this->Membre->find()->where(['idUtilisateur'=>$idUtilisateur, 'idProjet'=>$idProjet])->count();
-      return ($count>0);
+      return ($count > 0);
     }
 
     /**
@@ -84,15 +86,15 @@ class MembreController extends AppController
     * @author POP Diana
     */
     private function existe($pseudoUtilisateur){
-        $tableUtilisateurs = TableRegistry::get('Utilisateur');
-        $query = $tableUtilisateurs->find()
-            ->select(['idUtilisateur'])
-            ->where(['pseudo' => $pseudoUtilisateur])
-            ->first();
+      $tableUtilisateurs = TableRegistry::get('Utilisateur');
+      $query = $tableUtilisateurs->find()
+          ->select(['idUtilisateur'])
+          ->where(['pseudo' => $pseudoUtilisateur])
+          ->first();
 
-        $idUtilisateur = $query['idUtilisateur'];
+      $idUtilisateur = $query['idUtilisateur'];
 
-        return $idUtilisateur!==null;
+      return $idUtilisateur !== null;
     }
 
     /**
@@ -113,9 +115,9 @@ class MembreController extends AppController
           ->where(['pseudo' => $pseudoUtilisateur])
           ->first();
 
-        $idUtilisateur = $query['idUtilisateur'];
+      $idUtilisateur = $query['idUtilisateur'];
 
-        return $idUtilisateur;
+      return $idUtilisateur;
     }
 
     /**
@@ -132,27 +134,26 @@ class MembreController extends AppController
     */
     private function sauvegarderMembre($idUtilisateur, $idProjet){
       $membre = $this->Membre->newEntity();
-      $membre->idUtilisateur= $idUtilisateur;
-      $membre->idProjet= $idProjet;
+      $membre->idUtilisateur = $idUtilisateur;
+      $membre->idProjet = $idProjet;
 
       if ($estSauvegarde = $this->Membre->save($membre)) {
         $this->Flash->success(__('Le membre a été ajouté à la liste.'));
 
-      // S'il y a eu une erreur lors de la sauvegarde du membre.
-      }else{
+      }else{// S'il y a eu une erreur lors de la sauvegarde du membre.
         $this->Flash->error(__('Impossible d\'ajouter ce membre.'));
+      }
+      return $estSauvegarde;
     }
-    return $estSauvegarde;
-  }
 
     private function supprimerMembre($idUtilisateur, $idProjet){
       $tableTaches = TableRegistry::get('Tache');
 
       // Le membre n'est plus responsable d'aucune tâche du projet.
-      $tableTaches->updateAll(array('idResponsable' => NULL), ['idProjet'=>$idProjet, 'idResponsable' => $idUtilisateur]);
+      $tableTaches->updateAll(array('idResponsable' => NULL), ['idProjet' => $idProjet, 'idResponsable' => $idUtilisateur]);
 
       // Maintenant, on peut supprimer le membre du projet.
-      $membre = $this->Membre->find()->where(['idUtilisateur'=>$idUtilisateur, 'idProjet'=>$idProjet])->first();
+      $membre = $this->Membre->find()->where(['idUtilisateur' => $idUtilisateur, 'idProjet' => $idProjet])->first();
 
       if ($this->Membre->delete($membre)){
         $this->Flash->set('Le membre a été supprimé du projet.', ['element' => 'success']);
@@ -176,9 +177,9 @@ class MembreController extends AppController
     $estProprietaire = $this->estProprietaireDe($idProjet);
 
     // On procède à la vérification.
-    if ($estProprietaire==false){
+    if (!$estProprietaire){
       $this->Flash->error(__('Ce projet n\'existe pas ou vous n\'y avez pas accès.'));
-      $this->redirect(['controller'=>'Accueil', 'action'=>'index', $idProjet]);
+      $this->redirect(['controller' => 'Accueil', 'action' => 'index', $idProjet]);
     }
   }
 
@@ -192,41 +193,49 @@ class MembreController extends AppController
   * Redirection : (si non accès) index de Accueil.
   * @author POP Diana
   */
-    public function index($idProjet){
-      $this->autorisation($idProjet);
-      $this->loadComponent('Paginator');
+  public function index($idProjet){
+    $this->autorisation($idProjet);
+    $this->loadComponent('Paginator');
 
-      $invites = array();
-      $session = $this->request->getSession();
-      $membres = $this->Paginator->paginate($this->Membre->find()
-          ->contain(['Utilisateur'])
-          ->where(['idProjet' => $idProjet]));
-      $notifications = TableRegistry::getTableLocator()->get('Notification');
-      $vuesNotifications = TableRegistry::getTableLocator()->get('VueNotification');
-      $utilisateurs = TableRegistry::getTableLocator()->get('Utilisateur');
-      $invitations = $notifications->find()->where(['type' => 'Invitation', 'idProjet' => $idProjet]);
+    $invites = array();
 
-      foreach ($invitations as $invitation){
-        $idNotification = $invitation->idNotification;
+    $session = $this->request->getSession();
 
-        $existeMembre = $vuesNotifications->find()->where(['idNotification'=>$idNotification, 'etat' => 'En attente'])->count();
+    $membres = $this->Paginator->paginate($this->Membre->find()
+        ->contain(['Utilisateur'])
+        ->where(['idProjet' => $idProjet]));
 
-        if($existeMembre > 0){
+    $notifications = TableRegistry::getTableLocator()->get('Notification');
+    $vuesNotifications = TableRegistry::getTableLocator()->get('VueNotification');
+    $utilisateurs = TableRegistry::getTableLocator()->get('Utilisateur');
 
-          $invitationAuMembre = $vuesNotifications->find()->where(['idNotification'=>$idNotification, 'etat' => 'En attente'])->first();
+    //On cherche tout les notifications qui sont en rapport avec le projet
+    $invitations = $notifications->find()->where(['type' => 'Invitation', 'idProjet' => $idProjet]);
 
-          $pseudoMembre = $utilisateurs->find()->where(['idUtilisateur' => $invitationAuMembre->idUtilisateur])->first();
+    foreach ($invitations as $invitation){
+      $idNotification = $invitation->idNotification;
 
-          array_push($invites, $pseudoMembre);
+      //On regarde le nombre de membre dans le projet
+      $existeMembre = $vuesNotifications->find()->where(['idNotification' => $idNotification, 'etat' => 'En attente'])->count();
 
-        }
+      if($existeMembre > 0){
+
+        //On regarde les vues qui sont associés à la notification
+        $invitationAuMembre = $vuesNotifications->find()->where(['idNotification' => $idNotification, 'etat' => 'En attente'])->first();
+
+        //On récupère le pseudo du membre concerné par les notifications
+        $pseudoMembre = $utilisateurs->find()->where(['idUtilisateur' => $invitationAuMembre->idUtilisateur])->first();
+
+        array_push($invites, $pseudoMembre);
       }
-
-      $projets = TableRegistry::getTableLocator()->get('Projet');
-      $projet = $projets->find()->where(['idProjet' => $idProjet])->first();
-      $titreProjet = $projet['titre'];
-      $this->set(compact('membres', 'idProjet', 'titreProjet', 'invites'));
     }
+
+    $projets = TableRegistry::getTableLocator()->get('Projet');
+    $projet = $projets->find()->where(['idProjet' => $idProjet])->first();
+    $titreProjet = $projet['titre'];
+
+    $this->set(compact('membres', 'idProjet', 'titreProjet', 'invites'));
+  }
 
 
     /**
@@ -346,7 +355,7 @@ class MembreController extends AppController
     * Supprime un membre du projet.
     *
     * La fonction vérifie avant la suppression :
-    *       - Si l'utilisateur est propriétaire du projet .
+    *       - Si l'utilisateur est propriétaire du projet.
     * Si ce critère est vrai, alors le membre n'est pas supprimé du projet.
     *
     * @param: $id_utilisateur correspond à l'idUtilisateur et $id_projet correspond à l'idProjet.

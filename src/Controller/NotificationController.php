@@ -1,9 +1,9 @@
 <?php
 namespace App\Controller;
-require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'Notifications.php');
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
+require(__DIR__ . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'Notifications.php');
 
 class NotificationController extends AppController
 {
@@ -75,10 +75,8 @@ class NotificationController extends AppController
     // On met à jour les notifications vues seulement après leur affichage.
     $this->updateNotificationsVues($idUtilisateur);
 
-
     // Donne aux ctp les variables nécessaires
     $this->set(compact('notifs'));
-
   }
 
     /**
@@ -96,10 +94,12 @@ class NotificationController extends AppController
      */
     public function decline($idNotification) {
         $idUtilisateur = $this->autorisation(); // On récupère l'id utilisateur (et verifie si il est tjrs connecté)
+
         $vueNotificationTable = TableRegistry::getTableLocator()->get('VueNotification');
         $vueNotification = $vueNotificationTable->find()
-        ->where(['idUtilisateur' => $idUtilisateur, 'idNotification' => $idNotification])
-        ->first();
+            ->where(['idUtilisateur' => $idUtilisateur, 'idNotification' => $idNotification])
+            ->first();
+
         $projets = TableRegistry::getTableLocator()->get('Projet');
         $session = $this->request->getSession();
 
@@ -208,14 +208,14 @@ class NotificationController extends AppController
         $vuesNotifications= TableRegistry::getTableLocator()->get('VueNotification');
 
         $vueNotification = $vuesNotifications
-        ->find()
-        ->where(['idUtilisateur' => $idUtilisateur, 'idNotification' => $idVueNotification])
-        ->first();
+            ->find()
+            ->where(['idUtilisateur' => $idUtilisateur, 'idNotification' => $idVueNotification])
+            ->first();
 
         $notification = $notifications
-        ->find()
-        ->where(['idNotification'=>$idVueNotification])
-        ->first();
+            ->find()
+            ->where(['idNotification'=>$idVueNotification])
+            ->first();
 
         // Si la notification existe
         if($notification && $vueNotification) {
@@ -277,8 +277,9 @@ class NotificationController extends AppController
 
         $query = $projets->query();
         $query->update()
-        ->set(['idProprietaire' => $idUtilisateur])
-        ->where(['idProjet' => $idProjet])->execute();
+              ->set(['idProprietaire' => $idUtilisateur])
+              ->where(['idProjet' => $idProjet])
+              ->execute();
       }
 
       return $resultat;
@@ -352,27 +353,27 @@ class NotificationController extends AppController
 
       // On récupère les tables nécessaires à l'opération
       $notifications = TableRegistry::getTableLocator()->get('Notification');
-      $vue_notifications = TableRegistry::getTableLocator()->get('VueNotification');
+      $vueNotifications = TableRegistry::getTableLocator()->get('VueNotification');
       $taches = TableRegistry::getTableLocator()->get('Tache');
 
       // On récupère la notificaiton correspondant à la demande de suppression
       $notification = $notifications->find()
-      ->where(['idNotification' => $idNotification])
-      ->first();
+          ->where(['idNotification' => $idNotification])
+          ->first();
       // On récupère l'id de la tâche à supprimer
       $idTache = $notification->idTache;
 
       // On récupère les notifications liés à la tâche pour les supprimer
       $notifications_supprs = $notifications->find()->contain('VueNotification')
-      ->where(['idTache' => $idTache])
-      ->toArray();
+          ->where(['idTache' => $idTache])
+          ->toArray();
 
       // Pour chaque notification
       foreach ($notifications_supprs as $not) {
         // Pour chaque vue d'une notification
         foreach ($not->notifications as $vue) {
           // On supprime la vue
-          $vue_notifications->delete($vue);
+          $vueNotifications->delete($vue);
         }
         // On supprime la notification
         $notifications->delete($not);
@@ -380,17 +381,17 @@ class NotificationController extends AppController
 
       // On récupère la tâche à supprimer
       $tache = $taches->find()
-      ->where(['idTache' => $idTache])
-      ->first();
+          ->where(['idTache' => $idTache])
+          ->first();
 
       // On récupère les informations de la tâche pour envoyer une notification
-      $contenu = "La tâche ".$tache->titre." a été supprimée.";
+      $contenu = "La tâche " . $tache->titre . " a été supprimée.";
       $idProjet = $tache->idProjet;
 
       // On récupère les membres du projet
       $membres = TableRegistry::getTableLocator()->get('Membre');
       $membres = $membres->find()->contain('Utilisateur')
-      ->where(['idProjet' => $idProjet]);
+          ->where(['idProjet' => $idProjet]);
 
       // Pour chaque membre du projet, on envoie une notification à celui-ci
       $destinataires = array();
@@ -429,9 +430,9 @@ class NotificationController extends AppController
       $idUtilisateur = $session->read('Auth.User.idUtilisateur');
 
       // On récupère la table des vues notifications
-      $vue_notifications = TableRegistry::getTableLocator()->get('VueNotification');
+      $vueNotifications = TableRegistry::getTableLocator()->get('VueNotification');
       // On récupère la notification correspondant à la suppression
-      $notification = $vue_notifications->find()
+      $notification = $vueNotifications->find()
       ->where(['idUtilisateur' => $idUtilisateur])
       ->where(['idNotification' => $idNotification])
       ->first();
@@ -444,7 +445,7 @@ class NotificationController extends AppController
       $this->Flash->default(__('La tâche n\'a pas été supprimée'));
 
       // On met à jour la notification
-      $vue_notifications->save($notification);
+      $vueNotifications->save($notification);
 
       $resultat = 0;
       return $resultat;
@@ -473,20 +474,20 @@ class NotificationController extends AppController
       $idUtilisateur = $session->read('Auth.User.idUtilisateur');
 
       // On récupère la table des vues notifications
-      $vue_notifications = TableRegistry::getTableLocator()->get('VueNotification');
+      $vueNotifications = TableRegistry::getTableLocator()->get('VueNotification');
       // On récupère la notification correspondant à la suppression
-      $notification = $vue_notifications->find()
-      ->where(['idUtilisateur' => $idUtilisateur])
-      ->where(['idNotification' => $idNotification])
-      ->first();
+      $notification = $vueNotifications->find()
+          ->where(['idUtilisateur' => $idUtilisateur])
+          ->where(['idNotification' => $idNotification])
+          ->first();
 
       // On supprime la notification
-      $vue_notifications->delete($notification);
+      $vueNotifications->delete($notification);
 
       // On compte le nombre de vues liées à la notification correspondate
-      $count = $vue_notifications->find()
-      ->where(['idNotification' => $idNotification])
-      ->count();
+      $count = $vueNotifications->find()
+          ->where(['idNotification' => $idNotification])
+          ->count();
 
       // Si il n'y a plus de vues liées à cette notification, on supprime la notification
       if ($count == 0){
@@ -495,8 +496,8 @@ class NotificationController extends AppController
 
         //On récupère la notification
         $notification = $notifications->find()
-        ->where(['idNotification' => $idNotification])
-        ->first();
+            ->where(['idNotification' => $idNotification])
+            ->first();
 
         // On supprime la notification
         $notifications->delete($notification);
@@ -518,13 +519,14 @@ class NotificationController extends AppController
       $vuesNotifications = TableRegistry::getTableLocator()->get('VueNotification');
       $notifications = TableRegistry::getTableLocator()->get('Notification');
 
-      $toutesVuesNotificationsUtilisateur = $vuesNotifications
-      ->find()
-      ->where(['idUtilisateur'=>$idUtilisateur]);
+      $toutesVuesNotificationsUtilisateur = $vuesNotifications->find()
+          ->where(['idUtilisateur' => $idUtilisateur]);
 
       foreach ($toutesVuesNotificationsUtilisateur as $vueNotification){
         $idNotification = $vueNotification->idNotification;
-        $notification = $notifications->find()->where(['idNotification' => $idNotification])->first();
+
+        $notification = $notifications->find()
+            ->where(['idNotification' => $idNotification])->first();
 
         /* Si la notification est une demande, cette demande est automatiquement refusée. */
         if ($vueNotification->etat == 'En attente' && $notification->a_valider==1) $this->declineSansFlash($idNotification);
@@ -534,9 +536,7 @@ class NotificationController extends AppController
       }
 
       $this->Flash->success(__('Vos notifications ont été supprimées.'));
-
     }
-
 
 }
 ?>

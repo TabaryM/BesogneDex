@@ -47,9 +47,7 @@
                 <tr class="ligne" id=<?= $tache->idTache ?> style="height: 50px;">
                   <!-- Début Tâche -->
                   <td>
-                    <!-- TODO: changer le bouton pour "montrer" qu'on peut cliquer dessus-->
                     <a data-toggle="modal" data-target="#descriptionModal<?= $tache->idTache ?>"><?= $tache->titre ?></a>
-                    <!--<?= $this->Html->link($tache->titre, array('controller' => 'Tache', $idProjet), array('data-toggle' => 'modal', 'data-target' => '#descriptionModal' . $tache->idTache));?>-->
                   </td>
                   <!-- Fin Tâche -->
 
