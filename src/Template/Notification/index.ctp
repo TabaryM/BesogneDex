@@ -64,7 +64,6 @@
               </td>
             </tr>
 
-
             <!-- Début modal Supprimer une notification : -->
             <div class="modal fade" id=<?= "deleteModal" . $notif->idNotification ?>>
                     <div class="modal-dialog" role="document">
@@ -95,6 +94,14 @@
           <?php endforeach; ?>
         </tbody>
       </table>
+
+      <!-- Si il n'y a au moins une notification on affiche le bouton supprimer toutes les notifications -->
+      <?php if (sizeof($notifs) > 0): ?>
+            <div class="row d-flex justify-content-end" style="margin-left:60px;margin-right:60px;">
+            <?=  $this->Html->link("Supprimer les notifications", "" , ['class' => 'btn btn-danger shadow']) ?>
+            </div>
+      <?php endif; ?>
+
     </div>
   </div>
 </div>
