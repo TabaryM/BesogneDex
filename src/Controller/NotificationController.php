@@ -455,7 +455,7 @@ class NotificationController extends AppController
       $this->redirect($this->referer());
     }
 
-
+    public function supprimerToutesNotification($idNotification){}
 
 
 }
