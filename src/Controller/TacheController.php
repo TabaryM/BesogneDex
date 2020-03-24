@@ -341,8 +341,7 @@ class TacheController extends AppController
           foreach ($membres as $m) {
             $idUtil = $m->un_utilisateur->idUtilisateur;
             array_push($destinataires, $idUtil);
-
-            //TODO pour PE: supprimer les notifs en lien avec la tache pour eviter les conflits de DB
+            
           }
           unset($destinataires[array_search($user, $destinataires)]);
 

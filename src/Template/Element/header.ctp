@@ -49,7 +49,7 @@
         <span class="badge">9+</span>
       <?php endif; ?>
     </div>
-    
+
   </div>
     <?php  endif;   ?>
 
