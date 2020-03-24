@@ -58,7 +58,7 @@
                   <!-- Si la notification a reçu une réponse ou si c'est une notification à voir, on peut la supprimée -->
                   <?php if ($notif->vue  || !($notif->une_notification->a_valider)): ?>
 
-                    <?= $this->Html->link("Supprimer","", ['class' => 'btn btn-danger shadow', 'data-toggle' => 'modal', 'data-target' => '#deleteModal' . $notif->idNotification]) ?>
+                    <?= $this->Html->link("Supprimer","", ['class' => 'btn btn-danger shadow', 'data-toggle' => 'modal', 'action' => '#deleteModal' . $notif->idNotification]) ?>
 
                   <?php endif; ?>
               </td>
@@ -98,7 +98,7 @@
       <!-- Si il n'y a au moins une notification on affiche le bouton supprimer toutes les notifications -->
       <?php if (sizeof($notifs) > 0): ?>
             <div class="row d-flex justify-content-end" style="margin-left:60px;margin-right:60px;">
-            <?=  $this->Html->link("Supprimer les notifications", "" , ['class' => 'btn btn-danger shadow']) ?>
+            <?=  $this->Html->link("Supprimer les notifications", ['controller'=>'Notification', 'action'=>'supprimerToutesNotifications'], ['button class' => 'btn btn-danger'] ) ?>
             </div>
       <?php endif; ?>
 
