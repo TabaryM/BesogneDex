@@ -312,6 +312,8 @@ class ProjetController extends AppController
           //si l'utilisateur est le propriétaire on:
           if($projetTab->idProprietaire == $idUser){
 
+            $this->supprimerToutesNotifications($idProjet);
+
             //Contenu de la notification à envoyer
             $contenu = $session->read('Auth.User.pseudo') . " a supprimé le projet " . $projetTab->titre;
 
@@ -332,8 +334,6 @@ class ProjetController extends AppController
             //degage tout les membres du projet
             $query = $membres->query();
             $query->delete()->where(['idProjet' => $idProjet])->execute();
-
-            $this->supprimerToutesNotifications($idProjet);
 
             //supprime les taches du projet
             $taches = TableRegistry::getTableLocator()->get('Tache');
