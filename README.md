@@ -1,51 +1,59 @@
-# CakePHP Application Skeleton
+# BesogneDex
+![alt text](webroot/img/icones/rotom_dex.png "Projet Boisson Logo")
 
-[![Build Status](https://img.shields.io/travis/cakephp/app/master.svg?style=flat-square)](https://travis-ci.org/cakephp/app)
-[![Total Downloads](https://img.shields.io/packagist/dt/cakephp/app.svg?style=flat-square)](https://packagist.org/packages/cakephp/app)
+## Procédure d'installation du projet
+### Pré-requis
+L'installation est facile et rapide. Il faut cependant respecter certains pré-requis.
 
-A skeleton for creating applications with [CakePHP](https://cakephp.org) 3.x.
+- [PHP 5.6.0 ou supérieur](https://www.php.net/downloads)
+- [Composer](https://getcomposer.org/download/)
+- Apache2 ou équivalent (CakePHP possède un serveur intégrer suffisant pour l'utilisation en local)
+- MariaDB ou Mysql
 
-The framework source code can be found here: [cakephp/cakephp](https://github.com/cakephp/cakephp).
+Il faut également que les extensions suivantes de PHP soient installées et/ou activées:
+- mbstring
+- openssl ou mcrypt
+- intl
 
-## Installation
+Et les droits en lecture et en écriture (770 par exemple) pour certains repertoires, du projet, doivent être définis.
+- config/tmp
+- config/logs
 
-1. Download [Composer](https://getcomposer.org/doc/00-intro.md) or update `composer self-update`.
-2. Run `php composer.phar create-project --prefer-dist cakephp/app [app_name]`.
+### Installation de la base de données
+Pour installer la base de données, à la racine du projet, se trouve un script php. Ce script install les tables (et donc la structure générale de la base). Il suffit juste d'exectuer le fichier `installBDD.php`
 
-If Composer is installed globally, run
+### Installation des dépendances
+Pour installer les dépendances, il faut utiliser composer. Toutes les dépendances sont décrites dans les fichiers `composer.json` et `composer.lock`.
+Il suffit de se placer à la racine du projet et d'éxecuter la commande:
 
 ```bash
-composer create-project --prefer-dist cakephp/app
+composer install
 ```
 
-In case you want to use a custom app dir name (e.g. `/myapp/`):
+A la fin, l'installation vous demandera si vous vouler éditer les permissions. Il faudra accepter en tapant `Y`.
+Si tout se déroule bien, les dépendance seront installées.
+Dans le doute, il vaut mieux également éxecuter la commande:
 
 ```bash
-composer create-project --prefer-dist cakephp/app myapp
+composer update
 ```
 
-You can now either use your machine's webserver to view the default home page, or start
-up the built-in webserver with:
+### Configuration
+Une fois les dépendance correctement installées, il faut apporté certaines modifications.
+Dans le fichier `config/app.php`, aux alentours de la ligne 254, il faut modifier les données de connexion vers la base de données afin de permettre à CakePHP d'y accéder. Il suffit simplement de renseigner les champs `host`, `username`, `password`, `database` et éventuellement `port` si ce n'est pas celui utilisé par défaut.
 
+### Vérification
+Afin d'être sûr que tout soit prêt, il est recommandé de renommer le fichier `src/Template/Pages/home.ctp.bak` en `src/Template/Pages/home.ctp` (sans écraser celui qui est déjà présent, faites un backup).
+Ce fichier est généré par CakePHP lors du premier démarrage afin de vérifier si tout est bien installé.
+
+Si vous le faite, il faudra faire le processus inverse une fois l'installation terminé afin de pouvoir naviguer sur le site.
+
+### Utiliser le serveur interne de CakePHP
+Le demarrage du serveur se fait en executant la commande suivante à la racine du projet.
 ```bash
-bin/cake server -p 8765
+bin/cake server
 ```
-
-Then visit `http://localhost:8765` to see the welcome page.
-
-## Update
-
-Since this skeleton is a starting point for your application and various files
-would have been modified as per your needs, there isn't a way to provide
-automated upgrades, so you have to do any updates manually.
-
-## Configuration
-
-Read and edit `config/app.php` and setup the `'Datasources'` and any other
-configuration relevant for your application.
-
-## Layout
-
-The app skeleton uses a subset of [Foundation](http://foundation.zurb.com/) (v5) CSS
-framework by default. You can, however, replace it with any other library or
-custom styles.
+Le site sera alors disponible à l'adresse 
+```
+http://localhost:8765/
+```
