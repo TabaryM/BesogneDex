@@ -204,6 +204,8 @@ class UtilisateurController extends AppController
           }else{
             $this->Flash->error(__('La confirmation de mot de passe est erronée.'));
           }
+        }else{
+          $this->Flash->error(__('Le mot de passe actuel est incorrect '));
         }
       }else{
         $this->Flash->error(__('Veuillez saisir votre mot de passe pour modifier vos informations.'));

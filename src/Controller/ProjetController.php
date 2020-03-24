@@ -297,6 +297,7 @@ class ProjetController extends AppController
       * @return redirection vers la page index des projets
       */
       public function delete($idProjet){
+        //TODO A optimiser pour les notifications (Faire attention qu'on ne supprime pas le projet avant d'envoyer la notif)
         //On récupère la table Projet pour en extraire le projet désiré
         $projetTab = TableRegistry::getTableLocator()
         ->get('Projet')->find()
@@ -310,6 +311,23 @@ class ProjetController extends AppController
           $membres = TableRegistry::getTableLocator()->get('Membre');
           //si l'utilisateur est le propriétaire on:
           if($projetTab->idProprietaire == $idUser){
+
+            //Contenu de la notification à envoyer
+            $contenu = $session->read('Auth.User.pseudo') . " a supprimé le projet " . $projetTab->titre;
+
+            //On récupère les membres du projet afin de les notifier
+            $membresNotif = $membres->find()->contain('Utilisateur')
+            ->where(['idProjet' => $idProjet]);
+
+            //On récupère les id des membres du projet
+            $destinataires = array();
+            foreach ($membresNotif as $m) {
+              $idUtil = $m->un_utilisateur->idUtilisateur;
+              array_push($destinataires, $idUtil);
+            }
+
+            //On appelle la fonction pour envoyer la notification
+            envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $idUser, $destinataires);
 
             //degage tout les membres du projet
             $query = $membres->query();
@@ -327,13 +345,27 @@ class ProjetController extends AppController
             $query = $projets->query();
             $query->delete()->where(['idProjet' => $idProjet])->execute();
 
-
-            //Contenu de la notification à envoyer
-            $contenu = $session->read('Auth.User.pseudo') . " a supprimé le projet " . $projetTab->titre;
-
           }
           //sinon si c'est un invité on le retire dans la table membre
           else{
+            //Contenu de la notification à envoyer
+            $contenu = $session->read('Auth.User.pseudo') . " a quitté le projet " . $projetTab->titre;
+
+            //On récupère les membres du projet afin de les notifier
+            $membres = TableRegistry::getTableLocator()->get('Membre');
+            $membresNotif = $membres->find()->contain('Utilisateur')
+            ->where(['idProjet' => $idProjet]);
+
+            //On récupère les id des membres du projet
+            $destinataires = array();
+            foreach ($membresNotif as $m) {
+              $idUtil = $m->un_utilisateur->idUtilisateur;
+              array_push($destinataires, $idUtil);
+            }
+
+            //On appelle la fonction pour envoyer la notification
+            envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $idUser, $destinataires);
+
             //retirer les responsabilités du membre dans le projet qu'il souhaite quitter
             $tachesSousResponsabilite = TableRegistry::getTableLocator()
             ->get('Tache')->find()
@@ -347,27 +379,9 @@ class ProjetController extends AppController
             $query = $membres->query();
             $query->delete()->where(['idProjet' => $idProjet, 'idUtilisateur' => $idUser])->execute();
 
-            //Contenu de la notification à envoyer
-            $contenu = $session->read('Auth.User.pseudo') . " a quitté le projet " . $projetTab->titre;
-
           }
         }
-
-        //On récupère les membres du projet afin de les notifier
-        $membres = TableRegistry::getTableLocator()->get('Membre');
-        $membres = $membres->find()->contain('Utilisateur')
-        ->where(['idProjet' => $idProjet]);
-
-        //On récupère les id des membres du projet
-        $destinataires = array();
-        foreach ($membres as $m) {
-          $idUtil = $m->un_utilisateur->idUtilisateur;
-          array_push($destinataires, $idUtil);
-        }
-
-        //On appelle la fonction pour envoyer la notification
-        envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $idUser, $destinataires);
-
+        $this->Flash->success(__("Votre projet a été supprimé avec succès."));
         return $this->redirect(['action'=> 'index']);
       }
 

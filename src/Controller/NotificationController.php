@@ -141,6 +141,57 @@ class NotificationController extends AppController
         $this->redirect($this->referer());
     }
 
+    /**
+    * C'est littéralement un copié/collé de decline, mais sans les messages flash. Vraiment.
+    * Il y a juste des points virgules à la place.
+    * Fonction pour 'supprimerToutesNotifications()'.
+    */
+    private function declineSansFlash($idNotification) {
+        $idUtilisateur = $this->autorisation(); // On récupère l'id utilisateur (et verifie si il est tjrs connecté)
+        $vueNotificationTable = TableRegistry::getTableLocator()->get('VueNotification');
+        $vueNotification = $vueNotificationTable->find()
+        ->where(['idUtilisateur' => $idUtilisateur, 'idNotification' => $idNotification])
+        ->first();
+        $projets = TableRegistry::getTableLocator()->get('Projet');
+        $session = $this->request->getSession();
+
+        /* On doit mettre l'attribut 'a_valider' de la notification à 0. */
+        $notifications = TableRegistry::getTableLocator()->get('Notification');
+        $notification = $notifications->find()->where(['idNotification'=>$idNotification])->first();
+
+        if($vueNotification&& $notification) { // Si la notification existe
+            if($vueNotification->etat == 'En attente') { // S'il n'a pas déjà répondu a la notif
+                $vueNotification->vue = 1; // La notification a ete vue puisqu'il a repondu
+                $vueNotification->etat = 'Refusé'; // Il refuse la notification
+               $notification->a_valider = 0;
+               $vueNotificationTable->save($vueNotification); // On sauvegarde les changements
+               $notifications->save($notification);
+               // TODO || Voir avec les gens du front pour qu'ils mettent juste à jour l'interface
+               // TODO || quand on a répondu a une notif au lieu de faire un flash
+               //On récupère le projet concerné pour le nom
+
+               $projet = $projets->find()->where(['idProjet' => $notification->idProjet])->first();
+
+               // On récupère les informations de la tâche pour envoyer une notification
+               $contenu = $session->read('Auth.User.pseudo') . " a refusé votre invitation à rejoindre le projet '" . $projet['titre']."'.";
+
+               // Pour chaque membre du projet, on envoie une notification à celui-ci
+               $destinataires = array();
+               array_push($destinataires, $notification->idExpediteur);
+
+               // On envoie une notification à tous les membres du projet de la tâche supprimer
+               envoyerNotification(0, 'Informative', $contenu, $projet->idProjet, null, $notification->idExpediteur, $destinataires);
+
+
+
+            } else {
+                ;
+            }
+        } else {
+            ;
+        }
+        $this->redirect($this->referer());
+    }
 
     /**
     * Accepte une notification et exécute l'action selon son type.
@@ -455,7 +506,36 @@ class NotificationController extends AppController
       $this->redirect($this->referer());
     }
 
+    /**
+    * Supprime toutes les notifications de l'utilisateur.
+    * Si une de ces notifications était une demande, alors elle est automatiquement refusée.
+    *
+    * @author Pop Diana
+    */
+    public function supprimerToutesNotifications(){
+      $session = $this->request->getSession();
+      $idUtilisateur = $session->read('Auth.User.idUtilisateur');
+      $vuesNotifications = TableRegistry::getTableLocator()->get('VueNotification');
+      $notifications = TableRegistry::getTableLocator()->get('Notification');
 
+      $toutesVuesNotificationsUtilisateur = $vuesNotifications
+      ->find()
+      ->where(['idUtilisateur'=>$idUtilisateur]);
+
+      foreach ($toutesVuesNotificationsUtilisateur as $vueNotification){
+        $idNotification = $vueNotification->idNotification;
+        $notification = $notifications->find()->where(['idNotification' => $idNotification])->first();
+
+        /* Si la notification est une demande, cette demande est automatiquement refusée. */
+        if ($vueNotification->etat == 'En attente' && $notification->a_valider==1) $this->declineSansFlash($idNotification);
+
+        /* La vue notification est supprimée et la notification peut l'être aussi (voir la fonction). */
+        $this->supprimerNotification($idNotification);
+      }
+
+      $this->Flash->success(__('Vos notifications ont été supprimées.'));
+
+    }
 
 
 }

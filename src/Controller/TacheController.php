@@ -44,7 +44,8 @@ class TacheController extends AppController
 
     $taches = $this->Paginator->paginate($this->Tache->find()
     ->contain('Utilisateur')
-    ->where(['idProjet' => $idProjet]));
+    ->where(['idProjet' => $idProjet])
+    ->order(['finie' => 'ASC', 'Tache.titre' => 'ASC']));
 
     // Regarde si l'utilisateur est autorisé à acceder au contenu
     $estProprietaire = $this->autorisation($idProjet);
@@ -156,7 +157,9 @@ class TacheController extends AppController
       $user = $session->read('Auth.User.idUtilisateur');
       $taches = $this->Tache->find()
       ->contain(['Utilisateur', 'Projet'])
-      ->where(['idResponsable' => $user])->toArray();
+      ->where(['idResponsable' => $user])
+      ->order(['finie' => 'ASC', 'Tache.titre' => 'ASC'])
+      ->toArray();
 
       $this->set(compact('taches'));
     } else {

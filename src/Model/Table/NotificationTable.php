@@ -21,7 +21,9 @@ class NotificationTable extends Table {
     $this->hasMany('VueNotification', [
       'bindingKey' => 'idNotification',
       'foreignKey' => 'idNotification',
-      'propertyName' => 'notifications'
+      'propertyName' => 'notifications',
+        'dependent' => true,
+        'cascadeCallbacks' => true
     ]);
   }
 

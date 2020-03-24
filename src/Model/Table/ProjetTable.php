@@ -13,9 +13,12 @@ class ProjetTable extends Table{
     ]);
 
     $this->hasMany('Membre', [
+        'className' => 'Membre',
       'bindingKey' => 'idProjet',
       'foreignKey' => 'idProjet',
-      'propertyName' => 'un_membre'
+      'propertyName' => 'un_membre',
+        'dependent' => true,
+        'cascadeCallbacks' => true
     ]);
 
     $this->hasMany('Tache')
