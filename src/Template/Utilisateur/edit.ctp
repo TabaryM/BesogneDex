@@ -36,6 +36,16 @@
           <label for="mdpActu">Mot de passe actuel :</label><?= $this->Form->password('mdpActu'); ?></div>
 
         <div class="col text-right" style="margin-bottom: 5px;margin-top: 5px;">
+          <div class="tooltipblblbl" style="margin-right: 4px;" >
+            ?
+          <div class="tooltiptext">
+            - Votre mot de passe doit faire 8 caractères minimum. </br>
+            - Votre mot de passe doit contenir au moins une minuscule. </br>
+            - Votre mot de passe doit contenir au moins une majuscule. </br>
+            - Votre mot de passe doit contenir au moins un chiffre. </br>
+            - Pas de caractères spéciaux. </br>
+          </div>
+        </div>
           <label for="mdpNew">Nouveau mot de passe :</label><?= $this->Form->password('mdpNew'); ?></div>
 
         <div class="col text-right" style="margin-bottom: 5px;margin-top: 5px;">
