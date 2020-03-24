@@ -369,6 +369,7 @@ class TacheController extends AppController
   public function notSoResponsible($idProjet, $idTache) {
     $tache = $this->Tache->get($idTache);
     $tache->idResponsable = NULL;
+    $tache->finie = 0;
     $this->Tache->save($tache);
     $session = $this->request->getSession();
     $user = $session->read('Auth.User.idUtilisateur');
