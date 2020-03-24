@@ -9,9 +9,11 @@
  */
 function nettoyerTexte($texte) {
     $texte = filter_var($texte, FILTER_SANITIZE_STRING);
-    $texte = htmlspecialchars($texte);
-    //TODO fix that
-    $texte = str_replace("&#39;","'", $texte);
+    // $texte = htmlspecialchars($texte, ENT_NOQUOTES, 'UTF-8'); Flag issue
+    $texte = str_replace("<","&lt;", $texte);
+    $texte = str_replace(">", "&gt;", $texte);
+    echo $texte;
+   
     return $texte;
 }
 

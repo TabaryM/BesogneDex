@@ -27,7 +27,7 @@ class UtilisateurTable extends Table{
           'className' => 'Tache',
           'foreignKey' => 'idResponsable'
       ]);
-      
+
       $this->hasMany('VueNotification', [
           'className' => 'VueNotification',
           'foreignKey'=> 'idUtilisateur',
