@@ -58,7 +58,7 @@
                   <!-- Si la notification a reçu une réponse ou si c'est une notification à voir, on peut la supprimée -->
                   <?php if ($notif->vue  || !($notif->une_notification->a_valider)): ?>
 
-                    <?= $this->Html->link("Supprimer","", ['class' => 'btn btn-danger shadow', 'data-toggle' => 'modal', 'action' => '#deleteModal' . $notif->idNotification]) ?>
+                    <?= $this->Html->link("Supprimer","", ['class' => 'btn btn-danger shadow', 'data-toggle' => 'modal', 'data-target' => '#deleteModal' . $notif->idNotification]) ?>
 
                   <?php endif; ?>
               </td>
@@ -98,8 +98,34 @@
       <!-- Si il n'y a au moins une notification on affiche le bouton supprimer toutes les notifications -->
       <?php if (sizeof($notifs) > 0): ?>
             <div class="row d-flex justify-content-end" style="margin-left:60px;margin-right:60px;">
-            <?=  $this->Html->link("Supprimer les notifications", ['controller'=>'Notification', 'action'=>'supprimerToutesNotifications'], ['button class' => 'btn btn-danger'] ) ?>
+            <?=  $this->Html->link("Supprimer les notifications", "", ['button class' => 'btn btn-danger', 'data-toggle' => 'modal', 'data-target' => '#supprimerModal'] ) ?>
             </div>
+
+            <!-- Début modal supprimer toutes les notifications : -->
+            <div class="modal fade" id="supprimerModal">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Supprimer les notifications</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                </div>
+                                <div class="modal-body" style="text-align:center;">
+                                <p style="width: 477px;">Êtes-vous sûr de vouloir supprimer toutes vos notifications (les demandes seront automatiquement refusées) ?</p>
+                                </div>
+
+                            <div class="modal-footer text-center">
+                                <div class="row text-center" style="width: 484px;">
+                                    <div class="col text-right">
+                                      <?= $this->Html->link("Non", array('controller' => 'Notification', 'action'=> 'index'), array( 'button class' => 'btn btn-primary', 'data-dismiss' => 'modal'));?>
+                                    </div>
+                                    <div class="col text-left">
+                                      <?= $this->Html->link("Oui", array('controller' => 'Notification', 'action'=> 'supprimerToutesNotifications',  $notif->idNotification), array( 'button class' => 'btn btn-danger'));?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <!-- Fin modal supprimer toutes les notifications -->
       <?php endif; ?>
 
     </div>
