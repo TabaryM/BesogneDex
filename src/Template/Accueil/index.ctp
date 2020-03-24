@@ -43,6 +43,7 @@
     </div>
   </div>
   <!-- Fin du tableau des tâches prioritaires -->
+
   <!-- Début second tableau -->
   <div class="col-xl-6" style="margin-top: 50px;">
     <div class="card shadow" style="background-color: #6fa8dc;">

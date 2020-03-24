@@ -13,7 +13,7 @@ function nettoyerTexte($texte) {
     $texte = str_replace("<","&lt;", $texte);
     $texte = str_replace(">", "&gt;", $texte);
     echo $texte;
-   
+
     return $texte;
 }
 
@@ -127,11 +127,13 @@ function verificationDateFin($dateFin){
         'month' => getdate()['mon'],
         'day' => getdate()['mday']
     );
-    $dateDuJour = strtotime(implode($dateDuJour));
-    $dateFin = strtotime(implode($dateFin));
-
+    if(strlen($dateDuJour['month']) < 2){
+        $dateDuJour['month'] = '0'.$dateDuJour['month'];
+    }
+    $dateDuJour = (int)(implode($dateDuJour));
+    $dateFin =  (int)(implode($dateFin));
     // Si la date de fin ultérieure à la date du jour tout va bien
-    if($dateFin > $dateDuJour){
+    if($dateFin >= $dateDuJour){
         $res = true;
     }
     return $res;
