@@ -26,7 +26,7 @@
                 <?php endforeach; ?>
                 <?php foreach ($invites as $membreInvite): ?>
                     <p class='ligne_membre'>
-                      <?= $membreInvite->pseudo . " (En attente de réponse)" ?>
+                      <?= $membreInvite->pseudo . " (en attente de réponse)" ?>
                     </p>
                 <?php endforeach; ?>
             </div>

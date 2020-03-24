@@ -205,14 +205,21 @@ class MembreController extends AppController
       $vuesNotifications = TableRegistry::getTableLocator()->get('VueNotification');
       $utilisateurs = TableRegistry::getTableLocator()->get('Utilisateur');
       $invitations = $notifications->find()->where(['type' => 'Invitation', 'idProjet' => $idProjet]);
+
       foreach ($invitations as $invitation){
         $idNotification = $invitation->idNotification;
 
-        $invitationAuMembre = $vuesNotifications->find()->where(['idNotification'=>$idNotification], ['etat' => 'En attente'])->first();
+        $existeMembre = $vuesNotifications->find()->where(['idNotification'=>$idNotification, 'etat' => 'En attente'])->count();
 
-        $pseudoMembre = $utilisateurs->find()->where(['idUtilisateur' => $invitationAuMembre->idUtilisateur])->first();
+        if($existeMembre > 0){
 
-        array_push($invites, $pseudoMembre);
+          $invitationAuMembre = $vuesNotifications->find()->where(['idNotification'=>$idNotification, 'etat' => 'En attente'])->first();
+
+          $pseudoMembre = $utilisateurs->find()->where(['idUtilisateur' => $invitationAuMembre->idUtilisateur])->first();
+
+          array_push($invites, $pseudoMembre);
+
+        }
       }
 
       $projets = TableRegistry::getTableLocator()->get('Projet');
