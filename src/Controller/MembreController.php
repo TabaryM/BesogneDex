@@ -205,6 +205,32 @@ class MembreController extends AppController
       $this->set(compact('membres', 'idProjet', 'titreProjet'));
     }
 
+
+    /**
+    * Vérifie si une invitation a déjà été envoyée au membre.
+    *
+    * @param idUtilisateur : id de l'utilisateur à inviter
+    * @param idProjet : id du projet dans lequel on veut l'inviter
+    * @return Vrai si une invitation a déjà été envoyée
+    *
+    * @author Pop Diana
+    */
+    private function estDejaInvite($idUtilisateur, $idProjet){
+      $resultat = false;
+      $notifications = TableRegistry::getTableLocator()->get('Notification');
+      $vuesNotifications = TableRegistry::getTableLocator()->get('VueNotification');
+
+      $invitations = $notifications->find()->where(['type' => 'Invitation', 'idProjet' => $idProjet]);
+      foreach ($invitations as $invitation){
+        $idNotification = $invitation->idNotification;
+
+        $invitationAuMembre = $vuesNotifications->find()->where(['idNotification'=>$idNotification, 'idUtilisateur' => $idUtilisateur])->count();
+        if ($invitationAuMembre>0) $resultat = true;
+      }
+
+      return $resultat;
+    }
+
     /**
     * Ajoute un membre dans le projet.
     * Fonction appelée au clic sur "Inviter" dans le index.ctp de ce controller.
@@ -221,7 +247,7 @@ class MembreController extends AppController
     *
     * Redirection : index de ce controller.
     *
-    * @author POP Diana
+    * @author Pop Diana
     */
     public function add($idProjet){
       $this->autorisation($idProjet);
@@ -245,8 +271,11 @@ class MembreController extends AppController
         // Est-ce que l'utilisateur à ajouter est déjà membre ?
         $estDejaMembre = $this->estMembreDe($idProjet, $idUtilisateur);
 
+        // Est-ce que l'utilisateur à ajouter a déjà été invité ?
+        $estDejaInvite = $this->estDejaInvite($idUtilisateur, $idProjet);
+
         // Si la personne à ajouter existe, qu'elle n'est pas le propriétaire et qu'elle n'est pas déjà membre, on l'ajoute à la liste de membres.
-        if ($existeUtilisateur && !$estProprietaire && !$estDejaMembre){
+        if ($existeUtilisateur && !$estProprietaire && !$estDejaMembre && !$estDejaInvite){
 
           //On récupère la table des projets
           $projets = TableRegistry::getTableLocator()->get('Projet');
@@ -263,10 +292,12 @@ class MembreController extends AppController
           $idSession = $session->read('Auth.User.idUtilisateur');
 
           //On remplit le contenu de la notification
-          $contenu = $session->read('Auth.User.pseudo') . " vous a demandé de rejoindre son projet " . $nomProjet;
+          $contenu = $session->read('Auth.User.pseudo') . " vous a demandé de rejoindre son projet '" . $nomProjet ."'.";
 
           //Envoie une notification à un utilisateur pour lui demander de rejoindre son projet
           envoyerNotification(1, 'Invitation', $contenu, $idProjet, null, $idSession, $destinataires);
+
+          $this->Flash->success(__('Une invitation a été envoyée à ce membre.'));
 
         // Si les vérifications ont été fausses, on affiche les messages d'erreur selon les cas.
         }else{
@@ -275,6 +306,8 @@ class MembreController extends AppController
           if ($estProprietaire) $this->Flash->error(__('Vous êtes le/a propriétaire de ce projet et faites donc déjà partie de ce projet.'));
 
           if ($estDejaMembre && !$estProprietaire) $this->Flash->error(__('Ce membre est déjà dans le projet.'));
+
+          if ($estDejaInvite) $this->Flash->error(__('Ce membre a déjà reçu une invitation.'));
 
       }// Fin messages des verifications
 
@@ -295,7 +328,7 @@ class MembreController extends AppController
     *
     * Redirection : index de ce controller.
     *
-    * @author POP Diana
+    * @author Pop Diana, Rossi Djessy
     */
     public function delete($idUtilisateur, $idProjet){
       $this->autorisation($idProjet);
@@ -314,6 +347,7 @@ class MembreController extends AppController
         $projet = $projets->find()->where(['idProjet' => $idProjet])->first();
         $nomProjet = $projet['titre'];
 
+        /* NOTIFICATION */
         $destinataires = array();
         //On met l'utilisateur invité en tant que destinataire
         array_push($destinataires, $idUtilisateur);
@@ -324,13 +358,12 @@ class MembreController extends AppController
         $idSession = $session->read('Auth.User.idUtilisateur');
 
         //On remplit le contenu de la notification
-        $contenu = $session->read('Auth.User.pseudo')." vous a exclu du projet " . $nomProjet;
+        $contenu = $session->read('Auth.User.pseudo')." vous a exclu(e) du projet '" . $nomProjet ."'.";
 
         //Envoie une notification à un utilisateur pour le notifier qu'il a été exclu du projet
-        envoyerNotification(1, 'Informative', $contenu, $idProjet, null, $idSession, $destinataires);
+        envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $idSession, $destinataires);
 
         $this->supprimerMembre($idUtilisateur, $idProjet);
-
       // Si l'utilisateur à supprimer du projet en est le propriétaire, on ne peut pas le supprimer.
       }else if($estProprietaire){
           $this->Flash->set('Vous êtes propriétaire de ce projet.', ['element' => 'error']);

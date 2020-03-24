@@ -341,6 +341,7 @@ class TacheController extends AppController
 
             //TODO pour PE: supprimer les notifs en lien avec la tache pour eviter les conflits de DB
           }
+          unset($destinataires[array_search($user, $destinataires)]);
 
           envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $user, $destinataires);
 
@@ -368,6 +369,7 @@ class TacheController extends AppController
   public function notSoResponsible($idProjet, $idTache) {
     $tache = $this->Tache->get($idTache);
     $tache->idResponsable = NULL;
+    $tache->finie = 0;
     $this->Tache->save($tache);
     $session = $this->request->getSession();
     $user = $session->read('Auth.User.idUtilisateur');

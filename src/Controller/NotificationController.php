@@ -91,29 +91,47 @@ class NotificationController extends AppController
      * Si la notification n'existe pas ou n'a pas le statut 'en attente' (cela veut dire
      * que l'utilisateur a déjà accepté ou refusée), celle-ci renvoie une erreur.
      *
-     * @param $idNotifProjet : id du projet dans la table VueNotificationProjet
+     * @param $idNotification : id du projet dans la table VueNotificationProjet
      * @author PALMIERI Adrien, ROSSI Djessy, POP Diana (a_valider à 0)
      */
-    public function decline($idNotifProjet) {
+    public function decline($idNotification) {
         $idUtilisateur = $this->autorisation(); // On récupère l'id utilisateur (et verifie si il est tjrs connecté)
-        $vueNotificationProjetTable = TableRegistry::getTableLocator()->get('VueNotification');
-        $notificationProjet = $vueNotificationProjetTable->find()
-        ->where(['idUtilisateur' => $idUtilisateur, 'idNotification' => $idNotifProjet])
+        $vueNotificationTable = TableRegistry::getTableLocator()->get('VueNotification');
+        $vueNotification = $vueNotificationTable->find()
+        ->where(['idUtilisateur' => $idUtilisateur, 'idNotification' => $idNotification])
         ->first();
+        $projets = TableRegistry::getTableLocator()->get('Projet');
+        $session = $this->request->getSession();
 
         /* On doit mettre l'attribut 'a_valider' de la notification à 0. */
         $notifications = TableRegistry::getTableLocator()->get('Notification');
-        $notification = $notifications->find()->where(['idNotification'=>$idNotifProjet])->first();
+        $notification = $notifications->find()->where(['idNotification'=>$idNotification])->first();
 
-        if($notificationProjet && $notification) { // Si la notification existe
-            if($notificationProjet->etat == 'En attente') { // S'il n'a pas déjà répondu a la notif
-                $notificationProjet->vue = 1; // La notification a ete vue puisqu'il a repondu
-               $notificationProjet->etat = 'Refusé'; // Il refuse la notification
+        if($vueNotification&& $notification) { // Si la notification existe
+            if($vueNotification->etat == 'En attente') { // S'il n'a pas déjà répondu a la notif
+                $vueNotification->vue = 1; // La notification a ete vue puisqu'il a repondu
+                $vueNotification->etat = 'Refusé'; // Il refuse la notification
                $notification->a_valider = 0;
-               $vueNotificationProjetTable->save($notificationProjet); // On sauvegarde les changements
+               $vueNotificationTable->save($vueNotification); // On sauvegarde les changements
+               $notifications->save($notification);
                // TODO || Voir avec les gens du front pour qu'ils mettent juste à jour l'interface
                // TODO || quand on a répondu a une notif au lieu de faire un flash
+               //On récupère le projet concerné pour le nom
+
+               $projet = $projets->find()->where(['idProjet' => $notification->idProjet])->first();
+
+               // On récupère les informations de la tâche pour envoyer une notification
+               $contenu = $session->read('Auth.User.pseudo') . " a refusé votre invitation à rejoindre le projet '" . $projet['titre']."'.";
+
+               // Pour chaque membre du projet, on envoie une notification à celui-ci
+               $destinataires = array();
+               array_push($destinataires, $notification->idExpediteur);
+
+               // On envoie une notification à tous les membres du projet de la tâche supprimer
+               envoyerNotification(0, 'Informative', $contenu, $projet->idProjet, null, $notification->idExpediteur, $destinataires);
+
                 $this->Flash->success(__('Vous avez répondu à la notification.'));
+
             } else {
                 $this->Flash->error(__("Vous avez déjà répondu à cette notification."));
             }
@@ -126,6 +144,8 @@ class NotificationController extends AppController
 
     /**
     * Accepte une notification et exécute l'action selon son type.
+    *
+    * @param idVueNotification : id de la vue notification à laquelle on répond.
     *
     * @author Clément Colne, Diana Pop
     */
@@ -162,11 +182,12 @@ class NotificationController extends AppController
               $vueNotification->etat = 'Accepté';
               $notification->a_valider = 0;
               $vuesNotifications->save($vueNotification);
+              $notifications->save($notification);
 
               // Si l'action s'est bien déroulée
               if ($resultat==0){
                   $this->Flash->success(__('Vous avez répondu à la notification.'));
-                  
+
               // Sinon
               }else{
                 $this->Flash->success(__('Une erreur s\'est produite.'));
@@ -192,7 +213,7 @@ class NotificationController extends AppController
     * @param notification : notification concernée
     * @return 0 si tout est ok, 1 sinon
     *
-    * @author Pop Diana
+    * @author Pop Diana, Rossi Djessy
     */
     private function proprietaire($idUtilisateur, $notification){
       $idProjet = $notification->idProjet;
@@ -220,7 +241,7 @@ class NotificationController extends AppController
     * @param notification : notification concernée
     * @return 0 si tout est ok, 1 sinon
     *
-    * @author Pop Diana
+    * @author Pop Diana, Rossi Djessy
     */
     private function invitation($idUtilisateur, $notification){
       $idProjet = $notification->idProjet;
@@ -230,11 +251,27 @@ class NotificationController extends AppController
       if ($idProjet!==null){
         $resultat = 0;
         $membres = TableRegistry::getTableLocator()->get('Membre');
+        $projets = TableRegistry::getTableLocator()->get('Projet');
+        $session = $this->request->getSession();
 
         /* On crée notre nouveau petit membre. */
         $membre = $membres->newEntity();
         $membre->idUtilisateur = $idUtilisateur;
         $membre->idProjet = $idProjet;
+
+
+        //On récupère le projet concerné pour le nom
+        $projet = $projets->find()->where(['idProjet' => $notification->idProjet])->first();
+
+        // On récupère les informations de la tâche pour envoyer une notification
+        $contenu = $session->read('Auth.User.pseudo') . " a accepté votre invitation à rejoindre le projet '" . $projet['titre']."'.";
+
+        // Pour chaque membre du projet, on envoie une notification à celui-ci
+        $destinataires = array();
+        array_push($destinataires, $notification->idExpediteur);
+
+        // On envoie une notification à tous les membres du projet de la tâche supprimer
+        envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $notification->idExpediteur, $destinataires);
 
         /* On le sauvegarde. */
         $estSauvegarde = $membres->save($membre);
@@ -310,6 +347,7 @@ class NotificationController extends AppController
         $idUtil = $m->un_utilisateur->idUtilisateur;
         array_push($destinataires, $idUtil);
       }
+      unset($destinataires[array_search($idUtilisateur, $destinataires)]);
 
       // On supprime la tâche
       $taches->delete($tache);

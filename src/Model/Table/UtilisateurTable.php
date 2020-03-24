@@ -94,7 +94,7 @@ class UtilisateurTable extends Table{
                     $mdp = $context['data']['mdp'];
                     return (bool)preg_match("/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/", $mdp);
                 },
-              'message' => 'Le mot de passe doit correspondre aux critères.'
+              'message' => 'Le mot de passe doit correspondre aux critères (pas de caractères spéciaux).'
             ),
               'identiques' => array(
                 'rule' => function($value, $context){

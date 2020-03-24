@@ -14,7 +14,7 @@
     </div>
     <?php   if(!$loggedIn):  ?>
           <div class="d-flex justify-content-end align-items-center div_mail_mdp_header">
-              <div class="d-flex flex-column mail_div_header">
+              <div class="d-flex flex-column mail_div_header" style='margin-bottom:25px'>
                   <div>
                     <?= $this->Form->create(null, ['url' => ['controller' => 'Utilisateur', 'action' => 'login']] ); ?>
                     <?= $this->Form->control('email', array('label' => 'E-mail :', 'class' => 'label')); ?>
@@ -24,6 +24,10 @@
                   <div>
                     <?= $this->Form->control('mdp', array('label' => 'Mot de passe :', 'class' => 'label', 'type'=>'password')); ?>
                   </div>
+                  <div class="form-check">
+                   <?=  $this->Form->control('resterConnecte', array('label'=>' Rester connecté', 'type'=>'checkbox')) ?>
+
+                 </div>
               </div>
 
               <?= $this->Form->submit('Se connecter', array('class' => 'btn btn-primary')) ?>
@@ -37,7 +41,14 @@
     <div class="col d-flex flex-row-reverse justify-content-start align-items-center">
     <a class="btn logout" data-toggle="modal" data-target="#logoutModal"></a>
     <?= $this->Html->link("", array('controller' => 'Utilisateur','action'=> 'profil'), array( 'class' => 'btn user'))?>
-    <?= $this->Html->link("", array('controller' => 'Notification','action'=> 'index'), array( 'class' => 'btn bell'))?>
+    <a class="btn bell notificaton" href="/BesogneDex/notification">
+      <?php if($nbNotif > 0 && $nbNotif < 10): ?>
+        <span class="badge"><?= $nbNotif ?></span>
+      <?php elseif($nbNotif >= 10): ?>
+        <span class="badge">9+</span>
+      <?php endif; ?>
+
+    </a>
   </div>
     <?php  endif;   ?>
 
