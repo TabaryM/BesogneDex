@@ -320,7 +320,7 @@ div.message.hidden {
 .badge {
   position: absolute;
   right: -12px;
-  top: -35px!important;
+  top: -10px!important;
   border-radius: 50%;
   background: red;
   color: white;
