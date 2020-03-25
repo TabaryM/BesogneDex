@@ -323,7 +323,6 @@ class ProjetController extends AppController
   * @return redirection vers la page index des projets
   */
   public function delete($idProjet){
-    //TODO A optimiser pour les notifications (Faire attention qu'on ne supprime pas le projet avant d'envoyer la notif)
     //On récupère la table Projet pour en extraire le projet désiré
     $projetTab = TableRegistry::getTableLocator()
         ->get('Projet')->find()

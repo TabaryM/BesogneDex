@@ -59,7 +59,7 @@ $cakeDescription = 'BesogneDex';
     if($nbNotifications == 0){
       $nbNotif = '';
     }else{
-      if($nbNotifications > 10){
+      if($nbNotifications > 9){
         $nbNotif = '9+';
       }else{
         $nbNotif = $nbNotifications;

@@ -95,15 +95,15 @@ class UtilisateurController extends AppController
         $this->redirect(['controller' => 'Accueil', 'action' => 'index']);
 
       // Si l'inscription a eu des erreurs et ne s'est donc pas faite.
-    }else{
-        $erreurs = listeErreursVersString($utilisateur->errors());
-        $this->afficherErreurs(listeErreursVersString($utilisateur->errors()));
-        $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
+      }else{
+          $erreurs = listeErreursVersString($utilisateur->errors());
+          $this->afficherErreurs(listeErreursVersString($utilisateur->errors()));
+          $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
 
-    // Redirige sur la page d'inscription si ce n'est pas un POST.
-    }
-  }else {
-      $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
+      // Redirige sur la page d'inscription si ce n'est pas un POST.
+      }
+    }else{
+        $this->redirect(array('controller' => 'pages', 'action' => 'display','home'));
     }
   }
 
@@ -156,8 +156,8 @@ class UtilisateurController extends AppController
 
     // Récupère les données de l'utilisateur connecté
     $utilisateur = $utilisateurs->find()
-    ->where(['idUtilisateur' => $session->read('Auth.User.idUtilisateur')])
-    ->first();
+        ->where(['idUtilisateur' => $session->read('Auth.User.idUtilisateur')])
+        ->first();
 
     // On enregistre les données de l'utilisateur connecté dans une varible réutilisable dans le fichier .ctp
     $this->set(compact('utilisateur'));
@@ -172,8 +172,8 @@ class UtilisateurController extends AppController
     $session = $this->request->getSession();
     $data = $this->request->getData();
     $utilisateur = $this->Utilisateur->find()
-    ->where(['idUtilisateur' => $session->read('Auth.User.idUtilisateur')])
-    ->first();
+        ->where(['idUtilisateur' => $session->read('Auth.User.idUtilisateur')])
+        ->first();
 
     $estModifie = false;
 
@@ -194,11 +194,11 @@ class UtilisateurController extends AppController
 
             $utilisateur = $this->Utilisateur->get($session->read('Auth.User.idUtilisateur')); //On récupère les données utilisateurs
             $data2 = $this->Utilisateur->patchEntity($utilisateur, $data); //On "assemble" les données entre data et utilisateur
-            if($this->Utilisateur->save($data2)){ //On sauvegarde les données (Le vérificator passe avant)
+            if($this->Utilisateur->save($data2)){ //On sauvegarde les données dans la bdd (Le vérificator passe avant)
               $estModifie = true;
             }
 
-            $erreurs = listeErreursVersString($utilisateur->errors());
+            $erreurs = listeErreursVersString($utilisateur->errors()); //Si il y a des erreurs on les affiche
             $this->afficherErreurs($erreurs);
 
           }else{
@@ -235,7 +235,11 @@ class UtilisateurController extends AppController
     } else {
 
       // Unassign user from tasks where he was assigned
-      $tasksUsers = TableRegistry::getTableLocator()->get('Tache')->find()->where(['idResponsable' => $utilisateur->idUtilisateur])->all();
+      $tasksUsers = TableRegistry::getTableLocator()
+          ->get('Tache')->find()
+          ->where(['idResponsable' => $utilisateur->idUtilisateur])
+          ->all();
+
       if(!empty($tasksUsers)) {
         foreach($tasksUsers as $taskUser) { // All the tasks where the user was responsible are now unassigned
           $taskUser->idProprietaire = null;
@@ -244,6 +248,7 @@ class UtilisateurController extends AppController
       }
 
       $success = $this->Utilisateur->delete($utilisateur);
+
       if($success) {
         $this->Auth->logout();
         $this->Flash->success(__('Vous avez supprimé votre compte avec succès'));
@@ -254,7 +259,6 @@ class UtilisateurController extends AppController
       }
     }
   }
-
 }
 
 ?>
