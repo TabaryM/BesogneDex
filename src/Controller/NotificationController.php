@@ -92,7 +92,7 @@ class NotificationController extends AppController
      * @param $idNotification : id du projet dans la table VueNotificationProjet
      * @author PALMIERI Adrien, ROSSI Djessy
      */
-    public function decline($idNotification) {
+    private function declineAvecOuSansFlash($idNotification, $avecFlashs) {
         $idUtilisateur = $this->autorisation(); // On récupère l'id utilisateur (et verifie si il est tjrs connecté)
 
         $vueNotificationTable = TableRegistry::getTableLocator()->get('VueNotification');
@@ -132,62 +132,38 @@ class NotificationController extends AppController
               envoyerNotification(0, 'Informative', $contenu, $projet->idProjet, null, $notification->idExpediteur, $destinataires);
 
             } else {
+              if($avecFlashs){
                 $this->Flash->error(__("Vous avez déjà répondu à cette notification."));
+              }
             }
         } else {
+          if($avecFlashs){
             $this->Flash->error(__("La notification à laquelle vous essayez d'accéder n'existe pas."));
+          }
         }
         $this->redirect($this->referer());
     }
 
+
+
     /**
-    * C'est littéralement un copié/collé de decline, mais sans les messages flash. Vraiment.
-    * Il y a juste des points virgules à la place.
-    * Fonction pour 'supprimerToutesNotifications()'.
-    */
-    private function declineSansFlash($idNotification) {
-        $idUtilisateur = $this->autorisation(); // On récupère l'id utilisateur (et verifie si il est tjrs connecté)
-        $vueNotificationTable = TableRegistry::getTableLocator()->get('VueNotification');
-        $vueNotification = $vueNotificationTable->find()
-            ->where(['idUtilisateur' => $idUtilisateur, 'idNotification' => $idNotification])
-            ->first();
-        $projets = TableRegistry::getTableLocator()->get('Projet');
-        $session = $this->request->getSession();
+     * Appel la fonction declineAvecOuSansFlash() avec les flashs actifs
+     *
+     * @param  int $idNotification l'id de la notification a decline
+     * @return type retourne le type de declineAvecOuSansFlash()
+     */
+    public function decline($idNotification) {
+      return $this->declineAvecOuSansFlash($idNotification, true);
+    }
 
-        /* On doit mettre l'attribut 'a_valider' de la notification à 0. */
-        $notifications = TableRegistry::getTableLocator()->get('Notification');
-        $notification = $notifications->find()->where(['idNotification'=>$idNotification])->first();
-
-        if($vueNotification&& $notification) { // Si la notification existe
-            if($vueNotification->etat == 'En attente') { // S'il n'a pas déjà répondu a la notif
-               $vueNotification->vue = 1; // La notification a ete vue puisqu'il a repondu
-               $vueNotification->etat = 'Refusé'; // Il refuse la notification
-               $notification->a_valider = 0;
-               $vueNotificationTable->save($vueNotification); // On sauvegarde les changements
-               $notifications->save($notification);
-               //On récupère le projet concerné pour le nom
-
-               $projet = $projets->find()->where(['idProjet' => $notification->idProjet])->first();
-
-               // On récupère les informations de la tâche pour envoyer une notification
-               $contenu = $session->read('Auth.User.pseudo') . " a refusé votre invitation à rejoindre le projet '" . $projet['titre']."'.";
-
-               // Pour chaque membre du projet, on envoie une notification à celui-ci
-               $destinataires = array();
-               array_push($destinataires, $notification->idExpediteur);
-
-               // On envoie une notification à tous les membres du projet de la tâche supprimer
-               envoyerNotification(0, 'Informative', $contenu, $projet->idProjet, null, $notification->idExpediteur, $destinataires);
-
-
-
-            } else {
-                ;
-            }
-        } else {
-            ;
-        }
-        $this->redirect($this->referer());
+    /**
+     * Appel la fonction declineAvecOuSansFlash() avec les flashs désactivés
+     *
+     * @param  int $idNotification l'id de la notification a decline
+     * @return type retourne le type de declineAvecOuSansFlash()
+     */
+    private function declineSansFlash($idNotification){
+      return $this->declineAvecOuSansFlash($idNotification, false);
     }
 
     /**
