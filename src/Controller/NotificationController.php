@@ -330,7 +330,7 @@ class NotificationController extends AppController
       $vueNotifications = TableRegistry::getTableLocator()->get('VueNotification');
       $taches = TableRegistry::getTableLocator()->get('Tache');
 
-      // On récupère la notificaiton correspondant à la demande de suppression
+      // On récupère la notification correspondant à la demande de suppression
       $notification = $notifications->find()
           ->where(['idNotification' => $idNotification])
           ->first();

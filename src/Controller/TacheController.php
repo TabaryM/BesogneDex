@@ -344,13 +344,35 @@ class TacheController extends AppController
 
       //si il est propriétaire du projet ou que l'utilisateur est responsable de la tache il peut supprimer cette tache
       if($projetTab->idProprietaire == $user || $tache->idResponsable == $user){
-        //On récupère la table des notifications des projets
-        $notifications = TableRegistry::getTableLocator()->get('Notification');
-        //On récupère la table de vue des notifications des projets
-        $vue_notifications = TableRegistry::getTableLocator()->get('Vue_notification');
 
         //Si c'est le proprio envoyer une notif a tout les membres du projet comme quoi la tache X du projet Y a ete supprimée.
         if($projetTab->idProprietaire == $user){
+          // On récupère les tables nécessaires à l'opération
+          $notifications = TableRegistry::getTableLocator()->get('Notification');
+          $vueNotifications = TableRegistry::getTableLocator()->get('VueNotification');
+          $taches = TableRegistry::getTableLocator()->get('Tache');
+
+          // On récupère les notifications liés à la tâche pour les supprimer
+          $notifications_supprs = $notifications->find()->contain('VueNotification')
+              ->where(['idTache' => $idTache])
+              ->toArray();
+
+          // Pour chaque notification
+          foreach ($notifications_supprs as $not) {
+            // Pour chaque vue d'une notification
+            foreach ($not->notifications as $vue) {
+              // On supprime la vue
+              $vueNotifications->delete($vue);
+            }
+            // On supprime la notification
+            $notifications->delete($not);
+          }
+
+          // On récupère la tâche à supprimer
+          $tache = $taches->find()
+              ->where(['idTache' => $idTache])
+              ->first();
+
 
           //On crée une nouvelle notification pour le projet courant
           $contenu = "La tâche " . $tache->titre . " a été supprimée.";
@@ -367,14 +389,12 @@ class TacheController extends AppController
             $idUtil = $m->un_utilisateur->idUtilisateur;
             array_push($destinataires, $idUtil);
           }
-
           unset($destinataires[array_search($user, $destinataires)]);
 
+          $taches->delete($tache);
+          $this->Flash->success(__('La tache a été supprimée'));  
+
           envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $user, $destinataires);
-
-          $query = $tacheTab->query();
-          $query->delete()->where(['idTache' => $idTache])->execute();
-
         } else {
           //sinon envoyer une demande de confirmation au proprio et si il accepte, la supprimer
           //On crée une nouvelle notification pour le projet courant
