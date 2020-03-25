@@ -227,6 +227,7 @@ class TacheController extends AppController
             $idUtil = $m->un_utilisateur->idUtilisateur;
             array_push($destinataires, $idUtil);
           }
+          unset($destinataires[array_search($user, $destinataires)]);
 
           //On appelle la fonction pour envoyer la notification
           envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $user, $destinataires);
@@ -285,6 +286,7 @@ class TacheController extends AppController
       $idUtil = $m->un_utilisateur->idUtilisateur;
       array_push($destinataires, $idUtil);
     }
+    unset($destinataires[array_search($user, $destinataires)]);
 
     //On appelle la fonction pour envoyer la notification
     envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $user, $destinataires);
@@ -390,6 +392,7 @@ class TacheController extends AppController
       $idUtil = $m->un_utilisateur->idUtilisateur;
       array_push($destinataires, $idUtil);
     }
+    unset($destinataires[array_search($user, $destinataires)]);
 
     //On appelle la fonction pour envoyer la notification
     envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $user, $destinataires);
@@ -433,6 +436,7 @@ class TacheController extends AppController
             $idUtil = $m->un_utilisateur->idUtilisateur;
             array_push($destinataires, $idUtil);
           }
+          unset($destinataires[array_search($user, $destinataires)]);
 
           //On appelle la fonction pour envoyer la notification
           envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $user, $destinataires);
