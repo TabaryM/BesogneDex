@@ -462,6 +462,7 @@ class ProjetController extends AppController
             $idUtil = $m->un_utilisateur->idUtilisateur;
             array_push($destinataires, $idUtil);
           }
+          unset($destinataires[array_search($user, $destinataires)]);
 
           //On appelle la fonction pour envoyer la notification
           envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $user, $destinataires);
@@ -513,6 +514,7 @@ class ProjetController extends AppController
           $idUtil = $m->un_utilisateur->idUtilisateur;
           array_push($destinataires, $idUtil);
         }
+        unset($destinataires[array_search($user, $destinataires)]);
 
         //On appelle la fonction pour envoyer la notification
         envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $user, $destinataires);
@@ -599,7 +601,7 @@ class ProjetController extends AppController
         }
       } else {
         // Si le titre ne respecte pas la contrainte de taille, on affiche une erreur
-        $this->Flash->error(__("La taille du titre est incorrecte (128 caractères max)."));
+        $this->Flash->error(__("La taille du titre est incorrecte (1 caractère min, 128 caractères max)."));
         $erreur = true;
       }
     }
