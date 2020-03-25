@@ -252,13 +252,16 @@ class MembreController extends AppController
       $notifications = TableRegistry::getTableLocator()->get('Notification');
       $vuesNotifications = TableRegistry::getTableLocator()->get('VueNotification');
 
+      // On cherche les notifications de type invitation  du projet
       $invitations = $notifications->find()->where(['type' => 'Invitation', 'idProjet' => $idProjet]);
+
+      // On parcourt chaque invitation de l'utilisateur à ce projet, et si l'une n'a pas encore reçu de réponse,
+      // alors l'utilisateur a encore une invitation en cours.
       foreach ($invitations as $invitation){
         $idNotification = $invitation->idNotification;
 
         $invitationsAuMembre = $vuesNotifications->find()->where(['idNotification'=>$idNotification, 'idUtilisateur' => $idUtilisateur]);
         foreach ($invitationsAuMembre as $invitationAuMembre){
-          debug($invitationAuMembre);
           if (!$invitationAuMembre->etat == 'En attente') $resultat = true;
         }
       }

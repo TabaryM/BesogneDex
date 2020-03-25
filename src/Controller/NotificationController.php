@@ -90,7 +90,7 @@ class NotificationController extends AppController
      * que l'utilisateur a déjà accepté ou refusée), celle-ci renvoie une erreur.
      *
      * @param $idNotification : id du projet dans la table VueNotificationProjet
-     * @author PALMIERI Adrien, ROSSI Djessy, POP Diana (a_valider à 0)
+     * @author PALMIERI Adrien, ROSSI Djessy
      */
     public function decline($idNotification) {
         $idUtilisateur = $this->autorisation(); // On récupère l'id utilisateur (et verifie si il est tjrs connecté)
@@ -114,8 +114,6 @@ class NotificationController extends AppController
               $notification->a_valider = 0;
               $vueNotificationTable->save($vueNotification); // On sauvegarde les changements
               $notifications->save($notification);
-               // TODO || Voir avec les gens du front pour qu'ils mettent juste à jour l'interface
-               // TODO || quand on a répondu a une notif au lieu de faire un flash
                //On récupère le projet concerné pour le nom
 
                $projet = $projets->find()->where(['idProjet' => $notification->idProjet])->first();
@@ -166,8 +164,6 @@ class NotificationController extends AppController
                $notification->a_valider = 0;
                $vueNotificationTable->save($vueNotification); // On sauvegarde les changements
                $notifications->save($notification);
-               // TODO || Voir avec les gens du front pour qu'ils mettent juste à jour l'interface
-               // TODO || quand on a répondu a une notif au lieu de faire un flash
                //On récupère le projet concerné pour le nom
 
                $projet = $projets->find()->where(['idProjet' => $notification->idProjet])->first();
