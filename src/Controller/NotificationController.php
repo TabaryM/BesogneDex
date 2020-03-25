@@ -226,7 +226,7 @@ class NotificationController extends AppController
             if($etat == 'En attente') {
               if ($type=='Proprietaire') $resultat = $this->proprietaire($idUtilisateur, $notification);
               if ($type=='Invitation') $resultat = $this->invitation($idUtilisateur, $notification);
-              if ($type=='Supression') $resultat = $this->accepterSuppressionTache($idVueNotification);
+              if ($type=='Suppression') $resultat = $this->accepterSuppressionTache($idVueNotification);
 
               /* Changements de la vue notification */
               $vueNotification->vue = 1; // La vue notification est vue
@@ -410,9 +410,6 @@ class NotificationController extends AppController
       $this->Flash->success(__('La tâche a été supprimée'));
       $resultat = 0;
       return $resultat;
-
-      // On redirige l'utilisateur sur la liste de ses notifications
-      $this->redirect($this->referer());
     }
 
 

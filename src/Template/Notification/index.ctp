@@ -36,11 +36,11 @@
 
                           <!-- Si la notification a été acceptée -->
                           <?php elseif ($notif->etat == 'Accepté'): ?>
-                              <button class="btn btn-primary" disabled="true"> Invitation acceptée </button>
+                              <button class="btn btn-primary" disabled="true"> Acceptée </button>
 
                           <!-- Si la notification a été refusée -->
                           <?php else: ?>
-                              <button class="btn btn-danger" disabled="true"> Invitation refusée </button>
+                              <button class="btn btn-danger" disabled="true"> Refusée </button>
 
                           <?php endif; ?>
                       <!-- Fin notification à valider -->
