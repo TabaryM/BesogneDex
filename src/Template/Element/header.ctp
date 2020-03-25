@@ -41,14 +41,13 @@
     <div class="col d-flex flex-row-reverse justify-content-start align-items-center">
     <a class="btn logout" data-toggle="modal" data-target="#logoutModal"></a>
     <?= $this->Html->link('', array('controller' => 'Utilisateur','action'=> 'profil'), array( 'class' => 'btn user'))?>
-      <!--<div class="btn bell notificaton">-->
-      <!--<?= $this->Html->link('', ['controller' => 'notification', 'action' => 'index'], ['class' => 'btn bell notificaton']) ?>-->
-          <?php if($nbNotif == ''): ?>
-            <?= $this->Html->link('', ['controller' => 'notification', 'action' => 'index'], ['class' => 'btn bell notificaton']) ?>
-          <?php else: ?>
-            <?= $this->Html->link("<span class='badge'> $nbNotif </span>", ['controller' => 'notification', 'action' => 'index'], ['class' => 'btn bell notificaton', 'escape'=>false]) ?>
-          <?php endif; ?>
-      <!--</div> -->
+    <?php
+    if($nbNotif == ''):
+      echo $this->Html->link('', ['controller' => 'notification', 'action' => 'index'], ['class' => 'btn bell notificaton']);
+    else:
+      echo $this->Html->link("<span class='badge'> $nbNotif </span>", ['controller' => 'notification', 'action' => 'index'], ['class' => 'btn bell notificaton', 'escape' => false]);
+    endif;
+    ?>
 
 
 
