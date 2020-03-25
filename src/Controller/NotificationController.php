@@ -117,20 +117,21 @@ class NotificationController extends AppController
                // TODO || Voir avec les gens du front pour qu'ils mettent juste à jour l'interface
                // TODO || quand on a répondu a une notif au lieu de faire un flash
                //On récupère le projet concerné pour le nom
+              $projet = $projets->find()->where(['idProjet' => $notification->idProjet])->first();
+              $type = $notification->type;
 
-               $projet = $projets->find()->where(['idProjet' => $notification->idProjet])->first();
+              if ($type == 'Proprietaire') $contenu = $session->read('Auth.User.pseudo') . " a refusé le changement de propriétaire.";
+              if ($type == 'Invitation')  $contenu = $session->read('Auth.User.pseudo') . " a refusé votre invitation à rejoindre le projet '" . $projet['titre']."'.";
+              if ($type == 'Suppression') {
+                $taches = TableRegistry::getTableLocator()->get('Tache');
+                $tache = $taches->find()->where(['idTache'=>$notification->idTache])->first();
+                $contenu = $session->read('Auth.User.pseudo'). " a refusé la suppression de la tâche ".$tache->titre.".";
+              }
 
-               // On récupère les informations de la tâche pour envoyer une notification
-               $contenu = $session->read('Auth.User.pseudo') . " a refusé votre invitation à rejoindre le projet '" . $projet['titre']."'.";
+              $destinataires = array();
+              array_push($destinataires, $notification->idExpediteur);
 
-               // Pour chaque membre du projet, on envoie une notification à celui-ci
-               $destinataires = array();
-               array_push($destinataires, $notification->idExpediteur);
-
-               // On envoie une notification à tous les membres du projet de la tâche supprimer
-               envoyerNotification(0, 'Informative', $contenu, $projet->idProjet, null, $notification->idExpediteur, $destinataires);
-
-                $this->Flash->success(__('Vous avez répondu à la notification.'));
+              envoyerNotification(0, 'Informative', $contenu, $projet->idProjet, null, $notification->idExpediteur, $destinataires);
 
             } else {
                 $this->Flash->error(__("Vous avez déjà répondu à cette notification."));
@@ -161,8 +162,8 @@ class NotificationController extends AppController
 
         if($vueNotification&& $notification) { // Si la notification existe
             if($vueNotification->etat == 'En attente') { // S'il n'a pas déjà répondu a la notif
-                $vueNotification->vue = 1; // La notification a ete vue puisqu'il a repondu
-                $vueNotification->etat = 'Refusé'; // Il refuse la notification
+               $vueNotification->vue = 1; // La notification a ete vue puisqu'il a repondu
+               $vueNotification->etat = 'Refusé'; // Il refuse la notification
                $notification->a_valider = 0;
                $vueNotificationTable->save($vueNotification); // On sauvegarde les changements
                $notifications->save($notification);
@@ -224,24 +225,22 @@ class NotificationController extends AppController
 
              // Si l'utilisateur n'a pas déjà répondu à la notification
             if($etat == 'En attente') {
-              if ($type=='Proprietaire') $resultat = $this->proprietaire($idUtilisateur, $notification);
-              if ($type=='Invitation') $resultat = $this->invitation($idUtilisateur, $notification);
-              if ($type=='Suppression') $resultat = $this->accepterSuppressionTache($idVueNotification);
-
-              /* Changements de la vue notification */
-              $vueNotification->vue = 1; // La vue notification est vue
-              $vueNotification->etat = 'Accepté';
-              $notification->a_valider = 0;
-              $vuesNotifications->save($vueNotification);
-              $notifications->save($notification);
+              if ($type == 'Proprietaire') $resultat = $this->proprietaire($idUtilisateur, $notification);
+              if ($type == 'Invitation') $resultat = $this->invitation($idUtilisateur, $notification);
+              if ($type == 'Suppression') $resultat = $this->accepterSuppressionTache($idVueNotification);
 
               // Si l'action s'est bien déroulée
-              if ($resultat==0){
-                  $this->Flash->success(__('Vous avez répondu à la notification.'));
+              if ($resultat){
+                /* Changements de la vue notification */
+                $vueNotification->vue = 1; // La vue notification est vue
+                $vueNotification->etat = 'Accepté';
+                $notification->a_valider = 0;
+                $vuesNotifications->save($vueNotification);
+                $notifications->save($notification);
 
               // Sinon
               }else{
-                $this->Flash->success(__('Une erreur s\'est produite.'));
+                $this->Flash->error(__('Une erreur s\'est produite.'));
               }
 
             // Si l'utilisateur a déjà répondu à la notification
@@ -268,11 +267,11 @@ class NotificationController extends AppController
     */
     private function proprietaire($idUtilisateur, $notification){
       $idProjet = $notification->idProjet;
-      $resultat = 1;
+      $resultat = 0;
 
       // Si la notification a bien un idProjet avec elle
       if ($idProjet!==null){
-        $resultat = 0;
+        $resultat = 1;
         $projets = TableRegistry::getTableLocator()->get('Projet');
 
         $query = $projets->query();
@@ -280,6 +279,8 @@ class NotificationController extends AppController
               ->set(['idProprietaire' => $idUtilisateur])
               ->where(['idProjet' => $idProjet])
               ->execute();
+
+        $this->Flash->success(__('Vous êtes devenu propriétaire du projet.'));
       }
 
       return $resultat;
@@ -297,11 +298,11 @@ class NotificationController extends AppController
     */
     private function invitation($idUtilisateur, $notification){
       $idProjet = $notification->idProjet;
-      $resultat = 1;
+      $resultat = 0;
 
       // Si la notification a bien un idProjet avec elle
       if ($idProjet!==null){
-        $resultat = 0;
+        $resultat = 1;
         $membres = TableRegistry::getTableLocator()->get('Membre');
         $projets = TableRegistry::getTableLocator()->get('Projet');
         $session = $this->request->getSession();
@@ -329,7 +330,8 @@ class NotificationController extends AppController
         $estSauvegarde = $membres->save($membre);
 
         /* On vérifie qu'il n'y a pas eu d'erreurs à la sauvegarde. */
-        if (!$estSauvegarde) $resultat = 1;
+        if (!$estSauvegarde) $resultat = 0;
+        $this->Flash->success(__('Vous avez rejoint le projet '.$projet->titre.'.'));
       }
       return $resultat;
     }
@@ -408,10 +410,9 @@ class NotificationController extends AppController
       envoyerNotification(0, 'Informative', $contenu, $idProjet, null, $idUtilisateur, $destinataires);
 
       $this->Flash->success(__('La tâche a été supprimée'));
-      $resultat = 0;
+      $resultat = 1;
       return $resultat;
     }
-
 
     /**
     * @author Théo Roton
@@ -421,6 +422,7 @@ class NotificationController extends AppController
     * Une fois la notification refusée, on renvoie l'utilisateur
     * sur la liste de ses notifications.
     */
+    /*
     public function refuserSuppressionTache($idNotification){
       // On récupère l'id de l'utilisateur connecté
       $session = $this->request->getSession();
@@ -451,6 +453,7 @@ class NotificationController extends AppController
       $this->redirect($this->referer());
 
     }
+    */
 
 
 
