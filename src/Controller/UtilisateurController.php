@@ -225,7 +225,6 @@ class UtilisateurController extends AppController
   * Supprime le compte de l'utilisateur ainsi que les données associées
   * @author PALMIERI Adrien
   */
-  // TODO : Lorsque les notifications seront ajoutées, il faudra ajouter la suppression des notifications associées.
   public function deleteAccount() {
     $currentUserId = $this->request->getSession()->read('Auth.User.idUtilisateur');
     $utilisateur = $this->Utilisateur->get($currentUserId);
