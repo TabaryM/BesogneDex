@@ -5,9 +5,7 @@
   ?>
 <!-- Fin modification header -->
 
-<?php use Cake\Routing\Router;
-// TODO: Ajouter une icône de recherche avec la ligne en dessous
-?>
+<?php use Cake\Routing\Router; ?>
 
 <?= $this->Html->script('membres.js') ?>
 
@@ -36,8 +34,8 @@
 <?php $goto = Router::url(array('controller'=>'Membre', 'action'=> 'delete')); ?>
 <div class="row" style="margin-right: 60px;margin-left: 60px;margin-top: 50px;">
     <div class="col-xl-10 d-flex flex-row justify-content-between align-items-xl-center">
-      <?= $this->Html->link("Changer de propriétaire", "", ['class' => 'btn btn-primary shadow grosBouton boutonRouge', 'data-toggle' => 'modal', 'data-target' => '#promoteModal']); ?>
-      <button id="bouton_supprimer_membre" class="btn btn-danger shadow grosBouton" type="button" data-toggle="modal" data-target="#deleteMembreModal" >Supprimer</button>
+      <button class="btn btn-primary shadow grosBouton boutonRouge changer_proprietaire" disabled='disabled' type="button" data-toggle = "modal" data-target= '#promoteModal'>Changer de propriétaire</button>
+      <button id="bouton_supprimer_membre" class="btn btn-danger shadow grosBouton bouton_supprimer_membre" disabled='disabled' type="button" data-toggle="modal" data-target="#deleteMembreModal" >Supprimer</button>
       <?= $this->Html->link("Retour", array('controller' => 'Tache', 'action'=> 'index', $idProjet), array( 'class' => 'btn btn-primary shadow grosBouton boutonRouge')); ?>
     </div>
 </div>
