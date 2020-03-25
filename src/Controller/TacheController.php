@@ -345,9 +345,9 @@ class TacheController extends AppController
       //si il est propriétaire du projet ou que l'utilisateur est responsable de la tache il peut supprimer cette tache
       if($projetTab->idProprietaire == $user || $tache->idResponsable == $user){
         //On récupère la table des notifications des projets
-        $notifications = TableRegistry::getTableLocator()->get('Notification_tache');
+        $notifications = TableRegistry::getTableLocator()->get('Notification');
         //On récupère la table de vue des notifications des projets
-        $vue_notifications = TableRegistry::getTableLocator()->get('Vue_notification_tache');
+        $vue_notifications = TableRegistry::getTableLocator()->get('Vue_notification');
 
         //Si c'est le proprio envoyer une notif a tout les membres du projet comme quoi la tache X du projet Y a ete supprimée.
         if($projetTab->idProprietaire == $user){
