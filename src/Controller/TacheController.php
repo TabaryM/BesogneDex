@@ -391,7 +391,11 @@ class TacheController extends AppController
 
   /**
   * Permet a un membre du projet de se retirer d'une tâche
-  * @author Adrien Palmieri
+  *
+   * @param $idProjet l'id du projet qui contient la tâche de laquelle on souhaite se retirer
+   * @param $idTache l'id de la tache dont on souhaite se retirer
+   * @return redirection vers la page du projet
+   * @author Adrien Palmieri
   */
   public function notSoResponsible($idProjet, $idTache) {
     $tache = $this->Tache->get($idTache);
@@ -479,7 +483,11 @@ class TacheController extends AppController
   }
 
   /**
-   * TODO : Faire la doc
+   * Methode permettant de verifier si l'utilisateur souhaitant acceder au projet en fait partie
+   * @param $idProjet id du projet auquel l'utilisateur souhaite acceder
+   * @return boolean vrai si l'utilisateur a un acces au projet
+   * @return redirection vers la page d'accueil si l'utilisateur n'a pas les droits pour accéder au projet
+   * @author A REMPLIR PAR LE/LES AUTEURS
    */
   private function autorisation($idProjet){
 
@@ -503,7 +511,7 @@ class TacheController extends AppController
             ->select(['idUtilisateur'])
             ->where(['idUtilisateur' => $user, 'idProjet' => $idProjet])
             ->count();
-        
+
         // S'il n'est pas membre non plus, on le redirige.
         if ($query == 0){
           $this->Flash->error(__('Ce projet n\'existe pas ou vous n\'y avez pas accès.'));
