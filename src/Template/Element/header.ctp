@@ -40,15 +40,17 @@
     <?php   if($loggedIn):  ?>
     <div class="col d-flex flex-row-reverse justify-content-start align-items-center">
     <a class="btn logout" data-toggle="modal" data-target="#logoutModal"></a>
-    <?= $this->Html->link("", array('controller' => 'Utilisateur','action'=> 'profil'), array( 'class' => 'btn user'))?>
-    <div class="btn bell notificaton">
-      <?= $this->Html->link("", ['controller' => 'notification', 'action' => 'index'], ['class' => 'btn']) ?>
-      <?php if($nbNotif > 0 && $nbNotif < 10): ?>
-        <span class="badge"><?= $nbNotif ?></span>
-      <?php elseif($nbNotif >= 10): ?>
-        <span class="badge">9+</span>
-      <?php endif; ?>
-    </div>
+    <?= $this->Html->link('', array('controller' => 'Utilisateur','action'=> 'profil'), array( 'class' => 'btn user'))?>
+      <!--<div class="btn bell notificaton">-->
+      <!--<?= $this->Html->link('', ['controller' => 'notification', 'action' => 'index'], ['class' => 'btn bell notificaton']) ?>-->
+          <?php if($nbNotif == ''): ?>
+            <?= $this->Html->link('', ['controller' => 'notification', 'action' => 'index'], ['class' => 'btn bell notificaton']) ?>
+          <?php else: ?>
+            <?= $this->Html->link("<span class='badge'> $nbNotif </span>", ['controller' => 'notification', 'action' => 'index'], ['class' => 'btn bell notificaton', 'escape'=>false]) ?>
+          <?php endif; ?>
+      <!--</div> -->
+
+
 
   </div>
     <?php  endif;   ?>

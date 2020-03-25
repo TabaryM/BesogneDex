@@ -55,7 +55,16 @@ $cakeDescription = 'BesogneDex';
     // Récupération des notifications
     $notifs = $tableNotifications->find()->contain('Notification')->where(['idUtilisateur' => $session->read('Auth.User.idUtilisateur'), 'vue' => 0])->toArray();
 
-    $nbNotif = sizeof($notifs);
+    $nbNotifications = sizeof($notifs);
+    if($nbNotifications == 0){
+      $nbNotif = '';
+    }else{
+      if($nbNotifications > 10){
+        $nbNotif = '9+';
+      }else{
+        $nbNotif = $nbNotifications;
+      }
+    }
    ?>
   <?= $this->element('header', ['titre' => Configure::read('titre_header_tache'), 'utilisateurProprietaire' => Configure::read('utilisateurProprietaire'), 'estExpire' => Configure::read('estExpire'), 'nbNotif' => $nbNotif]) ?>
   <?= $this->element('navbar') ?>
